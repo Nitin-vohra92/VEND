@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>VEND:An online web portal to buy/sell/share things in NITH Campus</title>
+<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/js/jquery.min.js"></script>
+<!-- Custom Theme files -->
+<!--theme-style-->
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all" />	
+<!--//theme-style-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Mattress Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--fonts-->
+<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'><!--//fonts-->
+<!-- start menu -->
+<link href="/css/memenu.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="/js/memenu.js"></script>
+<script>$(document).ready(function(){$(".memenu").memenu();});</script>
+<script src="/js/simpleCart.min.js"> </script>
+
+<script src="/js/imagezoom.js"></script>
+</head>
+<body>
+<!--header-->
+<div class="header">
+	<div class="header-top">
+		<div class="container">
+			<div class="logo">
+					<!-- <h1><a href="/"><img src="/images/logo1.png" alt="" height="40px" width="100px" /></a></h1> -->
+					<div id="head" style="margin-top:-10px">VEND</div>
+			</div>
+			<div class="header-left">
+			
+				<div class="search-box">
+					<div >
+						<form action="/api/view/search" method="POST">
+							<input style="width:400px; left:600px; top:15px" class="sb-search-input" placeholder="Enter your search term..." type="text" name="query" id="search">
+							<input class="sb-search-submit" style="left:1000px; top:15px;z-index:1000" type="submit" value="Submit">
+						</form>
+					</div>
+				</div>
+			<div style="width:60px; height:60px;margin-top:-15px; list-style:none">	
+					<%if(response.user_info===undefined){%>
+					<li><img src='/images/image_placeholder.png' style="height:50px; width:50px" /></li>	
+					<li style="color:#fff">Guest!! </li>
+					<%}else%>
+					<% if(response.user_info!==undefined){%>
+					<li><img src='<%=response.user_info.profile_pic%>' style="height:50px; width:50px"/></li>	
+					<li style="color:#fff"><%= response.user_info.firstname %> </li>
+				
+				<%}%>
+					<div class="clearfix"> </div>
+			</div>
+				
+			</div>
+		</div>
+	</div>
+		<div class="container">
+			<div class="head-top">
+				
+		 <div class=" h_menu4">
+				<ul class="memenu skyblue">
+					  <li><a class="color8" href="/">HOME</a></li>	
+				      <li><a class="color1" href="/api/view/products">ADVERTISEMENTS</a>
+				      	<div class="mepanel">
+						<div class="row">
+							<div class="col1">
+								<div class="h_nav">
+									<ul>
+										<li><a href="/api/view/books">Books</a></li>
+										<li><a href="/api/view/Electronics">Electronics</a></li>
+										<li><a href="/api/view/Others">Others</a></li>
+									</ul>	
+								</div>							
+							</div>
+						
+						  </div>
+						</div>
+					</li>
+
+				    <li class="grid"><a class="color2" href="/api//publish">POST YOUR AD</a></li>
+				    <li class="grid"><a class="color2" href="/api/view/user/activities">YOUR ACTIVITIES</a></li>
+
+				    
+					<li class="grid"><a class="color2" href="/api/view/user/notifications">NOTIFICATIONS</a></li>
+					
+					<% if(response.user_info===undefined){%>
+
+				<li><a class="color4" href="/login">LOGIN</a></li>	
+				
+				<%}%>
+					<% if(response.user_info!==undefined){%>
+
+					<li><a class="color4" href="/api/user/logout">LOGOUT</a></li>	
+				
+					<%}%>	
+				<li><a class="color6" href="contact.html">CONTACT US</a></li>
+			  </ul> 
+			</div>
+		
+				
+				<div class="clearfix"> </div>
+		</div>
+		</div>
+	</div>
+	<!-- grow -->
+	<div class="grow">
+		<div class="container">
+			<h2>ADVERTISEMENT DETAILS</h2>
+		</div>
+	</div>
+	<!-- grow -->
+		<div class="product">
+			<div class="container">
+				
+				<div class="product-price1">
+				<div class="top-sing">
+				<div class="col-md-7 single-top">	
+		<div class="flexslider">
+			  <ul class="slides">
+			  	<%for(var i=0;i<response.product.images.length;i++){%>
+			    <li data-thumb='<%=response.product.images[i].path%>'>
+			        <div class="thumb-image"> <img src="<%=response.product.images[i].path%>" data-imagezoom="true" class="img-responsive"> </div>
+			    </li>
+			    <%}%>
+			  </ul>
+		</div>
+
+	<div class="clearfix"> </div>
+<!-- slide -->
+
+
+						<!-- FlexSlider -->
+  <script defer src="/js/jquery.flexslider.js"></script>
+<link rel="stylesheet" href="/css/flexslider.css" type="text/css" media="screen" />
+
+<script>
+// Can also be used with $(document).ready()
+$(window).load(function() {
+  $('.flexslider').flexslider({
+    animation: "slide",
+    controlNav: "thumbnails"
+  });
+});
+</script>
+
+	
+	
+	
+	
+	
+	
+					</div>	
+					<div class="col-md-5 single-top-in simpleCart_shelfItem">
+						<div class="single-para ">
+						<h4><%=response.product.name%></h4>
+							<div class="star-on">
+								
+							<div class="clearfix"> </div>
+							</div>
+							
+							<h5 class="item_price">By: Rahul Sharma</h5>
+							
+							<div class="available">
+								Posted under:Electonics<br>
+								Sub-Category:Mobiles<br>
+								<br>
+								Description: best phone for this price, every thing works fine<br>
+								Available for: BUY 
+						</div>
+							
+								<a href="/api/user/ping" class="add-cart item_add">Ping the Seller!!</a>
+							
+						</div>
+					</div>
+				<div class="clearfix"> </div>
+				</div>
+			<!---->
+
+		<div class="contain2" style="top:550px;left:785px; overflow-x:hidden; opacity:1; border:8px solid #8FBC8F; width:500px">
+				<form action=/api/advertisement/bid method='POST' style="margin-top:-10px">
+						<input type="text" name="amount" id="wish" class="input_bg" placeholder="Post your bid amount here" style="width:428px; height:70px;">
+						<input id="f_submit" type='submit' class="input_bg" name='submit' value='Bid' style="width:100px;float:right">
+				</form>
+				<div style="margin-top:130px;left:0px">
+					<p><strong><i><b>Recent Bidding:</b></i></strong></p> <hr style="border:1px solid #000; margin-top:0px ">
+					
+					<%for(var i=0;i<response.bids.length;i++) {%>
+						<p>
+							<%= response.bids[i].amount %><br/>
+							<center><i>by : </i><%= response.bids[i].user_desc %></center>
+							<hr style="margin-top:1px">
+						</p>
+					<%}%>
+				</div>
+			</div>
+		<div class="contain2" style="position:relative;overflow-x:hidden; opacity:1; border:8px solid #8FBC8F; width:500px;height:400px; margin-left:80px" >
+				<form action=/api/advertisement/comment method='POST' style="margin-top:-10px">
+						<input type="text" name="comment" id="wish" class="input_bg" placeholder="Post your comment here" style="width:428px; height:70px;">
+						<input id="f_submit" type='submit' class="input_bg" name='submit' value='Comment' style="width:100px;float:right">
+				</form>
+				<div style="margin-top:130px;left:0px">
+					<p><strong><i><b>Recent Comments:</b></i></strong></p> <hr style="border:1px solid #000; margin-top:0px ">
+					<!-- remove -->
+
+
+					
+					<%for(var i=0;i<response.comments.length;i++) {%>
+						<p>
+							<%= response.comments[i].comment %><br/>
+							<center><i>by : </i><%= response.comments[i].user_desc %></center>
+							<hr style="margin-top:1px">
+						</p>
+					<%}%>
+				</div>
+			</div>
+
+
+		<div class="contain2" style="position:relative; overflow-x:hidden; opacity:1; border:8px solid #8FBC8F ; width:500px; margin-left:50px;height:400px" >
+				<form action=/api/advertisement/rate method='POST' style="margin-top:-10px">
+						<input type="text" name="rating" id="wish" class="input_bg" placeholder="Post your rating here (out of 10)" style="width:428px; height:70px;">
+						<input id="f_submit" type='submit' class="input_bg" name='submit' value='Rate' style="width:100px;float:right">
+				</form>
+				<div style="margin-top:130px;left:0px">
+					<p><strong><i><b>Recent Ratings:</b></i></strong></p> <hr style="border:1px solid #000; margin-top:0px ">
+					<%for(var i=0;i<response.ratings.length;i++) {%>
+						<p>
+							<%= response.ratings[i].rating %><br/>
+							<center><i>by : </i><%= response.ratings[i].user_desc %></center>
+							<hr style="margin-top:1px">
+						</p>
+					<%}%>
+					
+				</div>
+			</div>
+</div>
+
+		<div class="clearfix"> </div>
+		</div>
+		</div>
+<!--//content-->
+<div class="footer">
+				<div class="container">
+			<div class="footer-top-at">
+			
+				<div class="col-md-3 amet-sed">
+				<h4>MORE INFO</h4>
+				<ul class="nav-bottom">
+						<li><a href="#">How to order</a></li>
+						<li><a href="#">FAQ</a></li>
+						<li><a href="contact.html">Location</a></li>
+						<li><a href="#">Shipping</a></li>
+						<li><a href="#">Membership</a></li>	
+					</ul>	
+				</div>
+				<div class="col-md-3 amet-sed">
+					<h4>CATEGORIES</h4>
+					<ul class="nav-bottom">
+						<li><a href="products.html">Books</a></li>
+										<li><a href="products.html">Electronics</a></li>
+										<li><a href="products.html">Others</a></li>
+					</ul>
+					
+				</div>
+				<div class="col-md-3 amet-sed">
+					<h4>NEWSLETTER</h4>
+					<div class="stay">
+						<div class="stay-left">
+							<form>
+								<input type="text" placeholder="Enter your email " required="">
+							</form>
+						</div>
+						<div class="btn-1">
+							<form>
+								<input type="submit" value="Subscribe">
+							</form>
+						</div>
+							<div class="clearfix"> </div>
+			</div>
+					
+				</div>
+				<div class="col-md-3 amet-sed ">
+				<h4>CONTACT US</h4>
+					<p>VEND</p>
+					<p>NIT Hamirpur</p>
+					<p>office :  +12 34 995 0792</p>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		</div>
+		<div class="footer-class">
+		<p>© 2015 VEND. All Rights Reserved </a> </p>
+		</div>
+		</div>
+</body>
+</html>
+			

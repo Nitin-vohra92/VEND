@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>REGISTER</title>
+<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="/js/jquery.min.js"></script>
+<!-- Custom Theme files -->
+<!--theme-style-->
+<link href="/css/style.css" rel="stylesheet" type="text/css" media="all" />	
+<!--//theme-style-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Mattress Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!--fonts-->
+<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'><!--//fonts-->
+<!-- start menu -->
+<link href="/css/memenu.css" rel="stylesheet" type="text/css" media="all" />
+<script type="text/javascript" src="/js/memenu.js"></script>
+<script>$(document).ready(function(){$(".memenu").memenu();});</script>
+<script src="/js/simpleCart.min.js"> </script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+	$('.student').hide();
+	$('.teacher').hide();
+
+	$('input[type="radio"]').click(function(){
+		if($(this).attr("value")=="Student"){
+			$(".student").show();
+			$(".info").not(".student").hide();
+		}
+
+		if($(this).attr("value")=="Teacher"){
+			$(".teacher").show();
+			$(".info").not(".teacher").hide();
+		}
+
+		if($(this).attr("value")=="Other"){
+			$(".info").not(".others").hide();
+		}
+	});
+
+	});
+</script>
+
+</head>
+
+<body>
+<!--header-->
+<div class="header">
+	<div class="header-top">
+		<div class="container">
+			<div class="logo">
+					<!-- <h1><a href="/"><img src="/images/logo1.png" alt="" height="40px" width="100px" /></a></h1> -->
+					<div id="head" style="margin-top:-10px">VEND</div>
+			</div>
+			<div class="header-left">
+			
+				<div class="search-box">
+					<div >
+						<form action="/api/view/search" method="POST">
+							<input style="width:400px; left:600px; top:15px" class="sb-search-input" placeholder="Enter your search term..." type="search" name="search" id="search">
+							<input class="sb-search-submit" style="left:1000px; top:15px;z-index:1000" type="submit" value="Submit">
+						</form>
+					</div>
+				</div>
+			<div style="width:60px; height:60px;margin-top:-15px; list-style:none">	
+					
+					<li><img src='/images/image_placeholder.png' /></li>	
+					<li style="color:#fff">Guest!! </li>
+					
+					<div class="clearfix"> </div>
+			</div>
+				
+			</div>
+		</div>
+	</div>
+		<div class="container">
+			<div class="head-top">
+				
+		 <div class=" h_menu4">
+				<ul class="memenu skyblue">
+					  <li><a class="color8" href="/">HOME</a></li>	
+				      <li><a class="color1" href="/api/view/products">ADVERTISEMENTS</a>
+				      	<div class="mepanel">
+						<div class="row">
+							<div class="col1">
+								<div class="h_nav">
+									<ul>
+										<li><a href="/api/view/books">Books</a></li>
+										<li><a href="/api/view/Electronics">Electronics</a></li>
+										<li><a href="/api/view/Others">Others</a></li>
+									</ul>	
+								</div>							
+							</div>
+						
+						  </div>
+						</div>
+					</li>
+
+				    <li class="grid"><a class="color2" href="/publish">POST YOUR AD</a></li>
+				   
+				<li><a class="color4" href="/login">LOGIN</a></li>	
+				
+						
+				<li><a class="color6" href="contact.html">CONTACT US</a></li>
+			  </ul> 
+			</div>
+		
+				
+				<div class="clearfix"> </div>
+		</div>
+		</div>
+	</div>
+
+	<div class="banner">
+		<div class="container">
+			  <script src="/js/responsiveslides.min.js"></script>
+  <script>
+    $(function () {
+      $("#slider").responsiveSlides({
+      	auto: true,
+      	nav: true,
+      	speed: 500,
+        namespace: "callbacks",
+        pager: true,
+      });
+    });
+  </script>
+</div>
+
+	<div class="advertise">
+		<div id="head">REGISTER</div>
+		<form action='/api/user/register' method='POST' enctype="multipart/form-data">
+			<input id="fname" name="firstname" class="input_bg" value="First Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'First Name';}" /> 
+			<br><br>
+			<input name="lastname" type="text" class="input_bg" value="Last Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Last Name';}" />
+			<br><br>
+			<input id="email-id" type="text" name="email" class="input_bg" value="Email Id" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email Id';}" />
+			<br><br>
+			<input name="contact" type="text" class="input_bg" value="Phone No." onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'PHONE NUMBER';}" />
+			<br><br>
+			<input id="user_name" name="username" class="input_bg" value="User Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'USER NAME';}" />
+			<br><br>
+			<input name="password" type="password" class="input_bg" value="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}" />
+			<br><br>
+            <label for="picture" class="blocklabel"><span>Choose your Profile Picture</span></label>
+			<input name="profile_pic" type="file" class="input_bg" value="Upload Picture" />
+			<br>
+			<label for="user_type" class="blocklabel"><span>Select Who are you? </span></label><br><br>
+			<div>
+				
+			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Student" /><span>Student</span><br></div>
+			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Teacher" /><span>Teacher</span><br></div>
+			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Other" /><span>Other</span><br></div>
+			</div>	
+		                         
+
+			<div class="student info">
+					<input name="rollno" type="text" class="input_bg" value="Enter your roll no." onfocus="this.value = '';" onblur="if(this.value == '') {this.value = 'Enter your roll no.';}" />
+					<label for="branch" class="blocklabel"><span>Select your Department</span></label>
+			        <select class="input_bg" name="department">
+			 	<option value="">---Department---</option>
+                         	<option value="CSE">Computer Science & Engineering</option>
+                         	<option value="CED">Civil Engineering</option>
+				            <option value="ECE">Electronics & Communication Engineering</option>
+				            <option value="EEE">Electrical & Electronics Engineering</option>
+				            <option value="MED">Mechanical Engineering</option>
+				            <option value="ARCH">ARchitecture Department</option>
+				            
+			</select>
+                         <br>
+
+					<label for="Degree" class="blocklabel"><span>Select your Degree Type</span></label>
+                         <select class="input_bg" name="degree">
+			 	<option value="">---Select---</option>
+                         	<option value="BTECH">B.Tech</option>
+                         	<option value="MTECH">M.Tech</option>
+				            
+			</select>
+			        <input name="semester" type="text" class="input_bg" value="Enter your semester" onfocus="this.value = '';" onblur="if(this.value == '') {this.value = 'Enter your semester';}" />
+			</div>
+
+			<div class="teacher info">
+				<label for="designation" class="blocklabel"><span>Select your Designation</span></label>
+				<select class="input_bg" name="designation">
+			 	<option value="">---none---</option>
+                         	<option value="Professor">Professor</option>
+                         	<option value="Assistant Professor">Assistant Professor</option>
+				            <option value="Associate Professor">Associate Professor</option>
+				            <option value="Lecturer">Lecturer</option>
+				            
+				</select>
+                         <br>
+			</div>
+
+									
+			<input type='submit' name='submit' value='Submit' id='submit' />
+
+		</form>
+	</div>
+</div>
+</body>
+</html>
