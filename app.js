@@ -9,7 +9,14 @@ var mongoose=require('mongoose');
   mongoose.set('debug', true);
 
 var multipart = require('connect-multiparty');
-var db=mongoose.connect('mongodb://omsharma:**123##linkpk@ds064628.mlab.com:64628/vend');
+//////////////////////////////////////////////////////////
+//database 
+//local
+//var db=mongoose.connect('mongodb://127.0.0.1/VEND');
+//online
+var db=mongoose.connect('mongodb://omsharma:vend1234@ds011409.mlab.com:11409/vend');
+
+/////////////////////////////////////////////////////////
 var MongoStore=require('connect-mongo')(session);
 var routes = require('./routes/index');
 var apiRoutes = require('./api/apiRoutes');

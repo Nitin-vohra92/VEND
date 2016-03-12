@@ -2,9 +2,6 @@
   "name": "Vend",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
   "dependencies": {
     "body-parser": "~1.13.2",
     "connect-mongo": "^0.8.2",
@@ -16,9 +13,8 @@
     "express-session": "^1.12.1",
     "jade": "~1.11.0",
     "morgan": "~1.6.1",
+    "mongoose": "latest",
     "nodemailer": "^0.7.1",
-    "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
     "serve-favicon": "~2.3.0"
   }
 }
