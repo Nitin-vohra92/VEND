@@ -131,7 +131,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<%for(var i=0;i<response.others.length;i++) {%>
 					<div class="col-md-3 grid-top simpleCart_shelfItem">
 						<div class="b-link-stripe b-animate-go  thickbox">
-						<img src='<%= response.others[i].thumb %>' width="250px" height="250px" alt="image">
+						<img src='<%= response.others[i].thumb %>' alt="/images/t3.jpg" width="250px" height="250px" alt="image">
 							<div class="b-wrapper">
 								<h3 class="b-animate b-from-left    b-delay03 ">
 									<span><%=response.others[i].category%></span>
@@ -146,9 +146,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 
-					<p><a href="/api/view/advertisement"><%=response.others[i].name%></a></p>
-					<a href="#" class="item_add"><p class="number item_price"><i> </i>Rs.<%=response.others[i].price%></a>
-					<br/><a href>Available for LOAN/BUY</a>	
+					<p><%=response.others[i].description%></p>
+					<p class="number item_price"><i> </i>Rs.<%=response.others[i].price%>
+					<br/>Available for <%=response.others[i].kind%>	
 					</p>
 					</div>
 					<%}%>

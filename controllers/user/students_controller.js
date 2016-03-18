@@ -33,11 +33,14 @@ exports.register=function(input,req,res){
 
 
 	student.save();
+	console.log("Student saved");
+
 	var account=new Account(input);
 	account.user_id=student._id;
-	
+	account.name=input.firstname+' '+input.lastname;	
 	account.save();
-	console.log(input);
+	
+	//console.log(input);
 	req.session.user_id=account.user_id;
 	req.session.user_type=account.type;
 	req.session.save(function(err) {
@@ -78,17 +81,15 @@ exports.home=function(req,res){
   					Advertisement.find({user_type:'Student'}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, recommendations) {
   						response.recommended=recommendations;
   						console.log('Inside recommended');
-  						Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
-  							response.wishes=wishes;
-  							console.log('Inside wishes');
-  							Notification.find({$and:[{user_id:req.session.user_id},{read:0}]}, null, { sort: {'createdAt': -1}}).exec(function(err, notifications) {
-  							response.notifications=notifications;
-  						
-  							console.log('Inside notifications');
-							 //res.json(response);
-							res.render('index',{response:response});
-						});
-							// res.json(Response);
+	  					Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
+	  						response.wishes=wishes;
+	  						console.log('Inside wishes');
+	  						Notification.find({$and:[{user_id:req.session.user_id},{read:0}]}, null, { sort: {'createdAt': -1}}).exec(function(err, notifications) {
+		  						response.notifications=notifications;
+		  						console.log('Inside notifications');
+								// res.json(response);
+								res.render('index',{response:response});
+							});
 						});
 					});
   				});

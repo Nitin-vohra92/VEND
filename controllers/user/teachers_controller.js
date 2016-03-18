@@ -13,8 +13,7 @@ var APP_DIR = path.dirname(require.main.filename);
 exports.register=function(input,req,res){
 	//validate the input if posssible
 	var teacher=new Teacher(input);
-
-	console.log(input);
+	teacher.department=input.teacher_department;
 	//profile picture
  	var imagefile=req.files.profile_pic;
  	
@@ -35,11 +34,12 @@ exports.register=function(input,req,res){
 
 
 	teacher.save();
+	
 	var account=new Account(input);
 	account.user_id=teacher._id;
-
-		
+	account.name=input.firstname+' '+input.lastname;		
 	account.save();
+
 	console.log('Teacher Saved');
 	req.session.user_id=account.user_id;
 	req.session.user_type=account.type;
@@ -87,7 +87,7 @@ exports.home=function(req,res){
   							response.notifications=notifications;
   						
   							console.log('Inside wishes');
-							// res.json(response);
+							 // res.json(response);
 							res.render('index',{response:response});
 						});
 						});

@@ -22,7 +22,7 @@ var studentModel=new Schema({
 		type: String,
 		default:'Anonymous'
 	},
-	Degree:{
+	degree:{
 		type: String
 	},
 	semester:{

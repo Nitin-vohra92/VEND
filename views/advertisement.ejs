@@ -84,7 +84,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						</div>
 					</li>
 
-				    <li class="grid"><a class="color2" href="/api//publish">POST YOUR AD</a></li>
+				    <li class="grid"><a class="color2" href="/api/adverisement/publish">POST YOUR AD</a></li>
 				    <li class="grid"><a class="color2" href="/api/view/user/activities">YOUR ACTIVITIES</a></li>
 
 				    
@@ -165,14 +165,17 @@ $(window).load(function() {
 							<div class="clearfix"> </div>
 							</div>
 							
-							<h5 class="item_price">By: Rahul Sharma</h5>
+							<h5 class="item_price">By: <%=response.advertisement.user_desc%></h5>
 							
 							<div class="available">
-								Posted under:Electonics<br>
-								Sub-Category:Mobiles<br>
+								Posted under:<%=response.advertisement.category%><br>
+								<% if(response.advertisement.category!=='Book'){%>
+								Sub-Category:<%=response.product.sub_category%><br>
+								<%}%>
 								<br>
-								Description: best phone for this price, every thing works fine<br>
-								Available for: BUY 
+								Price: Rs. <%=response.advertisement.price%><br>
+								Description: <%=response.advertisement.description%><br>
+								Available for <%=response.advertisement.kind%> 
 						</div>
 							
 								<a href="/api/user/ping" class="add-cart item_add">Ping the Seller!!</a>

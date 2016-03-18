@@ -12,9 +12,9 @@ var multipart = require('connect-multiparty');
 //////////////////////////////////////////////////////////
 //database 
 //local
-//var db=mongoose.connect('mongodb://127.0.0.1/VEND');
+var db=mongoose.connect('mongodb://127.0.0.1/VEND');
 //online
-var db=mongoose.connect('mongodb://omsharma:vend1234@ds011409.mlab.com:11409/vend');
+//var db=mongoose.connect('mongodb://omsharma:vend1234@ds011409.mlab.com:11409/vend');
 
 /////////////////////////////////////////////////////////
 var MongoStore=require('connect-mongo')(session);

@@ -38,7 +38,7 @@ exports.register=function(req,res){
 
 exports.login=function(req,res){
 	var input=req.body;
-	console.log(input);
+	var response={};
 	//first find in accounts table
 	Account.findOne({username:input.username},function(err,account){
 		if(err)
@@ -46,7 +46,9 @@ exports.login=function(req,res){
 		else{
 			//if not found
 			if(account===null){
-				res.json({status:"Account Not found!!"});
+				var error={description:"Account Not found!!"};
+				response.error=error;
+				res.render('login',{response:response});
 			}
 			//if found
 			else{
@@ -62,8 +64,8 @@ exports.login=function(req,res){
 						
 						// var type=account.type;
 						 var sessionSetter=function(result){
-						 		req.session.user_name=result.firstname+' '+result.lastname;
-
+						 		req.session.name=result.firstname+' '+result.lastname;
+						 		req.session.firstname=result.firstname;
 								console.log(req.session.user_name);
 						 		req.session.profile_pic=result.profile_pic;
 						 		req.session.user_desc=result.firstname+' '+result.lastname+' '+account.type+' at NITH';
@@ -83,8 +85,12 @@ exports.login=function(req,res){
 	 					}
 					
 	 			}
-				else
-					res.json({staus:"Incorrect Password!!"});
+				else{
+
+				var error={description:"Incorrect password!!"};
+				response.error=error;
+				res.render('login',{response:response});
+				}
 			}
 		}
 	});
@@ -106,7 +112,7 @@ exports.wish=function(req,res){
 		var input=req.body;
 		var wish=new Wish(input);
 		wish.user_id=req.session.user_id;
-		wish.user_desc=req.session.user_name+','+req.session.user_type+'at NITH';
+		wish.user_desc=req.session.name+','+req.session.user_type+' at NITH';
 		wish.user_type=req.session.user_type;
 		wish.save();
 		//add to activity
@@ -123,14 +129,14 @@ exports.wish=function(req,res){
 
 exports.ping=function(req,res){
 	var input=req.body;
-	// var notification=new Notification(input);
-	// notification.user_id=req.session.user_id;
-	// notification.user_desc=req.session.user_name+','+req.session.user_type+'at NITH';
-	// notification.user_type=req.session.user_type;
-	// notification.to_id=input.user_id;
-	// notification.product_name=input.description;
-	// notification.desc='Pinged by: '+req.session.user_name+' for your Advertisement in '+ req.session.category;
-	// notification.save();
+	var notification=new Notification(input);
+	notification.user_id=req.session.user_id;
+	notification.user_desc=req.session.name+','+req.session.user_type+' at NITH';
+	notification.user_type=req.session.user_type;
+	notification.to_id=input.user_id;
+	notification.product_name=input.description;
+	notification.desc='Pinged by: '+req.session.user_name+' for your Advertisement in '+ req.session.category;
+	notification.save();
 
 	//mail notification
             console.log("Sending mail");
@@ -157,17 +163,12 @@ exports.ping=function(req,res){
          }
 	});
 
-
-	//
-	  req.session.ad_id=input.ad_id;
-	  req.session.category=input.category;
-	 // req.session.product_id=result._id;
 	//add to activity
-	// var activity=new Activity(input);
-	// activity.user_id=req.session.user_id;
-	// activity.user_name=req.session.user_name;
-	// activity.activity='Pinged the user: '+notification.user_desc+' at '+activity.createdAt;
-	// activity.save();
+	var activity=new Activity(input);
+	activity.user_id=req.session.user_id;
+	activity.user_name=req.session.name;
+	activity.activity='Pinged the user: '+notification.user_desc+' at '+notification.createdAt;
+	activity.save();
 
 	res.redirect('/api/view/advertisement');
 }

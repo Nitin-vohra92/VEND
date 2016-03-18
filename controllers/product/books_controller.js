@@ -57,9 +57,11 @@ exports.publish=function(input,req,res){
 	advertisement.user_type=req.session.user_type;
 	advertisement.thumb=book.images[0].path;
 	advertisement.kind=input.kind;
+	advertisement.category=input.category;
 	advertisement.price=input.price;
 	advertisement.description=book.title+' by '+book.author; 
 	advertisement.save();
+
 
 	//add to activity
 	var activity=new Activity(input);

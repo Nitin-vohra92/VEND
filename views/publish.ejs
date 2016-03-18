@@ -27,27 +27,27 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script type="text/javascript">
 	$(document).ready(function() {
 
-	$('.student').hide();
-	$('.teacher').hide();
+	$('.books').hide();
+	$('.electronics').hide();
 	$('.others').hide();
 	$('.common').hide();
 
 	$('input[type="radio"]').click(function(){
 		if($(this).attr("value")=="Book"){
-			$(".student").show();
+			$(".books").show();
 			$('.common').show();
-			$(".info").not(".student").hide();
+			$(".info").not(".books").hide();
 		}
 
-		if($(this).attr("value")=="Electronics"){
+		if($(this).attr("value")=="Electronics"){			
+			$(".electronics").show();
 			$('.common').show();
-			$(".teacher").show();
-			$(".info").not(".teacher").hide();
+			$(".info").not(".electronics").hide();
 		}
 
 		if($(this).attr("value")=="Other"){
-			$('.common').show();
 			$(".others").show();
+			$('.common').show();
 			$(".info").not(".others").hide();
 		}
 	});
@@ -77,10 +77,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</div>
 				</div>
 			<div style="width:60px; height:60px;margin-top:-15px; list-style:none">	
-					
-					<li><img src='/images/image_placeholder.png' /></li>	
+				<%if(response.user_info===undefined){%>
+					<li><img src='/images/image_placeholder.png' style="height:50px; width:50px"/></li>	
 					<li style="color:#fff">Guest!! </li>
-					
+					<%}else%>
+					<% if(response.user_info!==undefined){%>
+					<li><img src='<%=response.user_info.profile_pic%>' style="height:50px; width:50px"/></li>	
+					<li style="color:#fff"><%=response.user_info.firstname%> </li>
+				
+				<%}%>
+				</div>
 					<div class="clearfix"> </div>
 			</div>
 				
@@ -110,7 +116,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						</div>
 					</li>
 
-				    <li class="grid"><a class="color2" href="/publish">POST YOUR AD</a></li>
+				    <li class="grid"><a class="color2" href="/api/advertisement/publish">POST YOUR AD</a></li>
 				   
 				<li><a class="color4" href="/login">LOGIN</a></li>	
 				
@@ -145,81 +151,44 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div id="head">PUBLISH</div>
 		<form action='/api/advertisement/publish' method='POST' enctype="multipart/form-data">
 				
-			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Book" ><span>Books</span><br></div>
-			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Electronics"><span>Electronics</span><br></div>
-			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Other"><span>Others</span><br></div>
-			
-		     
-			<div class="student info books" style="margin-left:-110px; position:relative">
-			
+			<div class="sto"><input  name="category" type="radio" class="input_bg " value="Book" ><span>Books</span><br></div>
+			<div class="sto"><input  name="category" type="radio" class="input_bg " value="Electronics"><span>Electronics</span><br></div>
+			<div class="sto"><input  name="category" type="radio" class="input_bg " value="Other"><span>Others</span><br></div>
+			 
+			<div class="books info" style="margin-left:-110px; position:relative">			
 				<input name="title" type="text"  class="input_bg" style="width:700px; " placeholder='Enter the title of Book'>
 			    <input name="author" type="text" class="input_bg" style="width:700px; " placeholder='Enter the author of Book'>
-			    <input name="semester" type="text" class="input_bg" style="width:700px; " placeholder='Enter the semester of Book'>
-			    
-                
-			<!-- <input type='submit' name='submit' value='Submit' id='submit' style="width:320px; margin-left:160px; z-index:1000"> -->
-			
+			    <input name="semester" type="text" class="input_bg" style="width:700px; " placeholder='Enter the semester of Book'>  
 			</div>
 
-			<div class="teacher info electronics" style="margin-left:-110px; position:relative">
-
-
-
+			<div class="electronics info" style="margin-left:-110px; position:relative">
 				<input name="brand" type="text"  class="input_bg" style="width:700px; " placeholder='Enter the Brand of Product'>
 			    <input name="sub_category" type="text" class="input_bg" style="width:700px; " placeholder='Enter the Category(e.g. Mobile,Laptop etc) of product'>
 			    <input name="name" type="text" class="input_bg" style="width:700px; " placeholder='Enter the name of Product'>
-
-			   <!--  <select style="width:700px" class="input_bg" name="kind" >
-			 	<option value="">---Will be Available for?---</option>
-                         	<option value="CSE">BUY</option>
-                         	<option value="CED">LOAN</option>
-				            
-				</select><br>
-
-
-				<input name="images" type="file" class="input_bg" style="width:700px; " placeholder='Image of the product'>
-                <input name="location" type="text" class="input_bg" style="width:700px; " placeholder='Enter location of product'>
-                <input name="price" type="text" class="input_bg" style="width:700px; " placeholder='Enter price of the product'>
-                <input name="description" type="text" class="input_bg" style="width:700px; " placeholder='Enter description'> -->
-              
-			<!-- <input type='submit' name='submit' value='Submit' id='submit' style="width:320px; margin-left:160px"> -->
-
 			</div>
+
 
 			<div class="others info" style="margin-left:-110px; position:relative">
 				<input name="brand" type="text" class="input_bg" style="width:700px; " placeholder='Enter the Brand of Product'>
 			    <input name="sub_category" type="text" class="input_bg" style="width:700px; " placeholder='Enter the Category(e.g. Guitar, Shoes  etc) of product'>
 			    <input name="name" type="text" class="input_bg" style="width:700px; " placeholder='Enter the name of Product'>
-
-			    <!-- <select style="width:700px" class="input_bg" name="kind" >
-			 	<option value="">---Will be Available for?---</option>
-                         	<option value="CSE">BUY</option>
-                         	<option value="CED">LOAN</option>
-				            
-				</select><br>
-
-
-				<input name="images" type="file" class="input_bg" style="width:700px; " placeholder='Image of the product'>
-                <input name="location" type="text" class="input_bg" style="width:700px; " placeholder='Enter location of product'>
-                <input name="price" type="text" class="input_bg" style="width:700px; " placeholder='Enter price of the product'>
-                <input name="description" type="text" class="input_bg" style="width:700px; " placeholder='Enter description'> -->
-              
-			<!-- <input type='submit' name='submit' value='Submit' id='submit' style="width:320px; margin-left:160px"> -->
-
 			</div>
+
+
 			<div class="common" style="margin-left:-110px; position:relative">
-			<select style="width:700px" class="input_bg" name="kind" >
-			 	<option value="">---Will be Available for?---</option>
-                         	<option value="BUY">BUY</option>
-                         	<option value="LOAN">LOAN</option>
-				            
+				<select style="width:700px" class="input_bg" name="kind" >
+				 	<option value="">---Will be Available for?---</option>
+	                         	<option value="BUY">BUY</option>
+	                         	<option value="LOAN">LOAN</option>
+					            
 				</select><br>
-			    <input name="images" type="file" class="input_bg" style="width:700px; " placeholder='Image of the product'>
-                <input name="location" type="text" class="input_bg" style="width:700px; " placeholder='Enter location of product'>
-                <input name="price" type="text" class="input_bg" style="width:700px; " placeholder='Enter price of the product'>
-                <input name="description" type="text" class="input_bg" style="width:700px; " placeholder='Enter description'>
+				<input name="images" type="file" class="input_bg" style="width:700px; " placeholder='Image of the product'>
+	            <input name="location" type="text" class="input_bg" style="width:700px; " placeholder='Enter location of product'>
+	            <input name="price" type="text" class="input_bg" style="width:700px; " placeholder='Enter price of the product'>
+	            <input name="description" type="text" class="input_bg" style="width:700px; " placeholder='Enter description'>
 			</div>
-			<input type='submit' name='submit' value='Submit' id='submit' style="width:320px; margin-left:100px; z-index:1000">					
+
+			<input type='submit' name='submit' value='Submit' id='submit' style="width:320px; margin-left:0px; z-index:1000">					
 		</form>
 	</div>	
 </center>

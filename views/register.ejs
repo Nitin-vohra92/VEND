@@ -134,39 +134,39 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     });
   </script>
 </div>
-
+<center>
 	<div class="advertise">
 		<div id="head">REGISTER</div>
-		<form action='/api/user/register' method='POST' enctype="multipart/form-data">
-			<input id="fname" name="firstname" class="input_bg" value="First Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'First Name';}" /> 
+		<form action='/api/user/register' method='POST' enctype="multipart/form-data" style="margin-left:10px; width: 500px; position:relative">
+			<input id="fname" name="firstname" class="input_bg" placeholder='Firstname' /> 
 			<br><br>
-			<input name="lastname" type="text" class="input_bg" value="Last Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Last Name';}" />
+			<input name="lastname" type="text" class="input_bg" placeholder='Lastname' />
 			<br><br>
-			<input id="email-id" type="text" name="email" class="input_bg" value="Email Id" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Email Id';}" />
+			<input id="email-id" type="text" name="email" class="input_bg" placeholder='Email' />
 			<br><br>
-			<input name="contact" type="text" class="input_bg" value="Phone No." onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'PHONE NUMBER';}" />
+			<input name="contact" type="text" class="input_bg" placeholder='Phone Number'/>
 			<br><br>
-			<input id="user_name" name="username" class="input_bg" value="User Name" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'USER NAME';}" />
+			<input id="user_name" name="username" class="input_bg" placeholder='Username(For Login)' />
 			<br><br>
-			<input name="password" type="password" class="input_bg" value="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}" />
+			<input name="password" type="password" class="input_bg" placeholder='Password' />
 			<br><br>
-            <label for="picture" class="blocklabel"><span>Choose your Profile Picture</span></label>
+            <label for="picture" class="blocklabel" style="margin-left:-50px; position:relative"><span>Choose your Profile Picture</span></label>
 			<input name="profile_pic" type="file" class="input_bg" value="Upload Picture" />
 			<br>
-			<label for="user_type" class="blocklabel"><span>Select Who are you? </span></label><br><br>
+			<label for="user_type" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select Who are you? </span></label><br><br>
 			<div>
 				
-			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Student" /><span>Student</span><br></div>
-			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Teacher" /><span>Teacher</span><br></div>
-			<div class="sto"><input  name="type" type="radio" class="input_bg " value="Other" /><span>Other</span><br></div>
+			<div class="sto" ><input  name="type" type="radio" class="input_bg " value="Student" /><span>Student</span><br></div>
+			<div class="sto" ><input  name="type" type="radio" class="input_bg " value="Teacher" /><span>Teacher</span><br></div>
+			<div class="sto" ><input  name="type" type="radio" class="input_bg " value="Other" /><span>Other</span><br></div>
 			</div>	
 		                         
 
 			<div class="student info">
-					<input name="rollno" type="text" class="input_bg" value="Enter your roll no." onfocus="this.value = '';" onblur="if(this.value == '') {this.value = 'Enter your roll no.';}" />
-					<label for="branch" class="blocklabel"><span>Select your Department</span></label>
+					<input name="rollno" type="text" class="input_bg" placeholder="Enter your roll no." />
+					<label for="branch" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Department</span></label>
 			        <select class="input_bg" name="department">
-			 	<option value="">---Department---</option>
+			 			<option value="">---Department---</option>
                          	<option value="CSE">Computer Science & Engineering</option>
                          	<option value="CED">Civil Engineering</option>
 				            <option value="ECE">Electronics & Communication Engineering</option>
@@ -174,21 +174,33 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				            <option value="MED">Mechanical Engineering</option>
 				            <option value="ARCH">ARchitecture Department</option>
 				            
-			</select>
-                         <br>
+					</select>
+                    <br>
 
-					<label for="Degree" class="blocklabel"><span>Select your Degree Type</span></label>
+					<label for="Degree" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Degree Type</span></label>
                          <select class="input_bg" name="degree">
 			 	<option value="">---Select---</option>
                          	<option value="BTECH">B.Tech</option>
                          	<option value="MTECH">M.Tech</option>
 				            
 			</select>
-			        <input name="semester" type="text" class="input_bg" value="Enter your semester" onfocus="this.value = '';" onblur="if(this.value == '') {this.value = 'Enter your semester';}" />
+			        <input name="semester" type="text" class="input_bg" placeholder="Enter your semester"  />
 			</div>
 
 			<div class="teacher info">
-				<label for="designation" class="blocklabel"><span>Select your Designation</span></label>
+				<label for="branch" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Department</span></label>
+			        <select class="input_bg" name="teacher_department">
+			 			<option value="">---Department---</option>
+                         	<option value="CSE">Computer Science & Engineering</option>
+                         	<option value="CED">Civil Engineering</option>
+				            <option value="ECE">Electronics & Communication Engineering</option>
+				            <option value="EEE">Electrical & Electronics Engineering</option>
+				            <option value="MED">Mechanical Engineering</option>
+				            <option value="ARCH">Architecture Department</option>
+				            
+					</select>
+                    <br>
+				<label for="designation" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Designation</span></label>
 				<select class="input_bg" name="designation">
 			 	<option value="">---none---</option>
                          	<option value="Professor">Professor</option>
@@ -205,6 +217,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 		</form>
 	</div>
+	</center>
 </div>
 </body>
 </html>

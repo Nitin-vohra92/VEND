@@ -171,6 +171,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				</ul>
 			</div>
 			
+
+			<!-- Wish box -->
+			<div>
+				
+
+			</div>
+			<!-- Old Wish box -->
 			<div class="contain2" style="overflow-x:hidden; opacity:1; border:8px solid #8FBC8F" >
 				<form action=/api/user/wish method='POST' style="margin-top:-10px">
 						<input type="text" name="description" id="wish" class="input_bg" placeholder="Post your wish" style="width:330px; height:70px;">
@@ -190,10 +197,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					
 				</div>
 			</div>
+			<!-- Old box ends here -->
+
+
+
 		</div>
 
 	</div>
-	</div>
+</div>
 
 <!--content-->
 <div class="container">
@@ -220,10 +231,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 
-					<p><a href="/api/view/advertisement"><%=response.latest[i].description%></a></p>
-					<a href="#" class="item_add"><p class="number item_price"><i> </i>Rs.<%=response.latest[i].price%></a>
-					<br/><a href>Available for LOAN/BUY</a>	
-					</p>
+						<p><%=response.latest[i].description%></p>
+						<p class="number item_price"><i> </i>Rs.<%=response.latest[i].price%>
+						<br/>Available for <%=response.latest[i].kind%>
+						</p>
 					</div>
 					<%}%>
 					
@@ -254,9 +265,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 
-					<p><a href="/api/view/advertisement"><%=response.latest[i].description%></a></p>
-					<a href="#" class="item_add"><p class="number item_price"><i> </i>Rs.<%=response.latest[i].price%></a>
-					<br/><a href>Available for LOAN/BUY</a>	
+					<p><%=response.latest[i].description%></p>
+					<p class="number item_price"><i> </i>Rs.<%=response.latest[i].price%>
+					<br/>Available for <%=response.latest[i].kind%>	
 					</p>
 					</div>
 					<%}%>
@@ -289,9 +300,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 
-					<p><a href="/api/view/advertisement"><%=response.recommended[i].description%></a></p>
-					<a href="#" class="item_add"><p class="number item_price"><i> </i>Rs.<%=response.recommended[i].price%></a>
-					<br/><a href>Available for LOAN/BUY</a>	
+					<p><%=response.recommended[i].description%></p>
+					<p class="number item_price"><i> </i>Rs.<%=response.recommended[i].price%>
+					<br/>Available for <%=response.latest[i].kind%>	
 					</p>
 					</div>
 					<%}%>

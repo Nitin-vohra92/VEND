@@ -57,6 +57,9 @@ exports.publish=function(input,req,res){
 	advertisement.user_id=req.session.user_id;
 	advertisement.user_type=req.session.user_type;
 	advertisement.thumb=other.images[0].path;
+	advertisement.kind=input.kind;
+	advertisement.category=input.category;
+	advertisement.price=input.price;
 	advertisement.description=other.name+' under :'+other.sub_category; 
 	advertisement.save();
 

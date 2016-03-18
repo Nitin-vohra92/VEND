@@ -146,9 +146,9 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							</div>
 						</div>
 
-					<p><a href="/api/view/advertisement"><%=response.books[i].name%></a></p>
-					<a href="#" class="item_add"><p class="number item_price"><i> </i>Rs.<%=response.books[i].price%></a>
-					<br/><a href>Available for LOAN/BUY</a>	
+					<p><%=response.books[i].name%></p>
+					<p class="number item_price"><i> </i>Rs.<%=response.books[i].price%>
+					<br/>Available for <%=response.books[i].kind%>
 					</p>
 					</div>
 					<%}%>

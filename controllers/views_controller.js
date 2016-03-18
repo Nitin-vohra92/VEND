@@ -14,8 +14,8 @@ var OtherProduct=require('./product/others_controller');
 //models
 var Account=require('../models/Account');
 var BookModel=require('../models/products/Book');
-var ElectronicsModel=require('../models/products/Book');
-var OtherModel=require('../models/products/Book');
+var ElectronicsModel=require('../models/products/Electronics');
+var OtherModel=require('../models/products/Other');
 
 var RecentlyViewed=require('../models/RecentlyViewed');
 var Wish=require('../models/Wish');	
@@ -82,12 +82,11 @@ exports.advertisement=function(req,res){
 	recent.user_id=req.session.user_id;
 	recent.save();
 	//now send the content
-
+	console.log("View Advertisement");
+	console.log(input);
 	var response={};
 	response.user_info=req.session;
-	response.advertisement=input;
 	var category=input.category;
-	console.log(input);
 	var responseSetter=function(result){
 		response.product=result;
 		//find comments and rating
@@ -101,33 +100,37 @@ exports.advertisement=function(req,res){
 	  				//add to activity
 					var activity=new Activity(input);
 					activity.user_id=req.session.user_id;
-					activity.user_name=req.session.user_name;
+					activity.user_name=req.session.name;
 					console.log(req.session);
-					activity.activity='Viewed an Advertisement on: '+input.category+' by: '+req.session.user_name+' at '+new Date();
+					activity.activity='Viewed an Advertisement on: '+input.category+' by: '+req.session.name+' at '+new Date();
 					activity.save();
-					console.log(activity);
 	  				req.session.ad_id=input.ad_id;
 	  				req.session.category=input.category;
 	  				req.session.product_id=result._id;
 	  				
-					//res.json(response);
+					// res.json(response);
 	  				res.render('advertisement',{response:response});
 			});
 			});
 			});
 
 		};
-	switch(category){
+	Advertisement.findOne({product_id:input.product_id},function(err, advertisement) {  					
+		response.advertisement=advertisement;
+		switch(category){
 		case 'Book':
 			Book.find(responseSetter,input);
 			break;
 		case 'Electronics':
 			Electronics.find(responseSetter,input);
 			break;
-		case 'Others':
+		case 'Other':
 			OtherProduct.find(responseSetter,input);
 			break;
 	}
+						
+  	});
+	
 }
 }
 
@@ -137,47 +140,46 @@ exports.get_advertisement=function(req,res){
 		res.redirect('/login');
 	}
 	else{
-	var input=req.session;
-	
-	//now send the content
+		var input=req.session;
+		
+		//now send the content
 
-	var response={};
-	var input=req.session;
-	response.user_info=req.session;
-	response.advertisement=input;
-	var category=input.category;
-	console.log(input);
-	var responseSetter=function(result){
-		response.product=result;
-		//find comments and rating
-		console.log('printing result'+result);
-		Comment.find({ad_id:input.ad_id}, null, {sort: {'createdAt': -1}}).exec(function(err, comments) {
-  			response.comments=comments;
-  			console.log(comments);
-  			Rating.find({ad_id:input.ad_id}, null, {sort: {'createdAt': -1}}).exec(function(err, ratings) {
-  				response.ratings=ratings;
-  				Bid.find({ad_id:input.ad_id}, null, {sort: {'amount': -1}}).exec(function(err, bids) {
-	  				response.bids=bids;
-	  				
-					//res.json(response);
-	  				res.render('advertisement',{response:response});
-			});
-			});
+		var response={};
+		response.user_info=req.session;
+		response.advertisement=input;
+		var category=input.category;
+		console.log(input);
+		var responseSetter=function(result){
+			response.product=result;
+			//find comments and rating
+			Comment.find({ad_id:input.ad_id}, null, {sort: {'createdAt': -1}}).exec(function(err, comments) {
+	  			response.comments=comments;
+	  			console.log(comments);
+	  			Rating.find({ad_id:input.ad_id}, null, {sort: {'createdAt': -1}}).exec(function(err, ratings) {
+	  				response.ratings=ratings;
+	  				Bid.find({ad_id:input.ad_id}, null, {sort: {'amount': -1}}).exec(function(err, bids) {
+		  				response.bids=bids;
+		  				
+						console.log('printing result'+response.advertisement);
+						//res.json(response);
+		  				res.render('advertisement',{response:response});
+					});
+				});
 			});
 
 		};
-	switch(category){
-		case 'Book':
-			Book.find(responseSetter,input);
-			break;
-		case 'Electronics':
-			Electronics.find(responseSetter,input);
-			break;
-		case 'Others':
-			OtherProduct.find(responseSetter,input);
-			break;
+		switch(category){
+			case 'Book':
+				Book.find(responseSetter,input);
+				break;
+			case 'Electronics':
+				Electronics.find(responseSetter,input);
+				break;
+			case 'Other':
+				OtherProduct.find(responseSetter,input);
+				break;
+		}
 	}
-}
 }
 
 
@@ -194,7 +196,7 @@ exports.products=function(req,res){
 		var response={};
 
 			//getting latest advertisements
-			Advertisement.find({category: 'Books'}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
+			Advertisement.find({category: 'Book'}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
 				response.books=advertisement;
 				//console.log('Inside latest');
 				//getting recently viewed
@@ -422,7 +424,7 @@ exports.search=function(req,res){
 			});
 			break;
 		default:
-			Account.find({username: { $regex: input.query, $options: "i" }},function(err,users){
+			Account.find({name: { $regex: input.query, $options: "i" }},function(err,users){
 				console.log(input.query);
 				response.users=users;
 				BookModel.find({$or:[{title: { $regex: input.query, $options: "i" }},{author: { $regex: input.query, $options: "i" }}]},function(err,books){

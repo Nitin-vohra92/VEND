@@ -16,11 +16,11 @@ exports.publish=function(req,res){
 		res.redirect('/login');
 	else{
 		console.log(req.body);
-		// res.redirect('/');
 		var input=req.body;
+		// console.log(input);
 	
-	var productCategory=input.type;
-	//first find name of type
+	var productCategory=input.category;
+	//first find category
 
 	 	switch(productCategory){
 	 		case 'Book':
@@ -39,7 +39,9 @@ exports.publishpage=function(req,res){
 	if(req.session.user_id===undefined)
 		res.redirect('/login');
 	else{
-		res.redirect('/publish');
+		var response={};
+		response.user_info=req.session;
+		res.render('publish',{response:response});
 }
 	
 
@@ -95,7 +97,7 @@ exports.recommended=function(req,res){
 exports.comment=function(req,res){
 	var input=req.body;
 	var comment=new Comment(input);
-	comment.user_desc=req.session.user_name+','+req.session.user_type+' at NITH';
+	comment.user_desc=req.session.name+','+req.session.user_type+' at NITH';
 	comment.user_type=req.session.user_type;
 	comment.ad_id=req.session.ad_id;
 	comment.save();
@@ -103,7 +105,7 @@ exports.comment=function(req,res){
 	//add to activity
 	var activity=new Activity(input);
 	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.user_name;
+	activity.user_name=req.session.name;
 	activity.activity='commented on Advertisement by : '+comment.user_desc+' at '+comment.createdAt;
 	activity.save();
 
@@ -115,7 +117,7 @@ exports.comment=function(req,res){
 exports.rate=function(req,res){
 	var input=req.body;
 	var rating=new Rating(input);
-	rating.user_desc=req.session.user_name+','+req.session.user_type+' at NITH';
+	rating.user_desc=req.session.name+','+req.session.user_type+' at NITH';
 	rating.user_type=req.session.user_type;
 	rating.rating=rating.rating+'/10'
 	rating.ad_id=req.session.ad_id;
@@ -123,7 +125,7 @@ exports.rate=function(req,res){
 	//add to activity
 	var activity=new Activity(input);
 	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.user_name;
+	activity.user_name=req.session.name;
 	activity.activity='Rated an Advertisement by : '+input.user_desc+' at '+rating.createdAt;
 	activity.save();
 	//res.json({status:'Success'});
@@ -135,7 +137,7 @@ exports.rate=function(req,res){
 exports.bid=function(req,res){
 	var input=req.body;
 	var bid=new Bid(input);
-	bid.user_desc=req.session.user_name+','+req.session.user_type+'at NITH';
+	bid.user_desc=req.session.name+','+req.session.user_type+'at NITH';
 	bid.ad_id=input.ad_id;
 	bid.amount='Rs. '+bid.amount;
 	bid.user_type=req.session.user_type;
@@ -144,17 +146,17 @@ exports.bid=function(req,res){
 	var session=req.session;
 	var notification=new Notification(session);
 	notification.user_id=req.session.user_id;
-	notification.user_desc=req.session.user_name+','+req.session.user_type+'at NITH';
+	notification.user_desc=req.session.name+','+req.session.user_type+'at NITH';
 	notification.user_type=req.session.user_type;
 	notification.to_id=input.user_id;
 	notification.product_name=input.description;
-	notification.desc='Bid was done by: '+req.session.user_name+' for your Advertisement in '+session.category;
+	notification.desc='Bid was done by: '+req.session.name+' for your Advertisement in '+session.category;
 	notification.save();
 
 	//add to activity
 	var activity=new Activity(input);
 	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.user_name;
+	activity.user_name=req.session.name;
 	activity.activity='Bidded on Advertisement by : '+input.user_desc+' at '+bid.createdAt;
 	activity.save();
 	res.redirect('/api/view/advertisement');

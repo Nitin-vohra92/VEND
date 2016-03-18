@@ -10,7 +10,8 @@ router.route('/')
 //login page	
 router.route('/login')
 	.get(function(req, res) {
-		res.render('login');
+		var response={};
+		res.render('login',{response:response});
 });
 
 
@@ -30,7 +31,7 @@ router.route('/edit')
 //publish an advertisement page	
 router.route('/publish')
 	.get(function(req, res) {
-		res.render('publish')
+		res.render('publish');
 });
 
 //viewing an advertisement page

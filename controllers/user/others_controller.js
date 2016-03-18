@@ -42,7 +42,7 @@ exports.register=function(input,req,res){
 	account.name=input.firstname+' '+input.lastname;
 
 	account.save();
-	console.log(input);
+	console.log("Others Saved");
 	req.session.user_id=account.user_id;
 	req.session.user_type=account.type;
 	req.session.save(function(err) {
