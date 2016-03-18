@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
 </head>
@@ -24,7 +25,9 @@
 
 
                             <div class="well" >
-                                <img class="img-circle" src="/images/avatar.png" align="center"/>
+                                <div align="center" >
+                                <img class="img-circle" src="/images/image_placeholder.png" style="width: 50%; height: 50%;"/>
+                                </div>
                                 <form id="loginForm" method="POST" action="/api/user/login">
                                     <input type="text" class="form-control" id="username" name="username" value="" required title="Please enter your username here."  placeholder="Username" style="margin-top: 5%;">
 
