@@ -19,16 +19,14 @@
                       <div class="col-md-10 col-md-offset-1">
                               <%if(response.error!==undefined){%>
                               <div class="alert alert-warning" align="center">
-                                <strong>Error!</strong> <%=response.error.description%>
+                                <strong>Error!</strong> <%=response.error%>
                               </div>
                               <%}%>
 
 
                             <div class="well" >
-                                <div align="center" >
-                                <img class="img-circle" src="/images/image_placeholder.png" style="width: 50%; height: 50%;"/>
-                                </div>
-                                <form id="loginForm" method="POST" action="/api/user/login">
+                                <h3 class="card-title" align="center" style="color: #337ab7"><strong >REGISTER</strong></h3>
+                                <form id="confirmAccount" method="POST" action="/api/user/confirm">
                                     <input type="text" class="form-control" id="username" name="username" value="" required title="Please enter your username here."  placeholder="Username" style="margin-top: 5%;">
 
                                     <input type="password" class="form-control" id="password" name="password" value="" required title="Please enter your password here."  placeholder="Password" style="margin-top: 5%;">

@@ -9,12 +9,14 @@ var mongoose=require('mongoose');
   mongoose.set('debug', true);
 
 var multipart = require('connect-multiparty');
+
+var CONF_FILE=require('./conf.json');
 //////////////////////////////////////////////////////////
 //database 
 //local
 var db=mongoose.connect('mongodb://127.0.0.1/VEND');
 //online
-//var db=mongoose.connect('mongodb://omsharma:vend1234@ds011409.mlab.com:11409/vend');
+// var db=mongoose.connect('mongodb://'+CONF_FILE.mongodb.username+':'+CONF_FILE.mongodb.password+'@'+CONF_FILE.mongodb.address);
 
 /////////////////////////////////////////////////////////
 var MongoStore=require('connect-mongo')(session);

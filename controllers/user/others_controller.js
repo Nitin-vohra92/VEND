@@ -13,16 +13,14 @@ var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 
-exports.register=function(input,req,res){
+exports.register=function(req,res,input,image_path){
 
 
-	//first validate the input
 	var other=new Other(input);
 
 
 	//profile picture
- 	var imagefile=req.files.profile_pic;
- 		var oldPath=imagefile.path;
+		var oldPath=image_path;
  		var ext=path.extname(oldPath);
  		var savedPath="/uploads/profilepictures/others/"+other._id+ext;
         var newPath = APP_DIR +'/public'+ savedPath;
@@ -43,12 +41,14 @@ exports.register=function(input,req,res){
 
 	account.save();
 	console.log("Others Saved");
+	
+	delete req.session.temp_id;
 	req.session.user_id=account.user_id;
 	req.session.user_type=account.type;
 	req.session.save(function(err) {
-							console.log(err);
-							res.redirect('/');
-						});
+		console.log(err);
+		res.redirect('/');
+	});
 }
 
 exports.find=function(callback,account){

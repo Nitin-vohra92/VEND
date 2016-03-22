@@ -10,14 +10,12 @@ var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 
-exports.register=function(input,req,res){
-	//validate the input if posssible
+exports.register=function(req,res,input,image_path){
 	var teacher=new Teacher(input);
 	teacher.department=input.teacher_department;
 	//profile picture
- 	var imagefile=req.files.profile_pic;
  	
- 		var oldPath=imagefile.path;
+ 		var oldPath=image_path;
  		var ext=path.extname(oldPath);
  		var savedPath="/uploads/profilepictures/teachers/"+teacher._id+ext;
         var newPath = APP_DIR +'/public'+ savedPath;
@@ -41,13 +39,17 @@ exports.register=function(input,req,res){
 	account.save();
 
 	console.log('Teacher Saved');
-	req.session.user_id=account.user_id;
-	req.session.user_type=account.type;
-	req.session.save(function(err) {
+	delete req.session.temp_id;
+	
+
+		req.session.user_id=account.user_id;
+		req.session.user_type=account.type;
+		req.session.save(function(err) {
 		console.log(err);
 		res.redirect('/');
 
 	});
+	
 }
 exports.find=function(callback,account){
 	Teacher.findOne({_id:account.user_id},function(err,teacher){

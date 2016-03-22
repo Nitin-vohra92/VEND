@@ -1,4 +1,3 @@
-var UserTypes=require('../../models/identifiers/UserTypes');
 var Teacher=require('./teachers_controller');
 var Student=require('./students_controller');
 var Other=require('./others_controller');
@@ -7,34 +6,128 @@ var Wish=require('../../models/Wish');
 var Notification=require('../../models/Notification');
 var Activity=require('../../models/Activity');
 
+var userFunctions=require("../functions/user");
+var TemporaryUser=require('../../models/users/TemporaryUser');
+
+
+
+
 exports.register=function(req,res){
-	var input=req.body;
-		//for every type of user
-	Account.findOne({username:input.username},function(err,account){
-		console.log(account);
-		if(account==={}){
-			res.json({status:"Username already exists!!"});
-		}
-		else
-		{
-			switch(input.type){
-			case 'Teacher':
-				Teacher.register(input,req,res);
-				break;
-			case 'Student':
-				Student.register(input,req,res);
-				break;
-			case 'Other':
-				Other.register(input,req,res);
-				break;		
-	 	}
 
+	var response={};
+	//uncheck later after testing is done
+	if(req.session.temp_id!==undefined){
+		var message="Please check your email for the token. It may take upto 5 minutes for the mail to reach you.";
+		response.message=message;
+		res.render('confirm',{response:response});		
+	}
+	else{
+		var input=req.body;
+		var image=req.files.profile_pic;
 
+		var error=userFunctions.validateRegistrationData(input,image);
+		if(error){
+			response.error=error;
+			res.render('register',{response:response});
 		}
-	});
-	
+		else{
+			//for every type of user
+			Account.findOne({username:input.username},function(err,account){
+				console.log(account);
+			 	if(account!==null){
+					error="Please choose a differnt username!! Entered username already exists."
+					response.error=error;
+					res.render('register',{response:response});
+				}
+				else
+				{
+					//store temporarily and send confirmation
+					var temp_id=userFunctions.storeTemporaryUser(input,image.path);
+					req.session.temp_id=temp_id;
+					req.session.save(function(err) {
+								console.log(err);
+					});
+					userFunctions.sendConfirmationMail(temp_id);
+					var message="Please check your email for the token. It may take upto 5 minutes for the mail to reach you.";
+					response.message=message;
+					res.render('confirm',{response:response});
+
+				}
+			});
+		}
+//closing staring else, uncomment later	
+	}
 }
 
+exports.confirm=function(req,res){
+	var temp_id=req.session.temp_id;
+	var token=req.body.token;
+	var response={};
+	TemporaryUser.findOne({temp_id:temp_id},function(err,temporaryUser){
+		if(err)
+			console.log(err);
+		if(temporaryUser===null){
+			var error="Your session has expired!! Please register again.";
+			response.error=error;
+			res.render('register',{response:response});
+		}
+		else{
+			if(temporaryUser.token===parseInt(token)){
+				var user_data=JSON.parse(temporaryUser.user_description);
+				var image_path=temporaryUser.image_path;
+					//store the unconfirmed registrations +store image file path
+					// and delete entry from temporary table
+					userFunctions.deleteTemporaryUser(temp_id);
+					switch(user_data.type){
+					case 'Teacher':
+						Teacher.register(req,res,user_data,image_path);
+						break;
+					case 'Student':
+						Student.register(req,res,user_data,image_path);
+						break;
+					case 'Other':
+						Other.register(req,res,user_data,image_path);
+						break;		
+			 			}
+
+
+			}
+			else{
+				var error="Token you entered is incorrect!! Please check again.";
+				response.error=error;
+				res.render('confirm',{response:response});
+			}
+		}
+
+	});
+
+}
+
+exports.send_confirmation=function(req,res){
+	var response={};
+	var send=req.query.send;
+	var temp_id=req.session.temp_id;
+	if(temp_id!==undefined){
+		if(send==='email'){
+			userFunctions.sendConfirmationMail(temp_id);
+			var message="Message sent!! Please check your email again.";
+			response.message=message;
+			res.render('confirm',{response:response});
+		}
+		if(send==='phone'){
+			userFunctions.sendConfirmationMessage(temp_id);
+			var message="Message sent!! Please check your phone for the token.";
+			response.message=message;
+			res.render('confirm',{response:response});
+		}
+	}
+	else{
+		var error="Your session has expired!! Please register again.";
+		response.error=error;
+		res.render('register',{response:response});
+	}
+
+}
 
 exports.login=function(req,res){
 	var input=req.body;
@@ -46,7 +139,7 @@ exports.login=function(req,res){
 		else{
 			//if not found
 			if(account===null){
-				var error={description:"Account Not found!!"};
+				var error="Account Not found!!";
 				response.error=error;
 				res.render('login',{response:response});
 			}
@@ -87,7 +180,7 @@ exports.login=function(req,res){
 	 			}
 				else{
 
-				var error={description:"Incorrect password!!"};
+				var error="Incorrect password!!";
 				response.error=error;
 				res.render('login',{response:response});
 				}
@@ -138,30 +231,6 @@ exports.ping=function(req,res){
 	notification.desc='Pinged by: '+req.session.user_name+' for your Advertisement in '+ req.session.category;
 	notification.save();
 
-	//mail notification
-            console.log("Sending mail");
-	var nodemailer=require("nodemailer");
-	var smtpTransport=nodemailer.createTransport('SMTP',{
-		sevice: 'Gmail',
-		auth: {
-			user: "vendnotifier@gmail.com",
-			pass: "vendnotifier123"
-		}
-	});
-	var mailOptions = {
-    from: '"VEND SERVICE" <vendnotifier@gmail.com>', // sender address 
-    to: 'omsharmadot2364@gmail.com', // list of receivers 
-    subject: 'Notification', // Subject line 
-    text: "notification" // html body 
-	};
-    console.log(mailOptions);
-    smtpTransport.sendMail(mailOptions, function(error, response){
-     if(error){
-            console.log(error);
-     }else{
-            console.log("Message sent: " + response.message);
-         }
-	});
 
 	//add to activity
 	var activity=new Activity(input);

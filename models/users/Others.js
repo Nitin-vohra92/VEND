@@ -11,7 +11,8 @@ var otherModel=new Schema({
 		trim: true
 	},
 	email:{
-		type: String
+		type: String,
+		trim: true
 	},
 	profile_pic:{
 		type: String,

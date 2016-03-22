@@ -1,223 +1,210 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>REGISTER</title>
-<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="/js/jquery.min.js"></script>
-<!-- Custom Theme files -->
-<!--theme-style-->
-<link href="/css/style.css" rel="stylesheet" type="text/css" media="all" />	
-<!--//theme-style-->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Mattress Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!--fonts-->
-<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'><!--//fonts-->
-<!-- start menu -->
-<link href="/css/memenu.css" rel="stylesheet" type="text/css" media="all" />
-<script type="text/javascript" src="/js/memenu.js"></script>
-<script>$(document).ready(function(){$(".memenu").memenu();});</script>
-<script src="/js/simpleCart.min.js"> </script>
+  <title>VEND</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
-
-	$('.student').hide();
-	$('.teacher').hide();
-
-	$('input[type="radio"]').click(function(){
-		if($(this).attr("value")=="Student"){
-			$(".student").show();
-			$(".info").not(".student").hide();
-		}
-
-		if($(this).attr("value")=="Teacher"){
-			$(".teacher").show();
-			$(".info").not(".teacher").hide();
-		}
-
-		if($(this).attr("value")=="Other"){
-			$(".info").not(".others").hide();
-		}
-	});
-
-	});
+        function confirmPassword() {
+              var pass1 = document.getElementById("Password").value;
+              var pass2 = document.getElementById("ConfirmPassword").value;
+              if (pass1 != pass2) {
+                  alert("Passwords do not match!! Password not confirmed.");
+                  document.getElementById("pass1").style.borderColor = "#ff0000";
+                  document.getElementById("pass2").style.borderColor = "#ff0000";
+              }
+          }
 </script>
+<script type="text/javascript">
+  $(document).ready(function() {
+  	//initial setting
+  	$('input[name="rollno"]').attr("required",true);
+    $('select[name="department"]').attr("required",true);
+    $('select[name="degree"]').attr("required",true);
+// setting type field and required properties accordingly to selected type of user
+  $('a[data-toggle="pill"]').click(function(){
+        if($(this).attr("href")=="#student"){
+           $('input[id="type"]').attr("value","Student");
 
-</head>
+           $('select[name="teacher_department"]').removeAttr("required");
+           $('select[name="designation"]').removeAttr("required");
 
-<body>
-<!--header-->
-<div class="header">
-	<div class="header-top">
-		<div class="container">
-			<div class="logo">
-					<!-- <h1><a href="/"><img src="/images/logo1.png" alt="" height="40px" width="100px" /></a></h1> -->
-					<div id="head" style="margin-top:-10px">VEND</div>
-			</div>
-			<div class="header-left">
-			
-				<div class="search-box">
-					<div >
-						<form action="/api/view/search" method="POST">
-							<input style="width:400px; left:600px; top:15px" class="sb-search-input" placeholder="Enter your search term..." type="search" name="search" id="search">
-							<input class="sb-search-submit" style="left:1000px; top:15px;z-index:1000" type="submit" value="Submit">
-						</form>
-					</div>
-				</div>
-			<div style="width:60px; height:60px;margin-top:-15px; list-style:none">	
-					
-					<li><img src='/images/image_placeholder.png' /></li>	
-					<li style="color:#fff">Guest!! </li>
-					
-					<div class="clearfix"> </div>
-			</div>
-				
-			</div>
-		</div>
-	</div>
-		<div class="container">
-			<div class="head-top">
-				
-		 <div class=" h_menu4">
-				<ul class="memenu skyblue">
-					  <li><a class="color8" href="/">HOME</a></li>	
-				      <li><a class="color1" href="/api/view/products">ADVERTISEMENTS</a>
-				      	<div class="mepanel">
-						<div class="row">
-							<div class="col1">
-								<div class="h_nav">
-									<ul>
-										<li><a href="/api/view/books">Books</a></li>
-										<li><a href="/api/view/Electronics">Electronics</a></li>
-										<li><a href="/api/view/Others">Others</a></li>
-									</ul>	
-								</div>							
-							</div>
-						
-						  </div>
-						</div>
-					</li>
+           $('input[name="rollno"]').attr("required","RollNo. is required.");
+           $('select[name="department"]').attr("required","Department is required.");
+           $('select[name="degree"]').attr("required","Degree type is required.");
 
-				    <li class="grid"><a class="color2" href="/publish">POST YOUR AD</a></li>
-				   
-				<li><a class="color4" href="/login">LOGIN</a></li>	
-				
-						
-				<li><a class="color6" href="contact.html">CONTACT US</a></li>
-			  </ul> 
-			</div>
-		
-				
-				<div class="clearfix"> </div>
-		</div>
-		</div>
-	</div>
+            // alert($('input[id="type"]').val());
+        }
 
-	<div class="banner">
-		<div class="container">
-			  <script src="/js/responsiveslides.min.js"></script>
-  <script>
-    $(function () {
-      $("#slider").responsiveSlides({
-      	auto: true,
-      	nav: true,
-      	speed: 500,
-        namespace: "callbacks",
-        pager: true,
-      });
+        if($(this).attr("href")=="#teacher"){
+           $('input[id="type"]').attr("value","Teacher");
+
+           $('input[name="rollno"]').removeAttr("required");
+           $('select[name="department"]').removeAttr("required");
+           $('select[name="degree"]').removeAttr("required");
+
+           $('select[name="teacher_department"]').attr("required",true);
+           $('select[name="designation"]').attr("required",true);
+
+           // alert($('input[id="type"]').val());
+
+
+        }
+
+        if($(this).attr("href")=="#other"){
+           $('input[id="type"]').attr("value","Other");
+
+           $('input[name="rollno"]').removeAttr('required');
+           $('select[name="department"]').removeAttr('required');
+           $('select[name="degree"]').removeAttr("required");
+
+           $('select[name="teacher_department"]').removeAttr('required');
+           $('select[name="designation"]').removeAttr('required');
+
+           // alert($('input[id="type"]').val());
+           
+        
+        }
     });
-  </script>
+  });
+</script>
+</head>
+<body>
+
+<div class="container-fluid">
+     
+   <div class="row">
+          <div class="col-md-4 col-md-offset-4" style="margin-top: 5%; position: absolute;">
+                    <div>
+
+                              <%if(response.error!==undefined){%>
+                              <div class="alert alert-warning" align="center">
+                                 <strong>Error:</strong> <%=response.error%>
+                              </div>  
+                              <%}%>
+
+
+                              <div class="well">
+                                  <h3 class="card-title" align="center" style="color: #337ab7"><strong >REGISTER</strong></h3>
+                                  <form id="registerForm" action='/api/user/register' method='POST' enctype="multipart/form-data">
+                                      <input type="text" class="form-control" name="firstname" value="" required="Fill this field!" title="Please enter your firstname here."  placeholder="Firstname" style="margin-top: 5%;">
+
+                                      <input type="text" class="form-control" name="lastname" value="" required="Fill this field!" title="Please enter your lastname here."  placeholder="Lastname" style="margin-top: 5%;">
+
+                                      <input type="email" class="form-control" name="email" value="" required="Fill this field!" title="Please enter your email here."  placeholder="youremail@email.com" style="margin-top: 5%;">
+
+                                      <input type="contact" class="form-control" name="contact" value="" required="Fill this field!" title="Please enter your phonr number here."  placeholder="10 digit Phone Number" style="margin-top: 5%;">
+
+                                      <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                        <label for="picture" class="panel-heading" style="width: 100%;" align="center"  ><span>Choose your Profile Picture</span></label>
+                                        <input name="profile_pic" type="file" class="input_bg" value="Upload Picture" required="Profile picture is required." style="padding: 3px; width: 100%" accept="image/*" />
+                                      </div>
+
+                                      <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                        <label class="panel-heading" style="width: 100%" align="center"><span>Login details</span></label>
+                                        <div style="padding: 10px">
+                                          <input type="text" class="form-control" name="username" value="" required="Fill this field!" title="Please enter your username here."  placeholder="Username">
+
+                                          <input type="password" class="form-control" id="Password" name="password" value="" required="Fill this field!" title="Please enter your password here."  placeholder="Password(minimum 8 characters)" style="margin-top: 5%;">
+
+                                          <input type="password" class="form-control" id="ConfirmPassword" name="confirm_password" value="" required="Fill this field!" title="Please enter your password again."  placeholder="Confirm Password" style="margin-top: 5%;">
+                                        </div>
+                                      </div>
+
+
+                                       <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                        <label class="panel-heading" style="width: 100%" align="center"><span>Select who you are?</span></label>
+                                        <input type="hidden" id="type" name="type" value="Student"/>
+                                          <ul class="nav nav-pills nav-justified" style="padding: 4px">
+                                            <li class="active"><a data-toggle="pill" href="#student">Student</a></li>
+                                            <li><a data-toggle="pill" href="#teacher">Teacher</a></li>
+                                            <li><a data-toggle="pill" href="#other">Other</a></li>
+                                          </ul>
+
+                                          <div class="tab-content">
+                                          <!-- Student specific details -->
+                                            <div id="student" class="tab-pane fade in active" style="padding: 10px">
+                                              <input name="rollno" type="text" class="form-control" placeholder="Roll Number" style="margin-top: 5%;" />
+
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                              <label for="branch" class="panel-heading" style="width: 100%"><span>Select your Department</span></label>
+                                              <div style="padding: 4px;">
+                                                <select class="form-control" name="department" >
+                                                      <option value="">---Department---</option>
+                                                      <option value="CSE">Computer Science & Engineering</option>
+                                                      <option value="CED">Civil Engineering</option>
+                                                      <option value="ECE">Electronics & Communication Engineering</option>
+                                                      <option value="EEE">Electrical & Electronics Engineering</option>
+                                                      <option value="MED">Mechanical Engineering</option>
+                                                      <option value="ARCH">Architecture Department</option>
+                                                      
+                                                  </select>
+                                                </div>
+                                              </div>
+
+
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                                  <label for="Degree" class="panel-heading" style="width: 100%"><span>Select your Degree Type</span></label>
+                                                  <div style="padding: 4px;">
+                                                    <select class="form-control" name="degree">
+                                                      <option value="">---Select---</option>
+                                                      <option value="BTECH">B.Tech</option>
+                                                      <option value="MTECH">M.Tech</option>                     
+                                                    </select>
+                                                </div>
+                                              </div>
+                                            </div>
+
+                                            <!-- Teacher Specific Detail -->
+                                            <div id="teacher" class="tab-pane fade" style="padding: 10px">
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                                <label for="branch" class="panel-heading" style="width: 100%"><span>Select your Department</span></label>
+                                                 <div style="padding: 4px;">
+                                                  <select class="form-control" name="teacher_department" >
+                                                      <option value="">---Department---</option>
+                                                      <option value="CSE">Computer Science & Engineering</option>
+                                                      <option value="CED">Civil Engineering</option>
+                                                      <option value="ECE">Electronics & Communication Engineering</option>
+                                                      <option value="EEE">Electrical & Electronics Engineering</option>
+                                                      <option value="MED">Mechanical Engineering</option>
+                                                      <option value="ARCH">Architecture Department</option>
+                                                      
+                                                  </select>
+                                                </div>
+                                              </div>
+
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                                <label for="designation" class="panel-heading" style="width: 100%"><span>Select your Designation</span></label>
+                                                 <div style="padding: 4px;">
+                                                  <select class="form-control" name="designation">
+                                                    <option value="">---None---</option>
+                                                    <option value="Professor">Professor</option>
+                                                    <option value="Assistant Professor">Assistant Professor</option>
+                                                    <option value="Associate Professor">Associate Professor</option>
+                                                    <option value="Lecturer">Lecturer</option>
+                                                  </select>
+                                                  </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div id="other" class="tab-pane fade">
+                                            </div>
+                                          </div>
+                                      </div>
+
+                                      <button type="submit" class="btn btn-primary btn-block"  onClick="confirmPassword()" style="margin-top: 10%;">Register</button>
+                                  </form>
+                              </div>
+                    </div>     
+          </div>
+      </div>
+
 </div>
-<center>
-	<div class="advertise">
-		<div id="head">REGISTER</div>
-		<form action='/api/user/register' method='POST' enctype="multipart/form-data" style="margin-left:10px; width: 500px; position:relative">
-			<input id="fname" name="firstname" class="input_bg" placeholder='Firstname' /> 
-			<br><br>
-			<input name="lastname" type="text" class="input_bg" placeholder='Lastname' />
-			<br><br>
-			<input id="email-id" type="text" name="email" class="input_bg" placeholder='Email' />
-			<br><br>
-			<input name="contact" type="text" class="input_bg" placeholder='Phone Number'/>
-			<br><br>
-			<input id="user_name" name="username" class="input_bg" placeholder='Username(For Login)' />
-			<br><br>
-			<input name="password" type="password" class="input_bg" placeholder='Password' />
-			<br><br>
-            <label for="picture" class="blocklabel" style="margin-left:-50px; position:relative"><span>Choose your Profile Picture</span></label>
-			<input name="profile_pic" type="file" class="input_bg" value="Upload Picture" />
-			<br>
-			<label for="user_type" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select Who are you? </span></label><br><br>
-			<div>
-				
-			<div class="sto" ><input  name="type" type="radio" class="input_bg " value="Student" /><span>Student</span><br></div>
-			<div class="sto" ><input  name="type" type="radio" class="input_bg " value="Teacher" /><span>Teacher</span><br></div>
-			<div class="sto" ><input  name="type" type="radio" class="input_bg " value="Other" /><span>Other</span><br></div>
-			</div>	
-		                         
 
-			<div class="student info">
-					<input name="rollno" type="text" class="input_bg" placeholder="Enter your roll no." />
-					<label for="branch" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Department</span></label>
-			        <select class="input_bg" name="department">
-			 			<option value="">---Department---</option>
-                         	<option value="CSE">Computer Science & Engineering</option>
-                         	<option value="CED">Civil Engineering</option>
-				            <option value="ECE">Electronics & Communication Engineering</option>
-				            <option value="EEE">Electrical & Electronics Engineering</option>
-				            <option value="MED">Mechanical Engineering</option>
-				            <option value="ARCH">ARchitecture Department</option>
-				            
-					</select>
-                    <br>
-
-					<label for="Degree" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Degree Type</span></label>
-                         <select class="input_bg" name="degree">
-			 	<option value="">---Select---</option>
-                         	<option value="BTECH">B.Tech</option>
-                         	<option value="MTECH">M.Tech</option>
-				            
-			</select>
-			        <input name="semester" type="text" class="input_bg" placeholder="Enter your semester"  />
-			</div>
-
-			<div class="teacher info">
-				<label for="branch" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Department</span></label>
-			        <select class="input_bg" name="teacher_department">
-			 			<option value="">---Department---</option>
-                         	<option value="CSE">Computer Science & Engineering</option>
-                         	<option value="CED">Civil Engineering</option>
-				            <option value="ECE">Electronics & Communication Engineering</option>
-				            <option value="EEE">Electrical & Electronics Engineering</option>
-				            <option value="MED">Mechanical Engineering</option>
-				            <option value="ARCH">Architecture Department</option>
-				            
-					</select>
-                    <br>
-				<label for="designation" class="blocklabel" style="margin-left:-50px; position:relative"><span>Select your Designation</span></label>
-				<select class="input_bg" name="designation">
-			 	<option value="">---none---</option>
-                         	<option value="Professor">Professor</option>
-                         	<option value="Assistant Professor">Assistant Professor</option>
-				            <option value="Associate Professor">Associate Professor</option>
-				            <option value="Lecturer">Lecturer</option>
-				            
-				</select>
-                         <br>
-			</div>
-
-									
-			<input type='submit' name='submit' value='Submit' id='submit' />
-
-		</form>
-	</div>
-	</center>
-</div>
 </body>
 </html>

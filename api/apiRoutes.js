@@ -12,6 +12,12 @@ var view=require('../controllers/views_controller');
 //registering a new user
 router.route('/user/register').post(user.register);
 
+//sending confirmation again new user
+router.route('/user/register').get(user.send_confirmation);
+
+//confirming a new user
+router.route('/user/confirm').post(user.confirm);
+
 //editing info of user
 router.route('/user/register').put(user.register);
 

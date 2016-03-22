@@ -12,7 +12,6 @@ var teacherModel=new Schema({
 	},
 	email:{
 		type: String,
-		unique: true,
 		trim: true
 	},
 	profile_pic:{

@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
+var response={};
 
 router.route('/')
 	.get(function(req, res) {//res.json({title: 'User Page',user: req.session.user_id });
@@ -10,7 +11,7 @@ router.route('/')
 //login page	
 router.route('/login')
 	.get(function(req, res) {
-		var response={};
+		
 		res.render('login',{response:response});
 });
 
@@ -18,7 +19,8 @@ router.route('/login')
 //registering a user
 router.route('/register')
 	.get(function(req, res) {
-		res.render('register');
+
+		res.render('register',{response:response});
 });
 
 //editing user info

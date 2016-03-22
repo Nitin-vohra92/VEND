@@ -11,14 +11,12 @@ var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 
 
-exports.register=function(input,req,res){
-	//first validate the input
+exports.register=function(req,res,input,image_path){
 	var student=new Student(input);
 
 
 	//profile picture
- 	var imagefile=req.files.profile_pic;
- 		var oldPath=imagefile.path;
+ 		var oldPath=image_path;
  		var ext=path.extname(oldPath);
  		var savedPath="/uploads/profilepictures/students/"+student._id+ext;
         var newPath = APP_DIR +'/public'+ savedPath;
@@ -40,12 +38,15 @@ exports.register=function(input,req,res){
 	account.name=input.firstname+' '+input.lastname;	
 	account.save();
 	
-	//console.log(input);
+	
+	delete req.session.temp_id;
+	
 	req.session.user_id=account.user_id;
 	req.session.user_type=account.type;
 	req.session.save(function(err) {
-		console.log(err);
-		res.redirect('/');
+	console.log(err);
+	res.redirect('/');
+
 	});
 }
 

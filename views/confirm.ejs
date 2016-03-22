@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VEND</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container-fluid">
+     
+ <div class="row">
+                  <div class="col-md-6 col-md-offset-3" style="margin-top: 10%; position: absolute;">
+
+                              <%if(response.error!==undefined){%>
+                              <div class="alert alert-warning" align="center">
+                                <strong>Error: </strong> <%=response.error%>
+                              </div>
+                              <%}%>
+
+
+                            <div class="well" >
+                                <h3 align="center" style="color: #337ab7"><strong >CONFIRM YOUR ACCOUNT</strong></h3>
+                                <%if(response.message!==undefined){%>
+                                <div class="alert alert-success" align="center" style="padding: 2px;">
+                                <%=response.message%>
+                              </div>
+
+                              <%}%>
+                                <form id="confirmForm" method="POST" action="/api/user/confirm">
+                                <div class="well" style="padding: 6px;">
+                                  <div class="row">
+                                    <div class="col-md-8">
+                                    <label class="form-control" for="token">Please enter the token for account verification here:</label>              
+                                    </div>
+                                    <div class="col-md-4">
+                                    <input type="text" class="form-control" id="token" name="token" value="" required title="Token"  placeholder="XXXXXXXX" >                          
+                                    </div>
+                                  </div>
+                                  </div>
+                                  <div class="row" style="margin-top: 8%;">
+                                  <div class="col-md-8 ">
+                                      <a href="/api/user/register?send=email" style="margin-top: 10%;">Send email again?</a>
+                                      <br>
+                                      <a href="/api/user/register?send=phone" style="margin-top: 10%;">Send token to phone instead?</a>
+                                  </div>
+                                    <div class="col-md-4 ">
+                                      <button type="submit" class="btn btn-primary btn-block" >Confirm</button>
+                                  </div>
+                                  </div>
+                                    
+                                    
+                                </form>
+                            </div> 
+                  </div>     
+  </div>
+
+
+</div>
+
+</body>
+</html>
