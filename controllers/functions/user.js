@@ -6,18 +6,16 @@ var shortid=require('shortid');
 var TemporaryUser=require('../../models/users/TemporaryUser');
 
 var CONF_FILE=require('../../conf.json');
-/////////////////////////////////////////////////////for mail
-var nodemailer=require("nodemailer");
-var smtpTransport=nodemailer.createTransport('SMTP',{
-		sevice: 'Gmail',
-		auth: {
-			user: CONF_FILE.email.username,
-			pass: CONF_FILE.email.password
-		}
-});
-//////////////////////////////////////////////////////
 
 function sendMail(mail_to,mail_subject,mail_body){
+	var nodemailer=require("nodemailer");
+	var smtpTransport=nodemailer.createTransport('SMTP',{
+			sevice: 'Gmail',
+			auth: {
+				user: CONF_FILE.email.username,
+				pass: CONF_FILE.email.password
+			}
+	});
 	//mail notification
     console.log("Sending mail");	
 	var mailOptions = {
@@ -37,12 +35,38 @@ function sendMail(mail_to,mail_subject,mail_body){
 	return;
 }
 
+//for now leave it, make it work later
+function sendMessage(message_to,message_body){
+
+	var sinchSms = require('sinch-sms')({
+		key: 'fb551b96-662d-441b-92df-2de5e22b1534', 
+		secret: 'xMMXfBJ5D0++AUfYQRoOkA=='
+	});
+	sinchSms.send('+919882553532', message_body).then(function(response) {
+		//All good, response contains messageId
+		console.log(response);
+	}).fail(function(error) {
+		// Some type of error, see error object
+		console.log(error);
+	});
+	/*var text = require('textbelt');
+	var opts={
+		fromAddr:CONF_FILE.email.username,
+		fromName:"VEND-SMS",
+		region:"intl",
+		subject:"VEND NOTIFICATION MESSAGE"};
+	text.debug(true);
+	text.sendText('9882553532', 'A sample text message!',opts, function(err) {
+	  if (err) {
+	    console.log(err);
+	  }
+	});*/
+
+}
+
 exports.validateRegistrationData= function(input,imagefile){
 	var error;
 	// validate the input
-	var email_test=/[^\s@]+@[^\s@]+\.[^\s@]+/;
-	var contact=parseInt(input.contact);
-	// var imagefile=req.files.profile_pic;
 
 
 	//firstname
@@ -280,14 +304,39 @@ exports.sendConfirmationMail=function(input){
 		var mail_to=data.email;
 		var mail_subject="VEND Account Verification";
 		var mail_body="Your Account verification token is "+token+"."+
-		" This token is valid only for this on the browser."+
-		" After 15 minutes, this token will not be applicable.";
+						" This token is valid only for this on the browser."+
+						" After 15 minutes, this token will not be applicable.";
 		// sendMail(mail_to,mail_subject,mail_body);
 		return;
 	});
 }
 
+exports.sendPasswordMail=function(email,firstname,username,password){
+	var mail_to=email;
+	var mail_subject="VEND Password Request";
+	var mail_body="Hello "+firstname+", this email contains your VEND account password. "+
+					"Please change your password for more safety from settings panel. "+
+					"Your account credentials are:\n"+
+					"Username: "+firstname+"\n"+
+					"Password: "+password+"\n";
+	// sendMail(mail_to,mail_subject,mail_body);
+	return;
+
+}
 exports.sendConfirmationMessage=function(input){
+	var temp_id=input;
+	TemporaryUser.findOne({temp_id:temp_id},function(err,temporaryUser){
+		if(err)
+			console.log(err);
+		var data=JSON.parse(temporaryUser.user_description);		
+		var token=temporaryUser.token;
+		var message_to='+91'+data.contact;
+		var message_body="Your Account verification token is "+token+"."+
+		" This token is valid only for this on the browser."+
+		" After 15 minutes, this token will not be applicable.";
+		 // sendMessage(message_to,message_body);
+		return;
+	});
 	
 
 }

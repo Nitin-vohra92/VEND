@@ -3,3 +3,35 @@
 	border: 1px solid rgba(184, 217, 232, 0.50);
 	border-radius: 8px;
 }
+/*.navbar-default {
+    background-color: #4a8094;
+    border-color: #3f6d7e;
+    text-decoration-color: #ffffff
+}
+.dropdown-menu{
+    background-color: #4A8094;
+}*/
+html,body
+{
+height:100%;
+}
+
+#wrap
+{
+min-height: 100%;
+}
+
+#main
+{
+overflow:auto;
+padding-bottom:70px; /* this needs to be bigger than footer height*/
+}
+
+.footer
+{
+position: relative;
+margin-top: -70px; /* negative value of footer height */
+height: 70px;
+clear:both;
+color:#fff;
+}

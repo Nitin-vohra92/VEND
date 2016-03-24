@@ -115,9 +115,11 @@ exports.send_confirmation=function(req,res){
 			res.render('confirm',{response:response});
 		}
 		if(send==='phone'){
+			//will try later if possible
 			userFunctions.sendConfirmationMessage(temp_id);
+			var not_available="Info: This feature is not yet available. Try sending mail again to get the token";
 			var message="Message sent!! Please check your phone for the token.";
-			response.message=message;
+			response.message=not_available;
 			res.render('confirm',{response:response});
 		}
 	}
@@ -127,6 +129,51 @@ exports.send_confirmation=function(req,res){
 		res.render('register',{response:response});
 	}
 
+}
+
+exports.forgot=function(req,res){
+	var response={};
+	var input=req.body;
+	var username=input.username;
+	var email=input.email;
+	Account.findOne({username:username},function(err,account){
+				console.log(account);
+			 	if(account===null){
+					error="Username doesn't exist!! Please check again."
+					response.error=error;
+					res.render('forgot',{response:response});
+				}
+				else
+				{
+					var sendEmail=function(user){
+						if(user.email===email){
+							userFunctions.sendPasswordMail(user.email,user.firstname,account.username,account.password);
+							var message="Password sent!! Please check your email and don't forget to change your password later.";
+							response.message=message;
+							res.render('login',{response:response});							
+						}
+						else{
+							var message="Email doesn't match with the registered email for this username. Please check again.";
+							response.message=message;
+							res.render('forgot',{response:response});
+						}
+
+
+					}
+					switch(account.type){
+	 						case 'Teacher':
+	 							Teacher.find(sendEmail,account);
+	 							break;
+	 						case 'Student':
+	 							Student.find(sendEmail,account);
+	 							break;
+	 						case 'Other':
+								Other.find(sendEmail,account);
+								break;	
+	 					}	
+
+				}
+			});
 }
 
 exports.login=function(req,res){

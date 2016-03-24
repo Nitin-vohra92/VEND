@@ -11,16 +11,28 @@ router.route('/')
 //login page	
 router.route('/login')
 	.get(function(req, res) {
-		
-		res.render('login',{response:response});
+		response={};
+		if(req.session.user_id===undefined)
+			res.render('login',{response:response});
+		else
+			res.redirect('/api/view/home');
 });
 
 
 //registering a user
 router.route('/register')
 	.get(function(req, res) {
+		response={};
 
 		res.render('register',{response:response});
+});
+
+//forgot password
+router.route('/forgot')
+	.get(function(req, res) {
+		response={};
+
+		res.render('forgot',{response:response});
 });
 
 //editing user info
@@ -33,7 +45,10 @@ router.route('/edit')
 //publish an advertisement page	
 router.route('/publish')
 	.get(function(req, res) {
-		res.render('publish');
+		response={};
+		
+		response.user_info=req.session;
+		res.render('publish',{response:response});
 });
 
 //viewing an advertisement page

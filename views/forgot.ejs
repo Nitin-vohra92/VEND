@@ -17,7 +17,7 @@
 <div class="container-fluid">
      
  <div class="row">
-                  <div class="col-md-6 col-md-offset-3" style="margin-top: 10%; position: absolute;">
+                  <div class="col-md-4 col-md-offset-4" style="margin-top: 10%; position: absolute;">
 
                               <%if(response.error!==undefined){%>
                               <div class="alert alert-warning" align="center">
@@ -27,34 +27,32 @@
 
 
                             <div class="well" >
-                                <h3 align="center" style="color: #337ab7"><strong >CONFIRM YOUR ACCOUNT</strong></h3>
+                                <h3 align="center" style="color: #337ab7"><strong >FORGOT PASSWORD</strong></h3>
                                 <%if(response.message!==undefined){%>
                                 <div class="alert alert-success" align="center" style="padding: 2px;">
                                 <%=response.message%>
                               </div>
 
                               <%}%>
-                                <form id="confirmForm" method="POST" action="/api/user/confirm">
+                                <form id="confirmForm" method="POST" action="/api/user/forgot">
                                 <div class="well" style="padding: 6px;">
                                   <div class="row">
-                                    <div class="col-md-8">
-                                    <label class="form-control" for="token">Please enter the token for account verification here:</label>              
+                                    <div class="col-md-10 col-md-offset-1" style="margin-top: 10px;">
+                                    <input type="text" class="form-control" id="token" name="username" value="" required title="Token"  placeholder="Username" >
                                     </div>
-                                    <div class="col-md-4">
-                                    <input type="text" class="form-control" id="token" name="token" value="" required title="Token"  placeholder="XXXXXXXX" >                          
+                                    <div class="col-md-10 col-md-offset-1" style="margin-top: 10px;">
+                                    <input type="email" class="form-control" id="token" name="email" value="" required title="Token"  placeholder="email@email.com" >                         
                                     </div>
                                   </div>
-                                  </div>
+
                                   <div class="row" style="margin-top: 8%;">
-                                  <div class="col-md-8 ">
-                                      <a href="/api/user/register?send=email" style="margin-top: 10%;">Send email again?</a>
-                                      <br>
-                                      <a href="/api/user/register?send=phone" style="margin-top: 10%;">Send token to phone instead?</a>
-                                  </div>
-                                    <div class="col-md-4 ">
-                                      <button type="submit" class="btn btn-primary btn-block" >Confirm</button>
+                                  
+                                    <div class="col-md-10 col-md-offset-1">
+                                      <button type="submit" class="btn btn-primary btn-block" >Send Password</button>
+                                    </div>
                                   </div>
                                   </div>
+                                  
                                     
                                     
                                 </form>
@@ -65,10 +63,8 @@
 
 </div>
 
-<!-- below two forfor main and wrap -->
 </div>
 </div>
-
 <% include partials/footer%>
 </body>
 </html>

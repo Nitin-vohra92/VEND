@@ -18,6 +18,9 @@ router.route('/user/register').get(user.send_confirmation);
 //confirming a new user
 router.route('/user/confirm').post(user.confirm);
 
+//sending password to new user
+router.route('/user/forgot').post(user.forgot);
+
 //editing info of user
 router.route('/user/register').put(user.register);
 

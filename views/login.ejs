@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>VEND</title>
+  <title>Vend</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/custom_style.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div id="wrap">
+<div id="main">
+<%include partials/header%>
 
 <div class="container-fluid">
      
  <div class="row">
-                  <div class="col-md-4 col-md-offset-4" style="margin-top: 10%; position: absolute;">
+                  <div class="col-md-4 col-md-offset-4" style="margin-top: 8%;">
 
                       <div class="col-md-10 col-md-offset-1">
                               <%if(response.error!==undefined){%>
@@ -22,17 +25,23 @@
                                 <strong>Error!</strong> <%=response.error%>
                               </div>
                               <%}%>
-
+                              <%if(response.message!==undefined){%>
+                              <div class="alert alert-warning" align="center">
+                                <%=response.message%>
+                              </div>
+                              <%}%>
 
                             <div class="well" >
-                                <h3 class="card-title" align="center" style="color: #337ab7"><strong >REGISTER</strong></h3>
-                                <form id="confirmAccount" method="POST" action="/api/user/confirm">
+                                <div align="center">
+                                  <img class="img img-circle" src="/images/image_placeholder.png" style="width: 40%; height: 40%;">
+                                </div>
+                                <form id="loginForm" method="POST" action="/api/user/login">
                                     <input type="text" class="form-control" id="username" name="username" value="" required title="Please enter your username here."  placeholder="Username" style="margin-top: 5%;">
 
                                     <input type="password" class="form-control" id="password" name="password" value="" required title="Please enter your password here."  placeholder="Password" style="margin-top: 5%;">
 
-                                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10%;">Login</button>
-                                    <a href="#"class="btn btn-info btn-block">Forgot Password?</a>
+                                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10%;">Log In</button>
+                                    <a href="/forgot"class="btn btn-info btn-block">Forgot Password?</a>
                                     <a href="/register" class="btn btn-success btn-block">Don't have an account? SignUp.</a>
                                 </form>
                             </div>
@@ -42,6 +51,9 @@
 
 
 </div>
-
+<!-- below two /div for main and wrap -->
+</div>
+</div>
+<% include partials/footer%>
 </body>
 </html>
