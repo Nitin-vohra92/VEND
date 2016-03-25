@@ -22,6 +22,9 @@
 </script>
 <script type="text/javascript">
   $(document).ready(function() {
+
+<% include partials/dropdown%>
+    
   	//initial setting
   	$('input[name="rollno"]').attr("required",true);
     $('select[name="department"]').attr("required",true);
@@ -196,7 +199,7 @@
                                             </div>
 
 
-                                            <div id="other" class="tab-pane fade">
+                                            <div id="other" class="tab-pane fade" style="padding: 10px">
                                             </div>
                                           </div>
                                       </div>

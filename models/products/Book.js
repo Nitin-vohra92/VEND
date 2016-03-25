@@ -5,9 +5,6 @@ var bookModel=new Schema({
 	title:{
 		type: String
 	},
-	name:{
-		type: String
-	},
 	author:{
 		type: String,
 		default:'Anonymous'

@@ -10,7 +10,8 @@ var APP_DIR = path.dirname(require.main.filename);
 var UPLOAD_DIR = "/uploads/productimages/others/";
 
 
-exports.publish=function(input,req,res){
+exports.publish=function(req,callback){
+	var input=req.body;
 
 	//validate data if possible
  	var other=new Others(input);
@@ -52,32 +53,12 @@ exports.publish=function(input,req,res){
 
 
 	other.save();
-	var advertisement=new Advertisement(input);
-	advertisement.product_id=other._id;
-	advertisement.user_id=req.session.user_id;
-	advertisement.user_type=req.session.user_type;
-	advertisement.thumb=other.images[0].path;
-	advertisement.kind=input.kind;
-	advertisement.category=input.category;
-	advertisement.price=input.price;
-	advertisement.description=other.name+' under :'+other.sub_category; 
-	advertisement.save();
-
-
-	//add to activity
-	var activity=new Activity(input);
-	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.user_name;
-	activity.activity='Posted an Advertisement Under Others for: '+other.name+' at '+advertisement.createdAt;
-	activity.save();
-
-	console.log(input);
-	//res.status(201).json(other);
-	res.redirect('/');
+ 	callback(other._id,other.images[0].path);
+	
 
 }
 
-exports.find=function(callback,advertisement){
+exports.find=function(advertisement,callback){
 	Others.findOne({_id:advertisement.product_id},function(err,product){
 		callback(product);
 	});

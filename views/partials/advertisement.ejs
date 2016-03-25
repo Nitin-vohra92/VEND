@@ -1,9 +1,10 @@
 
-              <div class="col-md-3">
-                <div class="well" style="padding: 5px;" align="center">
-                  <a href='/api/view/advertisement?_id=<%response.advertisement._id%>'>
-                    <img src="<%= response.advertisement.thumb %>" width="100%">
-                    <%=response.advertisement.description%><br>
+              <div class="col-md-3" >
+                <div class="well" style="padding: 5px;" align="center" >
+                  <a href='/api/view/advertisement?_id=<%response.advertisement._id%>' >
+                    <img src="<%= response.advertisement.thumb %>" width="100%" height="200px">
+                    <%=response.advertisement.name%><br>
+                    Category: <%=response.advertisement.category%><br>
                     Rs.<%=response.advertisement.price%>
                     <br>Available for <%=response.advertisement.kind%>
                     </a>

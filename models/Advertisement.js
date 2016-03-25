@@ -27,15 +27,17 @@ var advertisementModel=new Schema({
 	kind:{
 		type: String
 	},
+	bid:{
+		type:String
+	},
 	price:{
 		type: String
 	},
 	thumb:{
 		type: String
 	},
-	description:{
-		type: String,
-		default:'No Description by Publisher.'
+	name:{
+		type: String
 	},
 	createdAt:{
 		type: Date,

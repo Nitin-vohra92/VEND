@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="/css/custom_style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+<% include partials/dropdown%>
+
+});
+</script>
 </head>
 <body>
 
@@ -38,7 +45,7 @@
                                 <div class="well" style="padding: 6px;">
                                   <div class="row">
                                     <div class="col-md-8">
-                                    <label class="form-control" for="token">Please enter the token for account verification here:</label>              
+                                    <label class="control-label" for="token">Please enter the token for account verification here:</label>              
                                     </div>
                                     <div class="col-md-4">
                                     <input type="text" class="form-control" id="token" name="token" value="" required title="Token"  placeholder="XXXXXXXX" >                          

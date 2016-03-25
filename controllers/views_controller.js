@@ -27,6 +27,8 @@ var Notification=require('../models/Notification');
 var Activity=require('../models/Activity');
 var Bid=require('../models/Bid');
 
+var userFunctions=require('./functions/user');
+
 //for home view
 exports.home=function(req,res){
 	//if any user is logged in
@@ -74,7 +76,7 @@ exports.home=function(req,res){
 //for advertisement view
 exports.advertisement=function(req,res){
 	if(req.session.user_id===undefined){
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	}
 	else{
 	var input=req.body;
@@ -119,13 +121,13 @@ exports.advertisement=function(req,res){
 		response.advertisement=advertisement;
 		switch(category){
 		case 'Book':
-			Book.find(responseSetter,input);
+			Book.find(input,responseSetter);
 			break;
 		case 'Electronics':
-			Electronics.find(responseSetter,input);
+			Electronics.find(input,responseSetter);
 			break;
 		case 'Other':
-			OtherProduct.find(responseSetter,input);
+			OtherProduct.find(input,responseSetter);
 			break;
 	}
 						
@@ -137,7 +139,7 @@ exports.advertisement=function(req,res){
 //for advertisement view after get
 exports.get_advertisement=function(req,res){
 	if(req.session.user_id==undefined){
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	}
 	else{
 		var input=req.session;
@@ -188,7 +190,7 @@ exports.products=function(req,res){
 	//if any user is logged in
 	console.log(req.session);
 	if(req.session.user_id===undefined){
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 
 	}
 	//if no user logged in
@@ -231,7 +233,7 @@ exports.wishes=function(req,res){
 //for user activities
 exports.activities=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 	var response={};
 	response.user_info=req.session;
@@ -248,7 +250,7 @@ exports.activities=function(req,res){
 
 exports.notifications=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 	var user_id=req.session.user_id;
 	var response={};
@@ -272,7 +274,7 @@ exports.notifications=function(req,res){
 //for viewing books
 exports.books=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		var response={};
 		response.user_info=req.session;
@@ -288,7 +290,7 @@ exports.books=function(req,res){
 //for viewing books
 exports.electronics=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		var response={};
 		response.user_info=req.session;
@@ -304,7 +306,7 @@ exports.electronics=function(req,res){
 //for viewing others
 exports.others=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		var response={};
 		response.user_info=req.session;
@@ -319,7 +321,7 @@ exports.others=function(req,res){
 //for view more latest
 exports.latest=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		Advertisement.latest(req,res);
 	}
@@ -328,7 +330,7 @@ exports.latest=function(req,res){
 //for view more recently viewed
 exports.viewed=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		Advertisement.viewed(req,res);
 	}
@@ -338,7 +340,7 @@ exports.viewed=function(req,res){
 //for view more recently viewed
 exports.recommended=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		Advertisement.recommended(req,res);
 	}
@@ -348,7 +350,7 @@ exports.recommended=function(req,res){
 //for user view
 exports.user=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		var input=req.body;
 		var response=[];
@@ -380,7 +382,7 @@ exports.user=function(req,res){
 //for view more comments
 exports.comments=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 	var response=[];
 	response.push({user_info:req.session});

@@ -12,8 +12,8 @@ function sendMail(mail_to,mail_subject,mail_body){
 	var smtpTransport=nodemailer.createTransport('SMTP',{
 			sevice: 'Gmail',
 			auth: {
-				user: CONF_FILE.email.username,
-				pass: CONF_FILE.email.password
+				user: CONF_FILE.EMAIL.USERNAME,
+				pass: CONF_FILE.EMAIL.PASSWORD
 			}
 	});
 	//mail notification
@@ -64,11 +64,13 @@ function sendMessage(message_to,message_body){
 
 }
 
-exports.validateRegistrationData= function(input,imagefile){
+exports.validateRegistrationData= function(req){
 	var error;
 	// validate the input
 
 
+		var input=req.body;
+		var imagefile=req.files.profile_pic;
 	//firstname
 	if (validator.isNull(input.firstname)||!validator.isAlpha(input.firstname)) {
 		error="Firstname is not valid!! It can contain only alphabets.";
@@ -317,7 +319,7 @@ exports.sendPasswordMail=function(email,firstname,username,password){
 	var mail_body="Hello "+firstname+", this email contains your VEND account password. "+
 					"Please change your password for more safety from settings panel. "+
 					"Your account credentials are:\n"+
-					"Username: "+firstname+"\n"+
+					"Username: "+username+"\n"+
 					"Password: "+password+"\n";
 	// sendMail(mail_to,mail_subject,mail_body);
 	return;
@@ -337,6 +339,14 @@ exports.sendConfirmationMessage=function(input){
 		 // sendMessage(message_to,message_body);
 		return;
 	});
-	
 
+
+}
+
+exports.sendToLogin=function(res){
+	
+			var response={};
+			var message="Please log in to continue.";
+			response.message=message;
+			res.render('login',{response:response});
 }

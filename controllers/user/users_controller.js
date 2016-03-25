@@ -247,7 +247,7 @@ exports.logout=function(req,res){
 
 exports.wish=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		var input=req.body;
 		var wish=new Wish(input);
@@ -268,6 +268,11 @@ exports.wish=function(req,res){
 }
 
 exports.ping=function(req,res){
+
+	//if not logged in??
+
+
+	//////////////////
 	var input=req.body;
 	var notification=new Notification(input);
 	notification.user_id=req.session.user_id;

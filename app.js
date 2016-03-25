@@ -16,7 +16,7 @@ var CONF_FILE=require('./conf.json');
 //local
 var db=mongoose.connect('mongodb://127.0.0.1/VEND');
 //online
-// var db=mongoose.connect('mongodb://'+CONF_FILE.mongodb.username+':'+CONF_FILE.mongodb.password+'@'+CONF_FILE.mongodb.address);
+// var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGODB.ADDRESS);
 
 /////////////////////////////////////////////////////////
 var MongoStore=require('connect-mongo')(session);

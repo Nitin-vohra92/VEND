@@ -1,3 +1,4 @@
+
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container-fluid">
@@ -11,18 +12,26 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-            <a class="navbar-brand" href="#" style="margin-left: 10%">VEND</a>
+            <a class="navbar-brand" href="/" style="margin-left: 10%;" >VEND</a>
             </div>
           </div>
           <!-- nav bar options -->
-          <div class="col-md-4" style="margin-top: 5px;">
+          <div class="col-md-4" style="margin-top: 8px;">
               <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav nav-pills">
                     <li ><a href="/">Home</a></li>
 
+                    <li class="dropdown" >
 
-                    <li><a href="/api/view/products">Advertisements</a></li>
-
+                    <a href="/api/view/products" id="advertisement_dropdown">Advertisements</a>
+                    <ul class="dropdown-menu">
+                      <li><a href="/api/view/books">Books</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/api/view/electronics">Electronics</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/api/view/others">Others</a></li>
+                    </ul>
+                    </li>
 
                     <li><a href="/publish">Publish an Ad</a></li>
                     <li><a href="/api/view/user/notifications">Updates</a></li>
@@ -30,7 +39,7 @@
               </div>
           </div>
           <!-- nav search block -->
-          <div class="col-md-5" style="margin-top: 8px;">        
+          <div class="col-md-5" style="margin-top: 10px;">        
                 <form method="POST" action="/api/view/search">
                 <div class="col-md-9">
                 <input class="form-control" type="text" name="query" value="" placeholder="Enter search query here...">
@@ -45,21 +54,23 @@
           <div class="col-md-2" style="margin-top: 5px;">
             <%if(response.user_info!==undefined){%>
             <!-- if user logged in -->
-             <div class="dropdown">
+            <div class="col-md-3">
             <img class="img img-circle" src='<%=response.user_info.profile_pic%>' style="width: 50px; height: 50px;">
-            <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown"><%=response.user_info.firstname%>
-            <span class="caret"></span></button>
-            <ul class="dropdown-menu">
+            </div>
 
-
-              <li><a href="#">Update Info</a></li>
-              <li><a href="/api/view/user/activities">Your Activities</a></li>
-            
-
-              <li><a href="#">Your Ads</a></li>
-              <li><a href="/api/user/logout">Logout</a></li>
-            </ul>
-          </div> 
+             <div class="dropdown" >
+             
+                <div class="col-md-9" style="margin-top:5px;">
+                  <button class="btn btn-info btn-block dropdown-toggle" type="button" data-toggle="dropdown" text-align="left" ><%=response.user_info.firstname%>
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Account</a></li>
+                    <li><a href="/api/view/user/activities">Your Activities</a></li>
+                    <li><a href="#">Your Ads</a></li>
+                    <li><a href="/api/user/logout">Logout</a></li>
+                  </ul>
+                </div>
+            </div> 
           <%}else%>
           <% if(response.user_info===undefined){%>
           <!-- if no user logged in -->

@@ -1,196 +1,213 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>PUBLISH YOUR ADVERTISEMENT</title>
-<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="/js/jquery.min.js"></script>
-<!-- Custom Theme files -->
-<!--theme-style-->
-<link href="/css/style.css" rel="stylesheet" type="text/css" media="all" />	
-<!--//theme-style-->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Mattress Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!--fonts-->
-<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'><!--//fonts-->
-<!-- start menu -->
-<link href="/css/memenu.css" rel="stylesheet" type="text/css" media="all" />
-<script type="text/javascript" src="/js/memenu.js"></script>
-<script>$(document).ready(function(){$(".memenu").memenu();});</script>
-<script src="/js/simpleCart.min.js"> </script>
+  <title>Vend</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+  $(document).ready(function() {
+<% include partials/dropdown%>
+  	
 
-	$('.books').hide();
-	$('.electronics').hide();
-	$('.others').hide();
-	$('.common').hide();
+    //initial setting
+    $('input[name="title"]').attr("required",true);
+    $('input[name="author"]').attr("required",true);
+    $('input[name="semester"]').attr("required",true);
 
-	$('input[type="radio"]').click(function(){
-		if($(this).attr("value")=="Book"){
-			$(".books").show();
-			$('.common').show();
-			$(".info").not(".books").hide();
-		}
+// setting type field and required properties accordingly to selected type of user
+  $('a[data-toggle="pill"]').click(function(){
+        if($(this).attr("href")=="#book"){
+           $('input[id="category"]').attr("value","Book");
 
-		if($(this).attr("value")=="Electronics"){			
-			$(".electronics").show();
-			$('.common').show();
-			$(".info").not(".electronics").hide();
-		}
 
-		if($(this).attr("value")=="Other"){
-			$(".others").show();
-			$('.common').show();
-			$(".info").not(".others").hide();
-		}
-	});
+           // unsetting for other required
+           // unsetting for Electronics required
+            $('input[name="brand"]').removeAttr("required");
+            $('input[name="sub_category"]').removeAttr("required");
+            $('input[name="name"]').removeAttr("required");
 
-	});
-</script>
 
-</head>
+           // setting for Book
+            $('input[name="title"]').attr("required",true);
+            $('input[name="author"]').attr("required",true);
+            $('input[name="semester"]').attr("required",true);
 
-<body>
-<!--header-->
-<div class="header">
-	<div class="header-top">
-		<div class="container">
-			<div class="logo">
-					<!-- <h1><a href="/"><img src="/images/logo1.png" alt="" height="40px" width="100px" /></a></h1> -->
-					<div id="head" style="margin-top:-10px">VEND</div>
-			</div>
-			<div class="header-left">
-			
-				<div class="search-box">
-					<div >
-						<form action="/api/view/search" method="POST">
-							<input style="width:400px; left:600px; top:15px" class="sb-search-input" placeholder="Enter your search term..." type="search" name="search" id="search">
-							<input class="sb-search-submit" style="left:1000px; top:15px;z-index:1000" type="submit" value="Submit">
-						</form>
-					</div>
-				</div>
-			<div style="width:60px; height:60px;margin-top:-15px; list-style:none">	
-				<%if(response.user_info===undefined){%>
-					<li><img src='/images/image_placeholder.png' style="height:50px; width:50px"/></li>	
-					<li style="color:#fff">Guest!! </li>
-					<%}else%>
-					<% if(response.user_info!==undefined){%>
-					<li><img src='<%=response.user_info.profile_pic%>' style="height:50px; width:50px"/></li>	
-					<li style="color:#fff"><%=response.user_info.firstname%> </li>
-				
-				<%}%>
-				</div>
-					<div class="clearfix"> </div>
-			</div>
-				
-			</div>
-		</div>
-	</div>
-		<div class="container">
-			<div class="head-top">
-				
-		 <div class=" h_menu4">
-				<ul class="memenu skyblue">
-					  <li><a class="color8" href="/">HOME</a></li>	
-				      <li><a class="color1" href="/api/view/products">ADVERTISEMENTS</a>
-				      	<div class="mepanel">
-						<div class="row">
-							<div class="col1">
-								<div class="h_nav">
-									<ul>
-										<li><a href="/api/view/books">Books</a></li>
-										<li><a href="/api/view/Electronics">Electronics</a></li>
-										<li><a href="/api/view/Others">Others</a></li>
-									</ul>	
-								</div>							
-							</div>
-						
-						  </div>
-						</div>
-					</li>
+            // alert($('input[id="category"]').val());
+        }
 
-				    <li class="grid"><a class="color2" href="/api/advertisement/publish">POST YOUR AD</a></li>
-				   
-				<li><a class="color4" href="/login">LOGIN</a></li>	
-				
-						
-				<li><a class="color6" href="contact.html">CONTACT US</a></li>
-			  </ul> 
-			</div>
-		
-				
-				<div class="clearfix"> </div>
-		</div>
-		</div>
-	</div>
+        if($(this).attr("href")=="#electronics_other"){
+        if($(this).attr("id")=="electronics"){
+           $('input[id="category"]').attr("value","Electronics");
 
-	<div class="banner">
-		<div class="container">
-			  <script src="/js/responsiveslides.min.js"></script>
-  <script>
-    $(function () {
-      $("#slider").responsiveSlides({
-      	auto: true,
-      	nav: true,
-      	speed: 500,
-        namespace: "callbacks",
-        pager: true,
-      });
+          // unsetting for Book required
+            $('input[name="title"]').removeAttr("required");
+            $('input[name="author"]').removeAttr("required");
+            $('input[name="semester"]').removeAttr("required");
+
+            // unsetting for other required
+
+
+
+
+            //setting for electronics
+            $('input[name="brand"]').attr("required",true);
+            $('input[name="sub_category"]').attr("required",true);
+            $('input[name="name"]').attr("required",true);
+
+            $('input[name="brand"]').attr("placeholder",'Enter the brand of product(e.g. HP or DELL)');
+            $('input[name="sub_category"]').attr("placeholder",'Enter the product category(e.g. Mobile, Laptop etc)');
+            $('input[name="name"]').attr("placeholder",'Enter the name of product(e.g. Moto X(2nd gen) or HP E016TX)');
+
+           // alert($('input[id="category"]').val());
+
+
+        }
+
+        if($(this).attr("id")=="others"){
+           $('input[id="category"]').attr("value","Other");
+
+
+           // unsetting for Book required
+            $('input[name="title"]').removeAttr("required");
+            $('input[name="author"]').removeAttr("required");
+            $('input[name="semester"]').removeAttr("required");
+
+           // unsetting for Electronics required
+
+            // setting for other required
+            $('input[name="brand"]').attr("required",true);
+            $('input[name="sub_category"]').attr("required",true);
+            $('input[name="name"]').attr("required",true);
+
+
+            $('input[name="brand"]').attr("placeholder",'Enter the brand of product(e.g. Fender or PUMA)');
+            $('input[name="sub_category"]').attr("placeholder",'Enter the product category(e.g. Guitar, Shoes etc)');
+            $('input[name="name"]').attr("placeholder",'Enter the name of product(e.g.Fender RX100 or PUMA Sneakers)');
+
+
+           // alert($('input[id="category"]').val());
+           
+        
+        }
+      }
     });
-  </script>
+  });
+</script>
+</head>
+<body>
+
+<div id="wrap">
+<div id="main">
+<%include partials/header%>
+<div class="container-fluid">
+     
+   <div class="row">
+          <div class="col-md-6 col-md-offset-3" style="margin-top: 8%;">
+                    <div class="col-md-10 col-md-offset-1">
+
+                              <%if(response.error!==undefined){%>
+                              <div class="alert alert-warning" align="center">
+                                 <strong>Error:</strong> <%=response.error%>
+                              </div>  
+                              <%}%>
+
+
+                              <div class="well">
+                                  <h3 class="card-title" align="center" style="color: #337ab7"><strong >ADVERTISEMENT DETAILS</strong></h3>
+                                  <form id="publishForm" action='/api/advertisement/publish' method='POST' enctype="multipart/form-data">
+                                       <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                        <label class="panel-heading" style="width: 100%" align="center"><span>Select category of Ad</span></label>
+                                        <input type="hidden" id="category" name="category" value="Book"/>
+                                          <ul class="nav nav-pills nav-justified" style="padding: 4px">
+                                            <li class="active"><a data-toggle="pill" href="#book">Book</a></li>
+                                            <li><a data-toggle="pill" href="#electronics_other" id="electronics">Electronics</a></li>
+                                            <li><a data-toggle="pill" href="#electronics_other" id="others">Other</a></li>
+                                          </ul>
+
+                                          <div class="tab-content">
+                                          <!-- Book specific details -->
+                                            <div id="book" class="tab-pane fade in active" style="padding: 10px">
+                                              <input name="title" type="text" class="form-control" placeholder="Enter the title of Book(e.g. Information Security)" style="margin-top: 5%;" />
+
+                                              <input name="author" type="text" class="form-control" placeholder="Enter the author of Book(e.g. William Stalling)" style="margin-top: 5%;" />
+
+                                              <input name="semester" type="number" class="form-control" placeholder="Enter the semester of Book(0 if not applicable,e.g. 7 for 7th sem)" style="margin-top: 5%;" />
+
+                                              
+                                            </div>
+
+
+                                            <!-- Electronics and other Specific Detail -->
+                                            <div id="electronics_other" class="tab-pane fade" style="padding: 10px">
+                                              <input name="brand" type="text"  class="form-control" style="margin-top: 5%;">
+                                              <input name="sub_category" type="text" class="form-control" style="margin-top: 5%;" >
+                                              <input name="name" type="text" class="form-control" style="margin-top: 5%;">
+                                              </div>
+
+
+                                            <div class="common" style="padding: 10px">
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                              <label for="kind" class="panel-heading" style="width: 100%"><span>What it will be available for? (LOAN or BUY)</span></label>
+                                              <div style="padding: 4px;">
+                                                <select class="form-control" name="kind" required>
+                                               <option value="">---Select---</option>
+                                                <option value="BUY">BUY</option>
+                                                <option value="LOAN">LOAN</option>
+                      
+                                               </select>
+                                                </div>
+                                              </div>
+
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                              <label for="bid" class="panel-heading" style="width: 100%"><span>Will it be available for bid?</span></label>
+                                              <div style="padding: 4px;">
+                                                <select class="form-control" name="bid" required>
+                                               <option value="">---Select---</option>
+                                                <option value="YES">Yes</option>
+                                                <option value="NO">No</option>
+                      
+                                               </select>
+                                                </div>
+                                              </div>
+                                              <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                                <label for="picture" class="panel-heading" style="width: 100%;" align="center"  >
+                                                <span>
+                                                Images of the product
+                                                </span><br>
+                                                <small class="text-muted">For multiple images: Ctrl + Click on Image files</small>
+                                                </label>
+                                                <input name="images[]" type="file" class="form-control" value="Upload Picture" required="Image is required." style="padding: 3px; width: 100%" accept="image/*" multiple />
+                                              </div>
+                                              <input name="location" type="text" class="form-control" required style="margin-top: 5%;" placeholder='Where is the product? (e.g. AS-XXX, VBH Hostel)'>
+                                              <input name="price" type="number" class="form-control" required style="margin-top: 5%;" placeholder='What do you want for the Product?( i.e. Price in Rs. e.g. 200)'>
+                                              <div style="width: 100%;">
+                                              <textarea name="description" class="form-control" placeholder="Give a little description of your product and why do you want to sell or loan?(if loan, Please specify time period for the same.)" style="margin-top: 5%; max-width: 100%;" rows="3"></textarea>
+                                              </div>
+                                            </div>
+
+                                            </div>
+                                          </div>
+
+                                          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10%;">Publish</button>
+                                      </div>
+
+                                      
+                                  </form>
+                              </div>
+                    </div>     
+          </div>
+      </div>
+
 </div>
-<center>
-	<div class="advertise">
-		<div id="head">PUBLISH</div>
-		<form action='/api/advertisement/publish' method='POST' enctype="multipart/form-data">
-				
-			<div class="sto"><input  name="category" type="radio" class="input_bg " value="Book" ><span>Books</span><br></div>
-			<div class="sto"><input  name="category" type="radio" class="input_bg " value="Electronics"><span>Electronics</span><br></div>
-			<div class="sto"><input  name="category" type="radio" class="input_bg " value="Other"><span>Others</span><br></div>
-			 
-			<div class="books info" style="margin-left:-110px; position:relative">			
-				<input name="title" type="text"  class="input_bg" style="width:700px; " placeholder='Enter the title of Book'>
-			    <input name="author" type="text" class="input_bg" style="width:700px; " placeholder='Enter the author of Book'>
-			    <input name="semester" type="text" class="input_bg" style="width:700px; " placeholder='Enter the semester of Book'>  
-			</div>
 
-			<div class="electronics info" style="margin-left:-110px; position:relative">
-				<input name="brand" type="text"  class="input_bg" style="width:700px; " placeholder='Enter the Brand of Product'>
-			    <input name="sub_category" type="text" class="input_bg" style="width:700px; " placeholder='Enter the Category(e.g. Mobile,Laptop etc) of product'>
-			    <input name="name" type="text" class="input_bg" style="width:700px; " placeholder='Enter the name of Product'>
-			</div>
-
-
-			<div class="others info" style="margin-left:-110px; position:relative">
-				<input name="brand" type="text" class="input_bg" style="width:700px; " placeholder='Enter the Brand of Product'>
-			    <input name="sub_category" type="text" class="input_bg" style="width:700px; " placeholder='Enter the Category(e.g. Guitar, Shoes  etc) of product'>
-			    <input name="name" type="text" class="input_bg" style="width:700px; " placeholder='Enter the name of Product'>
-			</div>
-
-
-			<div class="common" style="margin-left:-110px; position:relative">
-				<select style="width:700px" class="input_bg" name="kind" >
-				 	<option value="">---Will be Available for?---</option>
-	                         	<option value="BUY">BUY</option>
-	                         	<option value="LOAN">LOAN</option>
-					            
-				</select><br>
-				<input name="images" type="file" class="input_bg" style="width:700px; " placeholder='Image of the product'>
-	            <input name="location" type="text" class="input_bg" style="width:700px; " placeholder='Enter location of product'>
-	            <input name="price" type="text" class="input_bg" style="width:700px; " placeholder='Enter price of the product'>
-	            <input name="description" type="text" class="input_bg" style="width:700px; " placeholder='Enter description'>
-			</div>
-
-			<input type='submit' name='submit' value='Submit' id='submit' style="width:320px; margin-left:0px; z-index:1000">					
-		</form>
-	</div>	
-</center>
+<!-- below two /div for main and wrap -->
+</div>
+</div>
+<% include partials/footer%>
 </body>
 </html>

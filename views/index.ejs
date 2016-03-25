@@ -9,6 +9,11 @@
     <script src="/js/jquery.min.js"></script>
 
   <script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	  $(document).ready(function() {
+<% include partials/dropdown%>
+});
+</script>
   <style>
     /* Remove the navbar's default rounded borders and increase the bottom margin */ 
     .navbar {
@@ -113,8 +118,8 @@
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                <a href="#">
-                  View more Latest
+                <a href="/api/view/advertisement/latest">
+                  View more Latest Advertisements
                   </a>
                 </strong>
               </h4>
@@ -150,7 +155,7 @@
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                <a href="#">
+                <a href="/api/view/advertisement/viewed">
                   View more Recently Viewed
                   </a>
                 </strong>
@@ -167,7 +172,7 @@
             <div class="panel-heading" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                  Recommended for you on Vend
+                  Recommended for You on Vend
                 </strong>
               </h4>
             </div>
@@ -188,7 +193,7 @@
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                <a href="#">
+                <a href="/api/view/advertisement/recommended">
                   View more Recommendations
                   </a>
                 </strong>

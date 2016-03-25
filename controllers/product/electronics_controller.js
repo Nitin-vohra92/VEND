@@ -8,7 +8,8 @@ var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 var UPLOAD_DIR = "/uploads/productimages/electronics/";
 
-exports.publish=function(input,req,res){
+exports.publish=function(req,callback){
+	var input=req.body;
 
 
 	//validate data if possible
@@ -49,28 +50,8 @@ exports.publish=function(input,req,res){
 
 
 	electronics.save();
-	var advertisement=new Advertisement(input);
-	advertisement.product_id=electronics._id;
-	advertisement.user_id=req.session.user_id;
-	advertisement.user_type=req.session.user_type;
-	advertisement.thumb=electronics.images[0].path;
-	advertisement.kind=input.kind;
-	advertisement.category=input.category;
-	advertisement.price=input.price;
-	advertisement.description=electronics.name+' under :'+electronics.sub_category; 	
-	advertisement.save();
 
-
-	//add to activity
-	var activity=new Activity(input);
-	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.user_name;
-	activity.activity='Posted an Advertisement Under Electronics for: '+electronics.name+' at '+advertisement.createdAt;
-	activity.save();
-
-	console.log(input);
-	//res.status(201).json(advertisement);
-	res.redirect('/');
+ 	callback(electronics._id,electronics.images[0].path);
 	
 }
 

@@ -11,41 +11,68 @@ var Notification=require('../../models/Notification');
 var Activity=require('../../models/Activity');
 var Bid=require('../../models/Bid');
 
-exports.publish=function(req,res){
-	if(req.session.user_id===undefined)
-		res.redirect('/login');
-	else{
-		console.log(req.body);
-		var input=req.body;
-		// console.log(input);
-	
-	var productCategory=input.category;
-	//first find category
+var userFunctions=require('../functions/user');
+var advertisementFunctions=require('../functions/advertisement');
 
-	 	switch(productCategory){
-	 		case 'Book':
-	 			Book.publish(input,req,res);
-	 			break;
-			case 'Electronics':
-				Electronics.publish(input,req,res);
-				break;	
-			case 'Other':
-				Other.publish(input,req,res);
-				break;
-	 		}
-}
+
+exports.publish=function(req,res){
+	
+	if(req.session.user_id===undefined){
+		userFunctions.sendToLogin(res);
+	}
+	else{
+		var input=req.body;
+		var response={};
+		var error=advertisementFunctions.validatePublishData(req);
+		if(error){
+			response.user_info=req.session;
+			response.error=error;
+			res.render('publish',{response:response});
+		}
+		else{
+			var productCategory=input.category;
+			var afterProductSaved=function(product_id,thumb_path){
+				var advertisement=advertisementFunctions.saveAdvertisement(req,product_id,thumb_path);
+				//add to activity
+				var activity=new Activity(input);
+				activity.user_id=req.session.user_id;
+				activity.user_name=req.session.user_name;
+				activity.activity='Posted an Advertisement for Book: '+advertisement.name+' at '+advertisement.createdAt;
+				activity.save();
+
+
+				//where to redirect
+				//res.status(201).json(imagefiles);
+				res.redirect('/');
+				
+			};
+			//first find category
+
+		 	switch(productCategory){
+		 		case 'Book':
+		 			Book.publish(req,afterProductSaved);
+		 			break;
+				case 'Electronics':
+					Electronics.publish(req,afterProductSaved);
+					break;	
+				case 'Other':
+					Other.publish(req,afterProductSaved);
+					break;
+		 	}
+	 	}
+	}	
 }
 exports.publishpage=function(req,res){
 	if(req.session.user_id===undefined)
-		res.redirect('/login');
+		userFunctions.sendToLogin(res);
 	else{
 		var response={};
 		response.user_info=req.session;
 		res.render('publish',{response:response});
+	}
 }
-	
 
-}
+
 exports.latest=function(req,res){
 	var response={};
 	response.user_info=req.session;
@@ -95,6 +122,9 @@ exports.recommended=function(req,res){
 }
 
 exports.comment=function(req,res){
+	//if no user logged in
+
+	////////////////////////
 	var input=req.body;
 	var comment=new Comment(input);
 	comment.user_desc=req.session.name+','+req.session.user_type+' at NITH';
@@ -115,6 +145,9 @@ exports.comment=function(req,res){
 
 //needs rating and ad details
 exports.rate=function(req,res){
+	//if no user logged in
+
+	//////////////////////
 	var input=req.body;
 	var rating=new Rating(input);
 	rating.user_desc=req.session.name+','+req.session.user_type+' at NITH';
@@ -135,6 +168,9 @@ exports.rate=function(req,res){
 
 // needs amount and ad details
 exports.bid=function(req,res){
+	//if no user logged in
+
+	/////////////////////
 	var input=req.body;
 	var bid=new Bid(input);
 	bid.user_desc=req.session.name+','+req.session.user_type+'at NITH';

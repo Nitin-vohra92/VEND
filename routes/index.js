@@ -46,9 +46,15 @@ router.route('/edit')
 router.route('/publish')
 	.get(function(req, res) {
 		response={};
-		
-		response.user_info=req.session;
-		res.render('publish',{response:response});
+		if(req.session.user_id===undefined){
+			var message="Please log in to continue.";
+			response.message=message;
+			res.render('login',{response:response});
+		}
+		else{
+			response.user_info=req.session;
+			res.render('publish',{response:response});
+		}
 });
 
 //viewing an advertisement page
