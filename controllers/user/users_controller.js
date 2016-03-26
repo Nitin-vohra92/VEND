@@ -25,7 +25,7 @@ exports.register=function(req,res){
 		var input=req.body;
 		var image=req.files.profile_pic;
 
-		var error=userFunctions.validateRegistrationData(input,image);
+		var error=userFunctions.validateRegistrationData(req);
 		if(error){
 			response.error=error;
 			res.render('register',{response:response});
@@ -195,34 +195,9 @@ exports.login=function(req,res){
 				if(account.password===input.password){
 					//find name of type and then accordingly search for details in respective tables
 					
-						req.session.user_id=account.user_id;
-						req.session.user_type=account.type;
-						req.session.save(function(err) {
-							console.log(err);
-						});
-						console.log(req.session.user_name);
+						userFunctions.setSession(req,account);
+						res.redirect('/');
 						
-						// var type=account.type;
-						 var sessionSetter=function(result){
-						 		req.session.name=result.firstname+' '+result.lastname;
-						 		req.session.firstname=result.firstname;
-								console.log(req.session.user_name);
-						 		req.session.profile_pic=result.profile_pic;
-						 		req.session.user_desc=result.firstname+' '+result.lastname+' '+account.type+' at NITH';
-						 		res.redirect('/');
-						 };
-						// //after finding type of user search for his details in respective tables
-	 					switch(account.type){
-	 						case 'Teacher':
-	 							Teacher.find(sessionSetter,account);
-	 							break;
-	 						case 'Student':
-	 							Student.find(sessionSetter,account);
-	 							break;
-	 						case 'Other':
-								Other.find(sessionSetter,account);
-								break;	
-	 					}
 					
 	 			}
 				else{
@@ -258,6 +233,7 @@ exports.wish=function(req,res){
 		//add to activity
 		var activity=new Activity(input);
 		activity.user_id=req.session.user_id;
+		//check later
 		activity.user_name=req.session.user_name;
 
 		activity.activity='Posted a wish: '+wish.description+ ' at '+wish.createdAt;

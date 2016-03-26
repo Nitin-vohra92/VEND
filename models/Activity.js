@@ -13,11 +13,13 @@ var activityModel=new Schema({
 	activity:{
 		type: String
 	},
-	createdAt:{
-		type: Date,
-		default:Date.now
+	activity_entity_name:{
+		type: String
 	},
-	updatedAt:{
+	activity_entity_link:{
+		type: String
+	},
+	createdAt:{
 		type: Date,
 		default:Date.now
 	}

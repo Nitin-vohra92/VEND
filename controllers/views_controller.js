@@ -13,9 +13,6 @@ var OtherProduct=require('./product/others_controller');
 
 //models
 var Account=require('../models/Account');
-var BookModel=require('../models/products/Book');
-var ElectronicsModel=require('../models/products/Electronics');
-var OtherModel=require('../models/products/Other');
 
 var RecentlyViewed=require('../models/RecentlyViewed');
 var Wish=require('../models/Wish');	
@@ -28,6 +25,7 @@ var Activity=require('../models/Activity');
 var Bid=require('../models/Bid');
 
 var userFunctions=require('./functions/user');
+var advertisementFunctions=require('./functions/advertisement');
 
 //for home view
 exports.home=function(req,res){
@@ -79,6 +77,8 @@ exports.advertisement=function(req,res){
 		userFunctions.sendToLogin(res);
 	}
 	else{
+
+	//will be changed soon
 	var input=req.body;
 	var recent=new RecentlyViewed(input);
 	recent.user_id=req.session.user_id;
@@ -135,7 +135,8 @@ exports.advertisement=function(req,res){
 	
 }
 }
-
+//only one type of request for viewing an advertisement
+//this an above will merge
 //for advertisement view after get
 exports.get_advertisement=function(req,res){
 	if(req.session.user_id==undefined){
@@ -143,9 +144,7 @@ exports.get_advertisement=function(req,res){
 	}
 	else{
 		var input=req.session;
-		
-		//now send the content
-
+				//now send the content
 		var response={};
 		response.user_info=req.session;
 		response.advertisement=input;
@@ -196,18 +195,13 @@ exports.products=function(req,res){
 	//if no user logged in
 	else{
 		var response={};
-
-			//getting latest advertisements
-			Advertisement.find({category: 'Book'}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
+			response.user_info=req.session;
+			Advertisement.find({category: 'Book'}, null, {sort: {'createdAt': -1}}).exec(function(err, advertisement) {
 				response.books=advertisement;
-				//console.log('Inside latest');
-				//getting recently viewed
-				Advertisement.find({category:'Electronics'}, null, {limit: 4, }).exec(function(err, advertisement) {
+				Advertisement.find({category:'Electronics'}, null, {'createdAt': -1}).exec(function(err, advertisement) {
   					response.electronics=advertisement;
-  					//console.log('Inside recents');
-  						Advertisement.find({category:'Other'}, null, {limit: 4, }).exec(function(err, advertisement) {
-  					response.others=advertisement;
-  							//console.log('Inside wishes');
+  						Advertisement.find({category:'Other'}, null, {'createdAt': -1}).exec(function(err, advertisement) {
+  							response.others=advertisement;
 							//res.json(response);
 							res.render('products',{response:response});
 						
@@ -399,6 +393,7 @@ exports.search=function(req,res){
 	var input=req.body;
 	console.log('In search');
 	var response={};
+	var query=input.query;
 	response.user_info=req.session;
 	switch(input.category){
 		case 'User':
@@ -426,20 +421,15 @@ exports.search=function(req,res){
 			});
 			break;
 		default:
-			Account.find({name: { $regex: input.query, $options: "i" }},function(err,users){
-				console.log(input.query);
+			userFunctions.searchUser(query,function(users){
 				response.users=users;
-				BookModel.find({$or:[{title: { $regex: input.query, $options: "i" }},{author: { $regex: input.query, $options: "i" }}]},function(err,books){
-			
-						response.books=books;
-					ElectronicsModel.find({$or:[{name: { $regex: input.query, $options: "i" }},{brand: { $regex: input.query, $options: "i" }},{sub_category: { $regex: input.query, $options: "i" }}]},function(err,electronics){
-						
-							response.electronics=electronics;
-						OtherModel.find({$or:[{name: { $regex: input.query, $options: "i" }},{brand: { $regex: input.query, $options: "i" }},{sub_category: { $regex: input.query, $options: "i" }}]},function(err,others){
-							
-								response.others=others;
-							//res.json(response);
-							  res.render('search',{response:response});
+				advertisementFunctions.searchBook(query,function(advertisements){
+					response.books=advertisements;
+					advertisementFunctions.searchElectronics(query,function(advertisements){
+						response.electronics=advertisements;
+						advertisementFunctions.searchOther(query,function(advertisements){
+							response.others=advertisements;
+							res.render('search',{response:response});
 						});
 					});
 				});
@@ -448,4 +438,12 @@ exports.search=function(req,res){
 	}
 
 }
+
+// Advertisement.find({$in:books_id},function(err,advertisement){
+// 						console.log('Inside Search: \n'+advertisement+'\n'+books_id);
+// 						response.books={};//advertisement;
+// 						response.electronics={};
+// 						response.others={};
+// 						res.render('search',{response:response});
+// 					});	
 

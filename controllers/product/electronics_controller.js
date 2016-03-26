@@ -55,7 +55,7 @@ exports.publish=function(req,callback){
 	
 }
 
-exports.find=function(callback,advertisement){
+exports.find=function(advertisement,callback){
 	Electronics.findOne({_id:advertisement.product_id},function(err,product){
 		callback(product);
 	});

@@ -5,8 +5,13 @@ var shortid=require('shortid');
 
 var TemporaryUser=require('../../models/users/TemporaryUser');
 
+var Activity=require('../../models/Activity');
+var Account=require('../../models/Account');
+
+
 var CONF_FILE=require('../../conf.json');
 
+//sendMail any mail function will use it 
 function sendMail(mail_to,mail_subject,mail_body){
 	var nodemailer=require("nodemailer");
 	var smtpTransport=nodemailer.createTransport('SMTP',{
@@ -64,6 +69,21 @@ function sendMessage(message_to,message_body){
 
 }
 
+
+//generalized add Activity function called by other activity functions
+function addActivity(user_info,activity_desc,activity_entity_name,activity_entity_link){
+	var user_id=user_info.user_id;
+	var user_name=user_info.name;
+	var activity=new Activity();
+	activity.user_id=user_id;
+	activity.user_name=user_name;
+	activity.activity=activity_desc;
+	activity.activity_entity_name=activity_entity_name;
+	activity.activity_entity_link=activity_entity_link;
+	activity.save();
+	return;
+
+}
 exports.validateRegistrationData= function(req){
 	var error;
 	// validate the input
@@ -313,6 +333,31 @@ exports.sendConfirmationMail=function(input){
 	});
 }
 
+exports.saveAccount=function(user,username,password,type){
+	var account=new Account();
+	account.username=username;
+	account.password=password;
+	account.name=user.firstname+' '+user.lastname;
+	account.user_id=user._id;
+	account.profile_pic=user.profile_pic;
+	account.type=type;
+	account.save();
+	return account;
+
+}
+
+
+exports.setSession=function(req,account){
+	req.session.user_id=account.user_id;
+	req.session.user_type=account.type;
+	req.session.profile_pic=account.profile_pic;
+	req.session.username=account.username;
+	req.session.name=account.name;
+	req.session.save(function(err) {
+		console.log(err);
+	});
+	return;
+}
 exports.sendPasswordMail=function(email,firstname,username,password){
 	var mail_to=email;
 	var mail_subject="VEND Password Request";
@@ -349,4 +394,19 @@ exports.sendToLogin=function(res){
 			var message="Please log in to continue.";
 			response.message=message;
 			res.render('login',{response:response});
+}
+
+exports.addPublishActivity=function(user_info,advertisement){
+	var activity="Published an advertisement in "+advertisement.category+" category: ";
+	var activity_entity_name=advertisement.name;
+	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+	addActivity(user_info,activity,activity_entity_name,activity_entity_link);
+	return;
+
+}
+
+exports.searchUser=function(query,callback){
+	Account.find({$or:[{name: { $regex: query, $options: "i" }},{type:{ $regex: query, $options: "i" }}]},function(err,users){
+		callback(users);
+	});
 }

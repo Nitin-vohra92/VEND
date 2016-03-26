@@ -1,11 +1,7 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
 
-var advertisementModel=new Schema({ 
-	ad_id:{
-		type: String,
-		trim: true
-	},
+var advertisementModel=new Schema({
 	user_id:{
 		type: String,
 		trim: true

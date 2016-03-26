@@ -8,7 +8,6 @@ var Other=require('./others_controller');
 var Rating=require('../../models/Rating');
 var Comment=require('../../models/Comment');
 var Notification=require('../../models/Notification');
-var Activity=require('../../models/Activity');
 var Bid=require('../../models/Bid');
 
 var userFunctions=require('../functions/user');
@@ -34,15 +33,8 @@ exports.publish=function(req,res){
 			var afterProductSaved=function(product_id,thumb_path){
 				var advertisement=advertisementFunctions.saveAdvertisement(req,product_id,thumb_path);
 				//add to activity
-				var activity=new Activity(input);
-				activity.user_id=req.session.user_id;
-				activity.user_name=req.session.user_name;
-				activity.activity='Posted an Advertisement for Book: '+advertisement.name+' at '+advertisement.createdAt;
-				activity.save();
-
-
-				//where to redirect
-				//res.status(201).json(imagefiles);
+				userFunctions.addPublishActivity(req.session,advertisement);
+				//redirect to home
 				res.redirect('/');
 				
 			};

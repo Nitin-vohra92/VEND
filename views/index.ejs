@@ -14,20 +14,6 @@
 <% include partials/dropdown%>
 });
 </script>
-  <style>
-    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
-    .navbar {
-      margin-bottom: 50px;
-      border-radius: 0;
-    }
-    
-    /* Remove the jumbotron's default bottom margin */ 
-     .jumbotron {
-      margin-bottom: 0;
-    }
-   
-    
-  </style>
 </head>
 <body>
 
@@ -46,7 +32,7 @@
                             Wishes
                         </div>
                         <div class="panel-body" style="padding: 8px;">
-                            <textarea class="form-control" placeholder="Enter your wish here..." rows="3" style="max-width: 100%;"></textarea>
+                            <textarea class="form-control" placeholder="Enter your wish here..." rows="3" style="max-width: 100%; max-height: 90px;"></textarea>
                             <br>
                             <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>
                             <br>
@@ -112,7 +98,13 @@
               <%include partials/advertisement%>
 
           <%}%>
-
+          <%if(response.latest.length===0){%>
+          <div align="center">
+          <strong>
+            No Results Found!!
+            </strong>
+          </div>
+          <% }%>
             </div>
 
             <div class="panel-footer" align="center" style="padding: 5px;">
@@ -149,7 +141,13 @@
               <%include partials/advertisement%>
 
           <%}%>
-
+          <%if(response.recent.length===0){%>
+          <div align="center">
+          <strong>
+            No Results Found!!
+            </strong>
+          </div>
+          <% }%>
             </div>
 
             <div class="panel-footer" align="center" style="padding: 5px;">
@@ -187,7 +185,13 @@
               <%include partials/advertisement%>
 
           <%}%>
-
+          <%if(response.recommended.length===0){%>
+          <div align="center">
+          <strong>
+            No Results Found!!
+            </strong>
+          </div>
+          <% }%>
             </div>
 
             <div class="panel-footer" align="center" style="padding: 5px;">

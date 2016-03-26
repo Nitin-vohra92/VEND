@@ -22,6 +22,10 @@ var accountModel=new Schema({
 	},
 	type:{
 		type: String
+	},
+	createdAt:{
+		type: Date,
+		default:Date.now
 	}
 	
 });

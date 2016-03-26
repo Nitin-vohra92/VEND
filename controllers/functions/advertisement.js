@@ -3,6 +3,19 @@ var path=require('path');
 
 var Advertisement=require('../../models/Advertisement');
 
+var Book=require('../../models/products/Book');
+var Electronics=require('../../models/products/Electronics');
+var Other=require('../../models/products/Other');
+
+
+function convertIdsToArray(ids){
+	var result=[];
+	for (var i = 0; i<ids.length; i++) {
+	result[i]=ids[i]._id;
+	}
+	return result;
+}
+
 exports.validatePublishData=function(req){
 	var error;
 	var input=req.body;
@@ -101,4 +114,30 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 	} 
 	advertisement.save();
 	return advertisement;
+}
+
+exports.searchBook=function(query,callback){
+	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},function(err,books){
+		var result=convertIdsToArray(books);
+		Advertisement.find({product_id:{$in:result}},function(err,advertisement){
+		callback(advertisement);
+		});
+	});
+}
+
+exports.searchElectronics=function(query,callback){
+	Electronics.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},function(err,electronics){
+		var result=convertIdsToArray(electronics);
+		Advertisement.find({product_id:{$in:result}},function(err,advertisement){
+		callback(advertisement);
+		});
+	});
+}
+exports.searchOther=function(query,callback){
+	Other.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},function(err,others){
+		var result=convertIdsToArray(others);
+		Advertisement.find({product_id:{$in:result}},function(err,advertisement){
+		callback(advertisement);
+		});
+	});
 }

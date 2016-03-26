@@ -1,219 +1,100 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>VEND:An online web portal to buy/sell/share things in NITH Campus</title>
-<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="/js/jquery.min.js"></script>
-<!-- Custom Theme files -->
-<!--theme-style-->
-<link href="/css/style.css" rel="stylesheet" type="text/css" media="all" />	
-<!--//theme-style-->
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="Mattress Responsive web template, Bootstrap Web Templates, Flat Web Templates, Andriod Compatible web template, 
-Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyErricsson, Motorola web design" />
-<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-<!--fonts-->
-<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700,900' rel='stylesheet' type='text/css'><!--//fonts-->
-<!-- start menu -->
-<link href="/css/memenu.css" rel="stylesheet" type="text/css" media="all" />
-<script type="text/javascript" src="/js/memenu.js"></script>
-<script>$(document).ready(function(){$(".memenu").memenu();});</script>
-<script src="/js/simpleCart.min.js"> </script>
+  <title>Vend</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
+    <script src="/js/jquery.min.js"></script>
 
-
-
+  <script src="/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	  $(document).ready(function() {
+<% include partials/dropdown%>
+});
+</script>
 </head>
 <body>
+
+<div id="wrap">
+<div id="main">
 <!--header-->
-<div class="header">
-	<div class="header-top">
-		<div class="container">
-			<div class="logo">
-					<!-- <h1><a href="/"><img src="/images/logo1.png" alt="" height="40px" width="100px" /></a></h1> -->
-					<div id="head" style="margin-top:-10px">VEND</div>
-				</div>
-			<div class="header-left">
-			
-				<div class="search-box">
-					<div >
-						<form action="/api/view/search" method="POST">
-							<input style="width:400px; left:600px; top:15px" class="sb-search-input" placeholder="Enter your search term..." type="text" name="query" id="search">
-							<input class="sb-search-submit" style="left:1000px; top:15px;z-index:1000" type="submit" value="Submit">
-						</form>
-					</div>
-				</div>
-			
-					<!-- <script src="js/classie.js"></script>
-					<script src="js/uisearch.js"></script>
-						<script>
-							new UISearch( document.getElementById( 'sb-search' ) );
-						</script> 
-					-->
-				<div style="width:60px; height:60px;margin-top:-15px; list-style:none">	
-					<%if(response.user_info===undefined){%>
-					<li><img src='/images/image_placeholder.png' style="height:50px; width:50px"/></li>	
-					<li style="color:#fff">Guest!! </li>
-					<%}else%>
-					<% if(response.user_info!==undefined){%>
-					<li><img src='<%=response.user_info.profile_pic%>' style="height:50px; width:50px"/></li>	
-					<li style="color:#fff"><%=response.user_info.firstname%> </li>
-				
-				<%}%>
-				</div>
-					<div class="clearfix"> </div>
-			</div>
-				
-		</div>
-		</div>
-		<div class="container">
-			<div class="head-top">
-				
-		  <div class=" h_menu4">
-				<ul class="memenu skyblue">
-					  <li><a class="color8" href="/">HOME</a></li>	
-				      <li><a class="color1" href="/api/view/products">ADVERTISEMENTS</a>
-				      	<div class="mepanel">
-						<div class="row">
-							<div class="col1">
-								<div class="h_nav">
-									<ul>
-										<li><a href="/api/view/books">Books</a></li>
-										<li><a href="/api/view/electronics">Electronics</a></li>
-										<li><a href="/api/view/others">Others</a></li>
-									</ul>	
-								</div>							
-							</div>
-						
-						  </div>
-						</div>
-					</li>
-
-				    <li class="grid"><a class="color2" href="/api/advertisement/publish">POST YOUR AD</a></li>
-				    <li class="grid"><a class="color2" href="/api/view/user/activities">YOUR ACTIVITIES</a></li>
-				    
-				    
-					<% if(response.user_info===undefined){%>
-
-					<li><a class="color4" href="/login">LOGIN</a></li>	
-				
-					<%}%>
-					
-						
-				<li><a class="color6" href="contact.html">CONTACT US</a></li>
-				<% if(response.user_info!==undefined){%>
-
-					<li><a class="color4" href="/api/user/logout">LOGOUT</a></li>	
-				
-					<%}%>
-			  </ul> 
-			</div>
-				
-				<div class="clearfix"> </div>
-		</div>
-		</div>
-	</div>
-
-	<div class="banner-products">
-		
-	</div>
+<% include partials/header%>
 
 <!--content-->
-<div class="container">
-	<div class="cont">
-		<div class="content">
-			
-			<div class="content-top">
-				<h1>ADVERTISEMENTS UNDER ELECTRONICS</h1>
-				<div class="grid-in">
-					<%for(var i=0;i<response.electronics.length;i++) {%>
-					<div class="col-md-3 grid-top simpleCart_shelfItem">
-						<div class="b-link-stripe b-animate-go  thickbox">
-						<img src='<%= response.electronics[i].thumb %>' alt="/images/t3.jpg" width="250px" height="250px" alt="image">
-							<div class="b-wrapper">
-								<h3 class="b-animate b-from-left    b-delay03 ">
-									<span><%=response.electronics[i].category%></span>
-								<form action="/api/view/advertisement" method="POST">
-									<input type="hidden" value='<%=response.electronics[i]._id%>' name="ad_id">
-									<input type="hidden" value='<%=response.electronics[i].category%>' name="category">
-									<input type="hidden" value='<%=response.electronics[i].product_id%>' name="product_id">
+<div class="container" style="margin-top: 5%;">
 
-									<input type="submit" value="VIEW ADVERTISEMENT" style="opacity:0.3; color:#000; width:250px; height:250px">
-								</form>
-								</h3>
-							</div>
-						</div>
 
-					<p><%=response.electronics[i].description%></p>
-					<p class="number item_price"><i> </i>Rs.<%=response.electronics[i].price%>
-					<br/>Available for <%=response.electronics[i].kind%>	
-					</p>
-					</div>
-					<%}%>
-					<%if(response.electronics.length===0){%>
-					<p>
-						No Results Found!!
-						</p>
-					<% }%>
-								
+<!-- main content block -->
+<div class="col-md-12">
+  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
 
-					<div class="clearfix"> </div>
-				</div>
-			</div>
-			
-			
-			
-		
+    <!-- /container -->
+
+    <div class="row" style="margin-top: 15px;">
+
+        <!-- for Others panel -->
+
+        <div class="col-md-12">
+          <div class="panel panel-success">
+            <div class="panel-heading" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  Electronic Products on Vend
+                </strong>
+              </h4>
+            </div>
+
+            <!-- for each  advertisement -->
+            <div class="row" style="padding: 10px;">
+
+            <%for(var i=0;i<response.electronics.length;i++) {%>
+
+              
+          	<%response.advertisement=response.electronics[i];%>
+              <%include partials/advertisement%>
+
+          <%}%>
+
+					
+          <%if(response.electronics.length===0){%>
+          <div align="center">
+          <strong>
+            No Results Found!!
+            </strong>
+          </div>
+          <% }%>
+
+            </div>
+
+            <div class="panel-footer" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  That's all in Electronics.
+                </strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+
+  </div>
+</div>
+<!-- end main content block -->
+  
+<!-- /conatainer after nav -->
+</div>
+<!-- below two /div for main and wrap -->
+
 
 </div>
-</div>	
 </div>
-
-
-
-<div class="footer" style="position:relative; margin-top:-450px">
-				<div class="container">
-			<div class="footer-top-at">
-			
-				<div class="col-md-3 amet-sed">
-				<h4>MORE INFO</h4>
-				<ul class="nav-bottom">
-						<li><a href="/">How to order</a></li>
-						<li><a href="/">FAQ</a></li>
-						<li><a href="contact.html">Location</a></li>
-						<li><a href="/">Shipping</a></li>
-					</ul>	
-				</div>
-				<div class="col-md-3 amet-sed">
-					<h4>CATEGORIES</h4>
-					<ul class="nav-bottom">
-						<li><a href="/api/view/products">Books</a></li>
-										<li><a href="/api/view/products">Electronics</a></li>
-										<li><a href="/api/view/products">Others</a></li>
-					</ul>
-					
-				</div>
-				<div class="col-md-3 amet-sed">
-					<h4>         </h4>
-					
-					
-				</div>
-				<div class="col-md-3 amet-sed ">
-				<h4>CONTACT US</h4>
-					<p>VEND</p>
-					<p>NIT Hamirpur</p>
-					<p>office :  +12 34 995 0792</p>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
-		</div>
-		<div class="footer-class">
-			<p>© 2015 VEND. All Rights Reserved </p>
-		</div>
-</div>
+<%include partials/footer%>
 </body>
 </html>
 			

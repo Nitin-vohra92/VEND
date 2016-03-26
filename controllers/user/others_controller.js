@@ -8,10 +8,15 @@ var Wish=require('../../models/Wish');
 
 var Notification=require('../../models/Notification');
 
+var userFunctions=require("../functions/user");
+
+
 //for profile picture
 var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
+
+//after confirm page this register is done
 
 exports.register=function(req,res,input,image_path){
 
@@ -35,20 +40,13 @@ exports.register=function(req,res,input,image_path){
 
 
 	other.save();
-	var account=new Account(input);
-	account.user_id=other._id;
-	account.name=input.firstname+' '+input.lastname;
 
-	account.save();
-	console.log("Others Saved");
+	var account=userFunctions.saveAccount(other,input.username,input.password,input.type);
 	
 	delete req.session.temp_id;
-	req.session.user_id=account.user_id;
-	req.session.user_type=account.type;
-	req.session.save(function(err) {
-		console.log(err);
-		res.redirect('/');
-	});
+	userFunctions.setSession(req,account);
+
+	res.redirect('/');
 }
 
 exports.find=function(callback,account){
@@ -66,14 +64,13 @@ exports.home=function(req,res){
 		if(err)
 			console.log(err);
 		else{
-			response.user_info=other;
-			console.log(req.session);
+			response.user_info=req.session;
 			//getting latest advertisements
 			Advertisement.find({}, null, {limit: 4,sort: {'createdAt': -1}}).exec(function(err, advertisement) {
 				response.latest=advertisement;
 				console.log('Inside latest');
 				//getting recently viewed
-				Advertisement.find({}, null, {limit: 4}).exec(function(err, advertisement) {
+				RecentlyViewed.find({}, null, {limit: 4}).exec(function(err, advertisement) {
   					response.recent=advertisement;
   					console.log('Inside recents');
   					//change it

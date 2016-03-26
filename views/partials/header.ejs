@@ -55,13 +55,13 @@
             <%if(response.user_info!==undefined){%>
             <!-- if user logged in -->
             <div class="col-md-3">
-            <img class="img img-circle" src='<%=response.user_info.profile_pic%>' style="width: 50px; height: 50px;">
+            <img class="img img-circle" src='<%=response.user_info.profile_pic%>' alt='Profile Picture' style="width: 50px; height: 50px;">
             </div>
 
              <div class="dropdown" >
              
                 <div class="col-md-9" style="margin-top:5px;">
-                  <button class="btn btn-info btn-block dropdown-toggle" type="button" data-toggle="dropdown" text-align="left" ><%=response.user_info.firstname%>
+                  <button class="btn btn-info btn-block dropdown-toggle" type="button" data-toggle="dropdown" text-align="left" ><%=response.user_info.username%>
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
                     <li><a href="#">Account</a></li>
