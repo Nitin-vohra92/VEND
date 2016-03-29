@@ -30,7 +30,6 @@ var advertisementFunctions=require('./functions/advertisement');
 //for home view
 exports.home=function(req,res){
 	//if any user is logged in
-	console.log(req.session);
 	if(req.session.user_id){
 		var user_type=req.session.user_type;
 			switch(user_type){
@@ -49,7 +48,6 @@ exports.home=function(req,res){
 	//if no user logged in
 	else{
 		var response={};
-
 			//getting latest advertisements
 			Advertisement.find({}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
 				response.latest=advertisement;
@@ -60,9 +58,7 @@ exports.home=function(req,res){
   					//console.log('Inside recents');
   						Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
   							response.wishes=wishes;
-  						
-  							//console.log('Inside wishes');
-							//res.json(response);
+  							//res.json(response);
 							res.render('index',{response:response});
 						});
   				});
@@ -77,22 +73,30 @@ exports.advertisement=function(req,res){
 		userFunctions.sendToLogin(res);
 	}
 	else{
+		var response={};
+		response.user_info=req.session;
+		var id=req.query.id;
+		advertisementFunctions.getAdvertisement(id,function(advertisement){
+			response.advertisement=advertisement;
+			var category=advertisement.category;
+			var product_id=advertisement.product_id;
+			advertisementFunctions.getProduct(category,product_id,function(product){
+				response.product=product;
+				userFunctions.getAccount(advertisement.user_id,function(publisher){
+					response.publisher=publisher;
+					response.bids=[];
+					response.comments=[];
+					response.ratings=[];
+					//also add to activity viewed
+					res.render('temp',{response:response});
+				});
+			});
+		});
 
-	//will be changed soon
-	var input=req.body;
-	var recent=new RecentlyViewed(input);
-	recent.user_id=req.session.user_id;
-	recent.save();
-	//now send the content
-	console.log("View Advertisement");
-	console.log(input);
-	var response={};
-	response.user_info=req.session;
-	var category=input.category;
+	/*
 	var responseSetter=function(result){
-		response.product=result;
 		//find comments and rating
-		console.log('printing result'+result);
+
 		Comment.find({ad_id:input.ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, comments) {
   			response.comments=comments;
   			Rating.find({ad_id:input.ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, ratings) {
@@ -131,58 +135,10 @@ exports.advertisement=function(req,res){
 			break;
 	}
 						
-  	});
+  	});*/
 	
-}
-}
-//only one type of request for viewing an advertisement
-//this an above will merge
-//for advertisement view after get
-exports.get_advertisement=function(req,res){
-	if(req.session.user_id==undefined){
-		userFunctions.sendToLogin(res);
-	}
-	else{
-		var input=req.session;
-				//now send the content
-		var response={};
-		response.user_info=req.session;
-		response.advertisement=input;
-		var category=input.category;
-		console.log(input);
-		var responseSetter=function(result){
-			response.product=result;
-			//find comments and rating
-			Comment.find({ad_id:input.ad_id}, null, {sort: {'createdAt': -1}}).exec(function(err, comments) {
-	  			response.comments=comments;
-	  			console.log(comments);
-	  			Rating.find({ad_id:input.ad_id}, null, {sort: {'createdAt': -1}}).exec(function(err, ratings) {
-	  				response.ratings=ratings;
-	  				Bid.find({ad_id:input.ad_id}, null, {sort: {'amount': -1}}).exec(function(err, bids) {
-		  				response.bids=bids;
-		  				
-						console.log('printing result'+response.advertisement);
-						//res.json(response);
-		  				res.render('advertisement',{response:response});
-					});
-				});
-			});
-
-		};
-		switch(category){
-			case 'Book':
-				Book.find(responseSetter,input);
-				break;
-			case 'Electronics':
-				Electronics.find(responseSetter,input);
-				break;
-			case 'Other':
-				OtherProduct.find(responseSetter,input);
-				break;
-		}
 	}
 }
-
 
 //for products view
 exports.products=function(req,res){
@@ -314,29 +270,45 @@ exports.others=function(req,res){
 }
 //for view more latest
 exports.latest=function(req,res){
+	var response={};
 	if(req.session.user_id===undefined)
 		userFunctions.sendToLogin(res);
 	else{
-		Advertisement.latest(req,res);
+		response.user_info=req.session;
+		advertisementFunctions.latest(function(advertisements){
+			response.latest=advertisements;
+			res.render('latest',{response:response});
+		});
 	}
 }
 
 //for view more recently viewed
 exports.viewed=function(req,res){
+	var response={};
 	if(req.session.user_id===undefined)
 		userFunctions.sendToLogin(res);
 	else{
-		Advertisement.viewed(req,res);
+		response.user_info=req.session;
+		advertisementFunctions.recent(function(advertisements){
+			response.recent=advertisements;
+			res.render('recent',{response:response});
+		});
 	}
 }
 
 
 //for view more recently viewed
 exports.recommended=function(req,res){
+	var response={};
 	if(req.session.user_id===undefined)
 		userFunctions.sendToLogin(res);
 	else{
-		Advertisement.recommended(req,res);
+		var user_type=req.session.user_type;
+		response.user_info=req.session;
+		advertisementFunctions.recommended(user_type,function(advertisements){
+			response.recommended=advertisements;
+			res.render('recommended',{response:response});
+		});
 	}
 }
 
@@ -397,27 +369,27 @@ exports.search=function(req,res){
 	response.user_info=req.session;
 	switch(input.category){
 		case 'User':
-			Account.find({name: /input.query/i},function(err,users){
-					response.users=users;
-					res.render('search',{response:response});
+			userFunctions.searchUser(query,function(users){
+				response.users=users;
+				res.render('search',{response:response});
 			});
 			break;
 		case 'Book':
-			BookModel.find({$or:[{title: /input.query/i},{author: /input.query/i}]},function(err,books){
-					response.books=books;
-					res.render('search',{response:response});
+			advertisementFunctions.searchBook(query,function(advertisements){
+				response.books=advertisements;
+				res.render('search',{response:response});
 			});
 			break;
 		case 'Electronics':
-			ElectronicsModel.find({$or:[{name: /input.query/i},{brand: /input.query/i},{sub_category: /input.query/i}]},function(err,electronics){
-					response.electronics=electronics;
-					res.render('search',{response:response});
+			advertisementFunctions.searchElectronics(query,function(advertisements){
+				response.electronics=advertisements;
+				res.render('search',{response:response});
 			});
 			break;
 		case 'Others':
-			OtherModel.find({$or:[{name: /input.query/i},{brand: /input.query/i},{sub_category: /input.query/i}]},function(err,others){
-					response.others=others;
-					res.render('search',{response:response});
+			advertisementFunctions.searchOther(query,function(advertisements){
+				response.others=advertisements;
+				res.render('search',{response:response});
 			});
 			break;
 		default:
@@ -438,12 +410,4 @@ exports.search=function(req,res){
 	}
 
 }
-
-// Advertisement.find({$in:books_id},function(err,advertisement){
-// 						console.log('Inside Search: \n'+advertisement+'\n'+books_id);
-// 						response.books={};//advertisement;
-// 						response.electronics={};
-// 						response.others={};
-// 						res.render('search',{response:response});
-// 					});	
 

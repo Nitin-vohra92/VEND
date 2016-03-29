@@ -34,6 +34,7 @@
 
     <div class="row" style="margin-top: 15px;">
 
+          <%if(response.users.length!==0){%>
     <!-- for user panel on page -->
         <div class="col-md-12">
           <div class="panel panel-success">
@@ -72,8 +73,11 @@
             </div>
           </div>
         </div>
+        <%}%>
 
     <!-- for books panel on page -->
+
+          <%if(response.books.length!==0){%>
         <div class="col-md-12">
           <div class="panel panel-success">
             <div class="panel-heading" align="center" style="padding: 5px;">
@@ -111,8 +115,10 @@
             </div>
           </div>
         </div>
-
+        <%}%>
         <!-- for Elctronics panel on page -->
+
+          <%if(response.electronics.length!==0){%>
         <div class="col-md-12">
           <div class="panel panel-success">
             <div class="panel-heading" align="center" style="padding: 5px;">
@@ -153,9 +159,10 @@
             </div>
           </div>
         </div>
-
+        <%}%>
         <!-- for Others panel -->
 
+          <%if(response.others.length!==0){%>
         <div class="col-md-12">
           <div class="panel panel-success">
             <div class="panel-heading" align="center" style="padding: 5px;">
@@ -196,9 +203,17 @@
             </div>
           </div>
         </div>
+        <%}%>
 
 
-
+          <%if(response.users.length===0&&response.books.length===0&&response.electronics.length===0&&response.others.length===0){%>
+            <div align="center">
+          <strong>
+            Sorry!! We couldn't find anything that matches your query.
+            </strong>
+          </div>
+          
+          <%}%>
       </div>
 
 

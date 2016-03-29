@@ -7,7 +7,10 @@ var Activity=require('../../models/Activity');
 var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
-var UPLOAD_DIR = "/uploads/productimages/books/";
+var UPLOAD_DIR = "\\uploads\\productimages\\books\\";
+
+
+ var helper=require('../functions/helper');
 
 exports.publish=function(req,callback){
 	var input=req.body;
@@ -20,47 +23,46 @@ exports.publish=function(req,callback){
  	if(Array.isArray(imagefiles)){
  		for(var i=0; i<imagefiles.length;i++){
  			var oldPath=imagefiles[i].path;
+
  			var ext=path.extname(oldPath);
-
-        	var savedPath = UPLOAD_DIR+book._id+i+ext;
- 			var newPath=APP_DIR+'/public/'+savedPath;
-
-        	book.images.push({path:savedPath});        
-        	var source = fs.createReadStream(oldPath);
-			var dest = fs.createWriteStream(newPath);
-			source.pipe(dest);
-			fs.unlink(oldPath);
+			var savedPath = UPLOAD_DIR+book._id+i+ext;
+	 		var newPath=APP_DIR+'\\public'+savedPath;
+         	book.images.push({path:savedPath});        
+	
+			helper.resizeAndMoveImage(oldPath,newPath);     	
  		}
+
  	}
  	else{
  		var oldPath=imagefiles.path;
- 		var ext=path.extname(oldPath);
- 		var savedPath = UPLOAD_DIR+book._id+i+ext;
- 		var newPath=APP_DIR+'/public/'+savedPath;
+		var ext=path.extname(oldPath);
+	 	var savedPath = UPLOAD_DIR+book._id+i+ext;
+	 	var newPath=APP_DIR+'\\public\\'+savedPath;
+        book.images.push({path:savedPath}); 
 
-        book.images.push({path:savedPath});        
-    	var source = fs.createReadStream(oldPath);
-		var dest = fs.createWriteStream(newPath);
-		source.pipe(dest);
-		fs.unlink(oldPath);
+		helper.resizeAndMoveImage(oldPath,newPath);
+ 		
  	}
 
 
  	//images done
-
-
- 	book.save();
- 	callback(book._id,book.images[0].path);
- 	//move to advertisement functions
 	
 
 
+		book.save();
+		callback(book._id,book.images[0].path);
 	
 }
 
 
-exports.find=function(advertisement,callback){
-	Book.findOne({_id:advertisement.product_id},function(err,product){
+exports.find=function(id,callback){
+	Book.findOne({_id:id},function(err,product){
 		callback(product);
+	});
+}
+
+exports.search=function(query,callback){
+	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},function(err,books){
+		callback(books);
 	});
 }

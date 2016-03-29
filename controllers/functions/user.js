@@ -410,3 +410,9 @@ exports.searchUser=function(query,callback){
 		callback(users);
 	});
 }
+
+exports.getAccount=function(id,callback){
+	Account.findOne({user_id:id},function(err,account){
+		callback(account);
+	});
+}

@@ -65,53 +65,8 @@ exports.publishpage=function(req,res){
 }
 
 
-exports.latest=function(req,res){
-	var response={};
-	response.user_info=req.session;
-	Advertisement.find({}, null, {sort: {'createdAt': -1}}).exec(function(err, advertisement) {
-  		response.latest=advertisement;
-  		res.json(response);
-  		//res.render('',{response:response});
 
-	});
-}
-//recently viewed
-exports.viewed=function(req,res){
 
-	var response={};
-	response.user_info=req.session;
-	Advertisement.find({}, null, {}).exec(function(err, advertisement) {
-  		response.recent=advertisement;
-  		res.json(response);
-  		//res.render('recent',{response:response});
-
-	});
-}
-
-exports.recommended=function(req,res){
-	var response={};
-	response.user_info=req.session;
-	var user_type=req.session.user_type;
-	if(user_type==='Other'){
-		Advertisement.find({}, null, {sort: {'createdAt': -1}}).exec(function(err, recommendations) {
-  			response.recommended=recommendations;
-  			console.log('Inside recommended');
-				 res.json(response);
-				//res.render('recommended',{response:response});
-			
-		});
-	}
-	else{
-		Advertisement.find({user_type:user_type}, null, {sort: {'createdAt': -1}}).exec(function(err, recommendations) {
-  			Response.recommended=recommendations;
-  			console.log('Inside recommended');
-  				console.log('Inside wishes');
-				 res.json(response);
-				//res.render('recommended',{response:response});
-
-		});
-	}
-}
 
 exports.comment=function(req,res){
 	//if no user logged in

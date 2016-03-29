@@ -6,7 +6,7 @@ var advertisementModel=new Schema({
 		type: String,
 		trim: true
 	},
-	user_desc:{
+	user_name:{
 		type:String,
 		default:'Anonymous'
 	},
@@ -26,6 +26,9 @@ var advertisementModel=new Schema({
 	bid:{
 		type:String
 	},
+	location:{
+		type: String
+	},
 	price:{
 		type: String
 	},
@@ -34,6 +37,10 @@ var advertisementModel=new Schema({
 	},
 	name:{
 		type: String
+	},
+	description:{
+		type: String,
+		default:'No Description by Publisher'
 	},
 	createdAt:{
 		type: Date,

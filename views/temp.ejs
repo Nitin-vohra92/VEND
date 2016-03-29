@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Vend</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
+    <script src="/js/jquery.min.js"></script>
+
+  <script src="/js/bootstrap.min.js"></script>
+<script src="/js/imagezoom.js"></script>
+
+<script type="text/javascript">
+	  $(document).ready(function() {
+<% include partials/dropdown%>
+});
+</script>
+</head>
+<body>
+
+<div id="wrap">
+<div id="main">
+<!--header-->
+<% include partials/header%>
+
+<!--content-->
+<div class="container" style="margin-top: 5%;">
+
+
+<!-- main content block -->
+<div class="col-md-12">
+  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
+
+    <!-- /container -->
+
+    <div class="row" style="margin-top: 15px;">
+
+          <%include partials/advertisement_view_images%>
+
+          <div class="col-md-5">
+            <div class="panel panel-info"  align="center">
+            <div class="panel-heading">
+            <h1>
+            <strong class="text-info">
+            <%=response.product.name%>
+            </strong>
+            </h1>
+            </div>
+              <div>
+                
+                <div class="clearfix"> </div>
+              </div>
+              
+              <h5>By: <%=response.advertisement.user_desc%></h5>
+              <hr>
+              
+              <div>
+                Posted under:<%=response.advertisement.category%><br>
+                <% if(response.advertisement.category!=='Book'){%>
+                Sub-Category:<%=response.product.sub_category%><br>
+                <%}%>
+                <br>
+                Price: Rs. <%=response.advertisement.price%><br>
+                Description: <%=response.advertisement.description%><br>
+                Available for <%=response.advertisement.kind%> 
+              </div>
+              
+                <a href="/api/user/ping">Ping the Seller!!</a>
+              
+            </div>
+          </div>
+
+
+    </div>
+    <!-- end row ^^-->
+
+  </div>
+</div>
+<!-- end main content block -->
+  
+<!-- /conatainer after nav -->
+</div>
+<!-- below two /div for main and wrap -->
+
+
+</div>
+</div>
+<%include partials/footer%>
+</body>
+</html>
+			

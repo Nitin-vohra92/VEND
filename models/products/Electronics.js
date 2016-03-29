@@ -19,10 +19,6 @@ var productModel=new Schema({
 		type: String
 	}
 	}],
-	description:{
-		type: String,
-		default:'No Desription by Publisher'
-	},
 	createdAt:{
 		type: Date,
 		default:Date.now

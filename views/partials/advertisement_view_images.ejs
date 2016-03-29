@@ -1,0 +1,29 @@
+<div class="col-md-7 single-top"> 
+              <div class="flexslider">
+                  <ul class="slides">
+                    <%for(var i=0;i<response.product.images.length;i++){%>
+                    <li data-thumb='<%=response.product.images[i].path%>'>
+                        <div class="thumb-image"> <img src="<%=response.product.images[i].path%>" data-imagezoom="true" class="img-responsive"> </div>
+                    </li>
+                    <%}%>
+                  </ul>
+              </div>
+
+            <!-- slide -->
+
+
+            <!-- FlexSlider -->
+            <script defer src="/js/jquery.flexslider.js"></script>
+            <link rel="stylesheet" href="/css/flexslider.css" type="text/css" media="screen" />
+
+            <script>
+            // Can also be used with $(document).ready()
+            $(window).load(function() {
+              $('.flexslider').flexslider({
+                animation: "slide",
+                controlNav: "thumbnails"
+              });
+            });
+            </script>
+
+          </div>

@@ -3,9 +3,12 @@ var path=require('path');
 
 var Advertisement=require('../../models/Advertisement');
 
-var Book=require('../../models/products/Book');
-var Electronics=require('../../models/products/Electronics');
-var Other=require('../../models/products/Other');
+var Book=require('../product/books_controller');
+var Electronics=require('../product/electronics_controller');
+var Other=require('../product/others_controller');
+
+
+var RecentlyViewed=require('../../models/RecentlyViewed');
 
 
 function convertIdsToArray(ids){
@@ -101,6 +104,7 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 	var advertisement=new Advertisement(input);
 	advertisement.product_id=product_id;
 	advertisement.user_id=req.session.user_id;
+	advertisement.user_name=req.session.name;
 	advertisement.user_type=req.session.user_type;
 	advertisement.thumb=thumb_path;
 	switch(input.category){
@@ -117,27 +121,91 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 }
 
 exports.searchBook=function(query,callback){
-	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},function(err,books){
+	Book.search(query,function(books){
 		var result=convertIdsToArray(books);
-		Advertisement.find({product_id:{$in:result}},function(err,advertisement){
-		callback(advertisement);
+		Advertisement.find({product_id:{$in:result}},function(err,advertisements){
+		callback(advertisements);
 		});
 	});
 }
 
 exports.searchElectronics=function(query,callback){
-	Electronics.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},function(err,electronics){
+	Electronics.search(query,function(electronics){
 		var result=convertIdsToArray(electronics);
-		Advertisement.find({product_id:{$in:result}},function(err,advertisement){
-		callback(advertisement);
+		Advertisement.find({product_id:{$in:result}},function(err,advertisements){
+		callback(advertisements);
 		});
 	});
+
 }
 exports.searchOther=function(query,callback){
-	Other.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},function(err,others){
+	Other.search(query,function(others){
 		var result=convertIdsToArray(others);
-		Advertisement.find({product_id:{$in:result}},function(err,advertisement){
-		callback(advertisement);
+		Advertisement.find({product_id:{$in:result}},function(err,advertisements){
+		callback(advertisements);
 		});
 	});
+
+	
+}
+
+//latest
+exports.latest=function(callback){
+	Advertisement.find({}, null, {sort: {'createdAt': -1}}).exec(function(err, latests) {
+  		callback(latests);
+	});
+}
+
+//recently viewed
+exports.recent=function(callback){
+	RecentlyViewed.find({}, null, {}).exec(function(err, recents) {
+  		callback(recents);
+	});
+}
+
+
+//recommended logic here-change it
+exports.recommended=function(user_type,callback){
+	if(user_type==='Other'){
+		Advertisement.find({}, null, {sort: {'createdAt': -1}}).exec(function(err, recommendations) {
+  			callback(recommendations);
+		});
+	}
+	else{
+		Advertisement.find({user_type:user_type}, null, {sort: {'createdAt': -1}}).exec(function(err, recommendations) {
+  			callback(recommendations);
+  		});
+	}
+}
+
+exports.getAdvertisement=function(id,callback){
+	Advertisement.findOne({_id:id},function(err,advertisement){
+		if(err)
+			console.log(err);
+		callback(advertisement);
+	});
+}
+
+exports.getProduct=function(category,product_id,callback){
+	switch(category){
+		case 'Book':
+			Book.find(product_id,function(product){
+				callback(product);
+			});
+			break;
+		case 'Electronics':
+			Electronics.find(product_id,function(product){
+				callback(product);
+			});
+			break;
+		case 'Other':
+			Other.find(product_id,function(product){
+				callback(product);
+			});
+			break;
+	}
+}
+
+exports.resizeImage=function(imagepath,callback){
+
 }

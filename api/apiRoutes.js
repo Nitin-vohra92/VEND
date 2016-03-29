@@ -3,6 +3,8 @@ var express=require('express');
 var router=express.Router();
 var user=require('../controllers/user/users_controller');
 var advertisement=require('../controllers/product/advertisements_controller');
+
+
 var view=require('../controllers/views_controller');
 
 
@@ -44,9 +46,8 @@ router.route('/view/home').get(view.home);
 
 //sending content for advertisement page
 //will contain comment and rating
- router.route('/view/advertisement').post(view.advertisement);
 
-router.route('/view/advertisement').get(view.get_advertisement);
+router.route('/view/advertisement').get(view.advertisement);
 
 //for comments of any advertisement view all //for ad page sent via above request
  router.route('/view/advertisement/comment').post(view.comments);

@@ -9,6 +9,8 @@ var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 var UPLOAD_DIR = "/uploads/productimages/others/";
 
+var helper=require('../functions/helper');
+
 
 exports.publish=function(req,callback){
 	var input=req.body;
@@ -27,12 +29,9 @@ exports.publish=function(req,callback){
 	        var savedPath = UPLOAD_DIR+other._id+i+ext;
  			var newPath=APP_DIR+'/public/'+savedPath;
 
-        	other.images.push({path:savedPath});        
-        	       
-	        var source = fs.createReadStream(oldPath);
-			var dest = fs.createWriteStream(newPath);
-			source.pipe(dest);
-			fs.unlink(oldPath);
+        	other.images.push({path:savedPath}); 
+    		helper.resizeAndMoveImage(oldPath,newPath); 
+
 	 	}
 	 }
 	 else{
@@ -42,12 +41,9 @@ exports.publish=function(req,callback){
  		var savedPath = UPLOAD_DIR+other._id+i+ext;
  		var newPath=APP_DIR+'/public/'+savedPath;
 
-        other.images.push({path:savedPath});        
-        	          
-    	var source = fs.createReadStream(oldPath);
-		var dest = fs.createWriteStream(newPath);
-		source.pipe(dest);
-		fs.unlink(oldPath);
+        other.images.push({path:savedPath});
+    	helper.resizeAndMoveImage(oldPath,newPath); 
+
  	}
  	//images done
 
@@ -58,8 +54,14 @@ exports.publish=function(req,callback){
 
 }
 
-exports.find=function(advertisement,callback){
-	Others.findOne({_id:advertisement.product_id},function(err,product){
+exports.find=function(id,callback){
+	Others.findOne({_id:id},function(err,product){
 		callback(product);
+	});
+}
+
+exports.search=function(query,callback){
+	Others.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},function(err,others){
+		callback(others);
 	});
 }

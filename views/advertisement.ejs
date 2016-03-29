@@ -119,50 +119,45 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		<div class="product">
 			<div class="container">
 				
-				<div class="product-price1">
-				<div class="top-sing">
-				<div class="col-md-7 single-top">	
-		<div class="flexslider">
-			  <ul class="slides">
-			  	<%for(var i=0;i<response.product.images.length;i++){%>
-			    <li data-thumb='<%=response.product.images[i].path%>'>
-			        <div class="thumb-image"> <img src="<%=response.product.images[i].path%>" data-imagezoom="true" class="img-responsive"> </div>
-			    </li>
-			    <%}%>
-			  </ul>
-		</div>
+			<div class="product-price1">
+			<div class="top-sing">
+			<div class="col-md-7 single-top">	
+				<div class="flexslider">
+					  <ul class="slides">
+					  	<%for(var i=0;i<response.product.images.length;i++){%>
+					    <li data-thumb='<%=response.product.images[i].path%>'>
+					        <div class="thumb-image"> <img src="<%=response.product.images[i].path%>" data-imagezoom="true" class="img-responsive"> </div>
+					    </li>
+					    <%}%>
+					  </ul>
+				</div>
 
-	<div class="clearfix"> </div>
-<!-- slide -->
+			<div class="clearfix">
+			</div>
+			<!-- slide -->
 
 
 						<!-- FlexSlider -->
-  <script defer src="/js/jquery.flexslider.js"></script>
-<link rel="stylesheet" href="/css/flexslider.css" type="text/css" media="screen" />
+			<script defer src="/js/jquery.flexslider.js"></script>
+			<link rel="stylesheet" href="/css/flexslider.css" type="text/css" media="screen" />
 
-<script>
-// Can also be used with $(document).ready()
-$(window).load(function() {
-  $('.flexslider').flexslider({
-    animation: "slide",
-    controlNav: "thumbnails"
-  });
-});
-</script>
+			<script>
+			// Can also be used with $(document).ready()
+			$(window).load(function() {
+			  $('.flexslider').flexslider({
+			    animation: "slide",
+			    controlNav: "thumbnails"
+			  });
+			});
+			</script>
 
-	
-	
-	
-	
-	
-	
-					</div>	
+			</div>	
 					<div class="col-md-5 single-top-in simpleCart_shelfItem">
 						<div class="single-para ">
 						<h4><%=response.product.name%></h4>
 							<div class="star-on">
 								
-							<div class="clearfix"> </div>
+								<div class="clearfix"> </div>
 							</div>
 							
 							<h5 class="item_price">By: <%=response.advertisement.user_desc%></h5>
@@ -176,7 +171,7 @@ $(window).load(function() {
 								Price: Rs. <%=response.advertisement.price%><br>
 								Description: <%=response.advertisement.description%><br>
 								Available for <%=response.advertisement.kind%> 
-						</div>
+							</div>
 							
 								<a href="/api/user/ping" class="add-cart item_add">Ping the Seller!!</a>
 							

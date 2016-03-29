@@ -109,11 +109,13 @@
 
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
+            <%if(response.latest.length!==0){%>
                 <strong>
                 <a href="/api/view/advertisement/latest">
                   View more Latest Advertisements
                   </a>
                 </strong>
+            <%}%>
               </h4>
             </div>
           </div>
@@ -144,7 +146,7 @@
           <%if(response.recent.length===0){%>
           <div align="center">
           <strong>
-            No Results Found!!
+            Nothing here :(
             </strong>
           </div>
           <% }%>
@@ -152,11 +154,15 @@
 
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
+            <%if(response.recent.length!==0){%>
+
                 <strong>
                 <a href="/api/view/advertisement/viewed">
                   View more Recently Viewed
                   </a>
                 </strong>
+           <% }%>
+
               </h4>
             </div>
           </div>
@@ -188,7 +194,7 @@
           <%if(response.recommended.length===0){%>
           <div align="center">
           <strong>
-            No Results Found!!
+            Nothing here :(
             </strong>
           </div>
           <% }%>
@@ -196,11 +202,14 @@
 
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
+            <%if(response.recommended.length!==0){%>
+
                 <strong>
                 <a href="/api/view/advertisement/recommended">
                   View more Recommendations
                   </a>
                 </strong>
+              <%}%>
               </h4>
             </div>
           </div>

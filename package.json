@@ -16,6 +16,7 @@
     "express": "~4.13.1",
     "express-session": "^1.12.1",
     "jade": "~1.11.0",
+    "jimp": "^0.2.21",
     "mongoose": "latest",
     "morgan": "~1.6.1",
     "nodemailer": "^0.7.1",

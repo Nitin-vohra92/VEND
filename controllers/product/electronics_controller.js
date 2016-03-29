@@ -6,7 +6,10 @@ var Activity=require('../../models/Activity');
 var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
-var UPLOAD_DIR = "/uploads/productimages/electronics/";
+var UPLOAD_DIR = "\\uploads\\productimages\\electronics\\";
+
+var helper=require('../functions/helper');
+
 
 exports.publish=function(req,callback){
 	var input=req.body;
@@ -24,14 +27,11 @@ exports.publish=function(req,callback){
  			var ext=path.extname(oldPath);
 
  			var savedPath = UPLOAD_DIR+electronics._id+i+ext;
- 			var newPath=APP_DIR+'/public/'+savedPath;
+ 			var newPath=APP_DIR+'\\public'+savedPath;
  			
     	    electronics.images.push({path:savedPath});
+			helper.resizeAndMoveImage(oldPath,newPath); 
 
-    	    var source = fs.createReadStream(oldPath);
-			var dest = fs.createWriteStream(newPath);
-			source.pipe(dest);
-			fs.unlink(oldPath);
  		}
  	}
  	else{
@@ -40,11 +40,9 @@ exports.publish=function(req,callback){
     	var savedPath = UPLOAD_DIR+electronics._id+i+ext;
  		var newPath=APP_DIR+'/public/'+savedPath;
  		electronics.images.push({path:savedPath});
-    	             
-    	var source = fs.createReadStream(oldPath);
-		var dest = fs.createWriteStream(newPath);
-		source.pipe(dest);
-		fs.unlink(oldPath);
+    	
+    	helper.resizeAndMoveImage(oldPath,newPath); 
+    	
  	}
  	//images done
 
@@ -55,8 +53,14 @@ exports.publish=function(req,callback){
 	
 }
 
-exports.find=function(advertisement,callback){
-	Electronics.findOne({_id:advertisement.product_id},function(err,product){
+exports.find=function(id,callback){
+	Electronics.findOne({_id:id},function(err,product){
 		callback(product);
+	});
+}
+
+exports.search=function(query,callback){
+	Electronics.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},function(err,electronics){		
+		callback(electronics);
 	});
 }
