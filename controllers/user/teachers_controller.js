@@ -81,7 +81,7 @@ exports.home=function(req,res){
   						
   							console.log('Inside wishes');
   							Notification.find({$and:[{user_id:req.session.user_id},{read:0}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
-  							response.notifications=notifications;
+  							response.notification_count=notifications.length;
   						
   							console.log('Inside wishes');
 							 // res.json(response);

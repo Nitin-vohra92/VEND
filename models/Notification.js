@@ -2,32 +2,28 @@ var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
 
 var notificationModel=new Schema({ 
-	to_id:{
-		type: String,
-		trim: true
-	},
 	user_id:{
 		type: String,
 		trim: true
-	},
-	user_desc:{
-		type:String,
-		default:'Anonymous'
-	},
-	user_type:{
-		type:String,
-		default:'Anonymous'
 	},
 	read:{
 		type:Number,
 		default:0
 	},
-	desc:{
+	notification_desc:{
 		type:String
 	},
-	product_name:{
-		type:Number,
-		default:0
+	notification_ad_name:{
+		type:String
+	},
+	notification_ad_link:{
+		type:String
+	},
+	notification_user_name:{
+		type:String
+	},
+	notification_user_link:{
+		type:String
 	},
 	createdAt:{
 		type: Date,

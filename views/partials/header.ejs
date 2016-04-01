@@ -34,7 +34,12 @@
                     </li>
 
                     <li><a href="/publish">Publish an Ad</a></li>
-                    <li><a href="/api/view/user/notifications">Updates</a></li>
+                    <li><a href="/api/view/user/notifications">
+                    Updates
+                    <%if(response.notification_count>0){%>
+                      <span class="badge">response.notification_count</span>
+                    <%}%>
+                    </a></li>
               </ul>
               </div>
           </div>

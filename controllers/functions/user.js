@@ -8,6 +8,11 @@ var TemporaryUser=require('../../models/users/TemporaryUser');
 var Activity=require('../../models/Activity');
 var Account=require('../../models/Account');
 
+var ActivityNotification=require('../../models/ActivityNotification');
+var Notification=require('../../models/Notification');
+
+
+var advertisementFunctions=require('./advertisement');
 
 var CONF_FILE=require('../../conf.json');
 
@@ -81,6 +86,21 @@ function addActivity(user_info,activity_desc,activity_entity_name,activity_entit
 	activity.activity_entity_name=activity_entity_name;
 	activity.activity_entity_link=activity_entity_link;
 	activity.save();
+	return;
+
+}
+
+function addNotification(user_id,notification_desc,notification_ad_name,notification_ad_link,notification_user_name,notification_user_link){
+	//id to which notification is made not the one who causes the notification
+	var notification=new Notification();
+	notification.user_id=user_id;
+	notification.notification_desc=notification_desc;
+	notification.notification_ad_name=notification_ad_name;
+	notification.notification_ad_link=notification_ad_link;
+	notification.notification_user_name=notification_user_name;
+	notification.notification_user_link=notification_user_link;
+	notification.save();
+	// sendMail also now later think about sending on every notification???
 	return;
 
 }
@@ -405,6 +425,34 @@ exports.addPublishActivity=function(user_info,advertisement){
 
 }
 
+exports.addRatingActivity=function(user_info,input,callback){
+	var activity="Rated "+input.rating+" stars for advertisement:";
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		var activity_entity_name=advertisement.name;
+		var activity_entity_link='/api/view/advertisement?id='+input.ad_id;
+		addActivity(user_info,activity,activity_entity_name,activity_entity_link);
+		callback();
+	});
+
+}
+
+exports.addRatingNotification=function(user_info,input,callback){
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		//id of the publisher
+		var user_id=advertisement.user_id;
+		var notification_desc=' rated '+input.rating+' stars on your advertisement :';
+		var notification_ad_name=advertisement.name;
+		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_user_name=user_info.name;
+		var notification_user_link='/api/view/user?id='+user_info.user_id;
+		addNotification(user_id,notification_desc,notification_ad_name,notification_ad_link,notification_user_name,notification_user_link);
+		callback();
+	});
+
+}
+
+
+
 exports.searchUser=function(query,callback){
 	Account.find({$or:[{name: { $regex: query, $options: "i" }},{type:{ $regex: query, $options: "i" }}]},function(err,users){
 		callback(users);
@@ -416,3 +464,15 @@ exports.getAccount=function(id,callback){
 		callback(account);
 	});
 }
+
+exports.sendToAd=function(res,ad_id){
+	res.redirect('/api/view/advertisement?id='+ad_id);
+}
+
+exports.addActivityNotification=function(user_id,notification,callback){
+	var activityNotification=new ActivityNotification();
+	activityNotification.user_id=user_id;
+	activityNotification.notification=notification;
+	activityNotification.save();
+	callback();
+}	

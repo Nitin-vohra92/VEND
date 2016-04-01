@@ -10,6 +10,7 @@ var Other=require('../product/others_controller');
 
 var RecentlyViewed=require('../../models/RecentlyViewed');
 
+var Rating=require('../../models/Rating');
 
 function convertIdsToArray(ids){
 	var result=[];
@@ -206,6 +207,19 @@ exports.getProduct=function(category,product_id,callback){
 	}
 }
 
-exports.resizeImage=function(imagepath,callback){
-
+exports.addRating=function(input,user_id,callback){
+	//also check if rating already done
+	Rating.findOne({user_id:user_id},function(err,result){
+		if(result===null){
+		var rating=new Rating(input);
+		rating.user_id=user_id;
+		rating.save();
+		}
+		else{
+			result.rating=input.rating;
+			result.save();
+		}
+		callback();
+	});
+	
 }

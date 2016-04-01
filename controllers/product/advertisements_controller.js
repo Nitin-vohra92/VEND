@@ -5,7 +5,7 @@ var Book=require('./books_controller');
 var Electronics=require('./electronics_controller');
 var Other=require('./others_controller');
 
-var Rating=require('../../models/Rating');
+
 var Comment=require('../../models/Comment');
 var Notification=require('../../models/Notification');
 var Bid=require('../../models/Bid');
@@ -93,23 +93,29 @@ exports.comment=function(req,res){
 //needs rating and ad details
 exports.rate=function(req,res){
 	//if no user logged in
-
-	//////////////////////
+	if(req.session.user_id===undefined)
+		userFunctions.sendToLogin(res);
+	else{
 	var input=req.body;
-	var rating=new Rating(input);
-	rating.user_desc=req.session.name+','+req.session.user_type+' at NITH';
-	rating.user_type=req.session.user_type;
-	rating.rating=rating.rating+'/10'
-	rating.ad_id=req.session.ad_id;
-	rating.save();
-	//add to activity
-	var activity=new Activity(input);
-	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.name;
-	activity.activity='Rated an Advertisement by : '+input.user_desc+' at '+rating.createdAt;
-	activity.save();
-	//res.json({status:'Success'});
-	res.redirect('/api/view/advertisement');
+	var user_info=req.session;
+	var ad_id=input.ad_id;
+	//add rating for the add
+	advertisementFunctions.addRating(input,user_info.user_id,function(){
+		//add activity to user account
+		userFunctions.addRatingActivity(user_info,input,function(){
+			//notify user successfully rating by adding to tab
+			var notification='Successfully rated the advertisement '+input.rating+' stars.';
+			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+				//add notfication to publisher of ad
+				userFunctions.addRatingNotification(user_info,input,function(){
+					userFunctions.sendToAd(res,ad_id);
+				});
+			});
+		});
+	});
+	
+	
+	}
 }
 
 

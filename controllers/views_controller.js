@@ -53,7 +53,7 @@ exports.home=function(req,res){
 				response.latest=advertisement;
 				//console.log('Inside latest');
 				//getting recently viewed
-				Advertisement.find({}, null, {limit: 4}).exec(function(err, advertisement) {
+				RecentlyViewed.find({}, null, {limit: 4}).exec(function(err, advertisement) {
   					response.recent=advertisement;
   					//console.log('Inside recents');
   						Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
@@ -75,20 +75,33 @@ exports.advertisement=function(req,res){
 	else{
 		var response={};
 		response.user_info=req.session;
+
 		var id=req.query.id;
 		advertisementFunctions.getAdvertisement(id,function(advertisement){
 			response.advertisement=advertisement;
+			if(req.session.user_id===advertisement.user_id)
+				response.self=1;
+			else
+				response.self=0;
 			var category=advertisement.category;
 			var product_id=advertisement.product_id;
 			advertisementFunctions.getProduct(category,product_id,function(product){
 				response.product=product;
 				userFunctions.getAccount(advertisement.user_id,function(publisher){
+					//some of the tasks are to be done for every page i.e with *
+					//*also get activitynotification i.e done something like commented,rated orr 
+					//     bidded or after he published a ad or anything activity
+					//*get any notification for the user i.e 'Updates'-notification count
+					//add to activity viewed advertisement
+					//get the rating previously done by user
+					//get the average rating for the add
+					//bids,comments for  ad
 					response.publisher=publisher;
 					response.bids=[];
 					response.comments=[];
 					response.ratings=[];
 					//also add to activity viewed
-					res.render('temp',{response:response});
+					res.render('advertisement',{response:response});
 				});
 			});
 		});
@@ -212,7 +225,6 @@ exports.notifications=function(req,res){
   				response.read_notifications=notifications;
   				
   				Notification.update({read:0 }, { read: 1 },{upsert: true}, function(err){
-  					console.log('Updated Seen!!');
   					//res.json(response);
   					res.render('notifications',{response:response});
 				});
