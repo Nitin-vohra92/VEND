@@ -9,19 +9,15 @@ var bidModel=new Schema({
 		type: String,
 		trim: true
 	},
-	user_desc:{
-		type:String,
-		default:'Anonymous'
-	},
-	ad_id:{
+	user_name:{
 		type:String
 	},
 	user_type:{
 		type:String
 	},
 	amount:{
-		type: String,
-		default:"0"
+		type: Number,
+		default:0
 	},
 	createdAt:{
 		type: Date,

@@ -76,8 +76,8 @@ exports.advertisement=function(req,res){
 		var response={};
 		response.user_info=req.session;
 
-		var id=req.query.id;
-		advertisementFunctions.getAdvertisement(id,function(advertisement){
+		var ad_id=req.query.id;
+		advertisementFunctions.getAdvertisement(ad_id,function(advertisement){
 			response.advertisement=advertisement;
 			if(req.session.user_id===advertisement.user_id)
 				response.self=1;
@@ -85,71 +85,47 @@ exports.advertisement=function(req,res){
 				response.self=0;
 			var category=advertisement.category;
 			var product_id=advertisement.product_id;
+			var user_id=req.session.user_id;
+			var user_info=req.session;
 			advertisementFunctions.getProduct(category,product_id,function(product){
 				response.product=product;
 				userFunctions.getAccount(advertisement.user_id,function(publisher){
+
+					response.publisher=publisher;
 					//some of the tasks are to be done for every page i.e with *
-					//*also get activitynotification i.e done something like commented,rated orr 
-					//     bidded or after he published a ad or anything activity
+					//*also get activity notification i.e done something like commented,rated orr 
+					//  bid or after he published a ad or anything activity
 					//*get any notification for the user i.e 'Updates'-notification count
 					//add to activity viewed advertisement
 					//get the rating previously done by user
-					//get the average rating for the add
+					//get the average rating for the add.
 					//bids,comments for  ad
-					response.publisher=publisher;
-					response.bids=[];
-					response.comments=[];
-					response.ratings=[];
-					//also add to activity viewed
-					res.render('advertisement',{response:response});
+					userFunctions.getAndDeleteActivityNotification(user_id,function(notification){
+						response.activity_notification=notification;
+						userFunctions.getNotificationCount(user_id,function(count){
+							response.notification_count=count;
+							userFunctions.addViewedActivity(user_info,advertisement,function(){
+								advertisementFunctions.getPreviousRating(user_id,ad_id,function(rating){
+									response.rating_user=rating;
+									advertisementFunctions.getRating(ad_id,function(rating_desc){
+										response.avg_rating=rating_desc.average;
+										response.rating_user_count=rating_desc.count;
+										advertisementFunctions.getBids(ad_id,function(bids){
+											response.bids=bids;
+											advertisementFunctions.getComments(ad_id,function(comments){
+												response.comments=comments;
+												res.render('advertisement',{response:response});
+											});
+										});
+										
+									});
+								});
+							});
+						});
+					});
 				});
 			});
-		});
-
-	/*
-	var responseSetter=function(result){
-		//find comments and rating
-
-		Comment.find({ad_id:input.ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, comments) {
-  			response.comments=comments;
-  			Rating.find({ad_id:input.ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, ratings) {
-  				response.ratings=ratings;
-  				Bid.find({ad_id:input.ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, bids) {
-	  				response.bids=bids;
-	  				//add to activity
-					var activity=new Activity(input);
-					activity.user_id=req.session.user_id;
-					activity.user_name=req.session.name;
-					console.log(req.session);
-					activity.activity='Viewed an Advertisement on: '+input.category+' by: '+req.session.name+' at '+new Date();
-					activity.save();
-	  				req.session.ad_id=input.ad_id;
-	  				req.session.category=input.category;
-	  				req.session.product_id=result._id;
-	  				
-					// res.json(response);
-	  				res.render('advertisement',{response:response});
-			});
-			});
-			});
-
-		};
-	Advertisement.findOne({product_id:input.product_id},function(err, advertisement) {  					
-		response.advertisement=advertisement;
-		switch(category){
-		case 'Book':
-			Book.find(input,responseSetter);
-			break;
-		case 'Electronics':
-			Electronics.find(input,responseSetter);
-			break;
-		case 'Other':
-			OtherProduct.find(input,responseSetter);
-			break;
-	}
-						
-  	});*/
-	
+		});	
 	}
 }
 
@@ -218,10 +194,10 @@ exports.notifications=function(req,res){
 	var user_id=req.session.user_id;
 	var response={};
 	response.user_info=req.session;
-	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {limit: 20, sort: {'createdAt': -1}}).exec(function(err, notifications) {
+	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
   				response.unread_notifications=notifications;
   				
-  				Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {limit: 20, sort: {'createdAt': -1}}).exec(function(err, notifications) {
+  				Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
   				response.read_notifications=notifications;
   				
   				Notification.update({read:0 }, { read: 1 },{upsert: true}, function(err){

@@ -11,6 +11,9 @@ var Other=require('../product/others_controller');
 var RecentlyViewed=require('../../models/RecentlyViewed');
 
 var Rating=require('../../models/Rating');
+var Bid=require('../../models/Bid');
+var Comment=require('../../models/Comment');
+
 
 function convertIdsToArray(ids){
 	var result=[];
@@ -187,6 +190,21 @@ exports.getAdvertisement=function(id,callback){
 	});
 }
 
+exports.getAdCategoryLink=function(advertisement){
+	var link;
+	switch(advertisement.category){
+		case 'Book':
+			link='/api/view/books';
+			break;
+		case 'Electronics':
+			link='/api/view/electronics';
+			break;
+		case 'Other':
+			link='/api/view/others';
+			break;	
+	}
+	return link;
+}
 exports.getProduct=function(category,product_id,callback){
 	switch(category){
 		case 'Book':
@@ -207,9 +225,9 @@ exports.getProduct=function(category,product_id,callback){
 	}
 }
 
-exports.addRating=function(input,user_id,callback){
+exports.addRating=function(user_id,input,callback){
 	//also check if rating already done
-	Rating.findOne({user_id:user_id},function(err,result){
+	Rating.findOne({$and:[{user_id:user_id},{ad_id:input.ad_id}]},function(err,result){
 		if(result===null){
 		var rating=new Rating(input);
 		rating.user_id=user_id;
@@ -222,4 +240,64 @@ exports.addRating=function(input,user_id,callback){
 		callback();
 	});
 	
+}
+
+exports.getPreviousRating=function(user_id,ad_id,callback){
+	var rating;
+	Rating.findOne({user_id:user_id,ad_id:ad_id},function(err,result){
+		if(result===null){
+			rating=0;
+		}
+		else{
+			rating=result.rating;
+		}
+		callback(rating);
+	});
+}
+
+exports.getRating=function(ad_id,callback){
+	var rating={};
+	Rating.aggregate([{$match:{ad_id:ad_id}},{$group:{ _id: '$ad_id',average:{$avg: '$rating'},count:{$sum:1}}}],function(err,result){	
+		console.log(result);
+		if(result.length===0){
+			rating.average=0;
+			rating.count=0;
+		}
+		else{
+			rating=result[0];
+		}
+
+		callback(rating);
+
+	});
+}
+
+exports.addBid=function(user_info,input,callback){
+	var bid=new Bid(input);
+	bid.user_id=user_info.user_id;
+	bid.user_name=user_info.name;
+	bid.user_type=user_info.user_type;
+	bid.save();
+	callback();
+}
+
+exports.getBids=function(ad_id,callback){
+	Bid.find({ad_id:ad_id}, null, { sort: {'amount': -1}}).exec(function(err, bids) {
+		callback(bids);
+	 });
+}
+
+exports.addComment=function(user_info,input,callback){
+	var comment=new Comment(input);
+	comment.user_id=user_info.user_id;
+	comment.user_name=user_info.name;
+	comment.user_type=user_info.user_type;
+	comment.save();
+	callback();
+}
+
+exports.getComments=function(ad_id,callback){
+	Comment.find({ad_id:ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, comments) {
+		callback(comments);
+	 });
 }

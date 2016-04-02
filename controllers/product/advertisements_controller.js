@@ -6,9 +6,7 @@ var Electronics=require('./electronics_controller');
 var Other=require('./others_controller');
 
 
-var Comment=require('../../models/Comment');
 var Notification=require('../../models/Notification');
-var Bid=require('../../models/Bid');
 
 var userFunctions=require('../functions/user');
 var advertisementFunctions=require('../functions/advertisement');
@@ -33,9 +31,15 @@ exports.publish=function(req,res){
 			var afterProductSaved=function(product_id,thumb_path){
 				var advertisement=advertisementFunctions.saveAdvertisement(req,product_id,thumb_path);
 				//add to activity
-				userFunctions.addPublishActivity(req.session,advertisement);
-				//redirect to home
-				res.redirect('/');
+				userFunctions.addPublishActivity(req.session,advertisement,function(){
+					//also add activity notification
+					var notification='Successfully published the advertisement. Check Your Ads for more options.';
+					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+						
+						//redirect to home
+						res.redirect('/');
+					});
+				});
 				
 			};
 			//first find category
@@ -70,24 +74,31 @@ exports.publishpage=function(req,res){
 
 exports.comment=function(req,res){
 	//if no user logged in
-
-	////////////////////////
-	var input=req.body;
-	var comment=new Comment(input);
-	comment.user_desc=req.session.name+','+req.session.user_type+' at NITH';
-	comment.user_type=req.session.user_type;
-	comment.ad_id=req.session.ad_id;
-	comment.save();
-	console.log(input.comment);
-	//add to activity
-	var activity=new Activity(input);
-	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.name;
-	activity.activity='commented on Advertisement by : '+comment.user_desc+' at '+comment.createdAt;
-	activity.save();
-
-	res.redirect('/api/view/advertisement');
-	//res.json({status:'Success'});
+	if(req.session.user_id===undefined)
+		userFunctions.sendToLogin(res);
+	else{
+		var input=req.body;
+		if(input.ad_id===''||input.comment==='')
+			res.redirect('/');
+		else{
+			var user_info=req.session;
+			var ad_id=input.ad_id;
+			//add rating for the add
+			advertisementFunctions.addComment(user_info,input,function(){
+				//add activity to user account
+				userFunctions.addCommentActivity(user_info,input,function(){
+					//add notification to the publisher
+					//check if publisher is himself commenting on ad
+					advertisementFunctions.getAdvertisement(ad_id,function(advertisement){
+						if(advertisement.user_id!==user_info.user_id){
+							userFunctions.addCommentNotification(user_info,input,function(){});
+						}
+						userFunctions.sendToAd(res,ad_id);
+					});
+				});
+			});
+		}
+	}
 }
 
 //needs rating and ad details
@@ -96,25 +107,27 @@ exports.rate=function(req,res){
 	if(req.session.user_id===undefined)
 		userFunctions.sendToLogin(res);
 	else{
-	var input=req.body;
-	var user_info=req.session;
-	var ad_id=input.ad_id;
-	//add rating for the add
-	advertisementFunctions.addRating(input,user_info.user_id,function(){
-		//add activity to user account
-		userFunctions.addRatingActivity(user_info,input,function(){
-			//notify user successfully rating by adding to tab
-			var notification='Successfully rated the advertisement '+input.rating+' stars.';
-			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-				//add notfication to publisher of ad
-				userFunctions.addRatingNotification(user_info,input,function(){
-					userFunctions.sendToAd(res,ad_id);
+		var input=req.body;
+		if(input.ad_id===''||input.rating==='')
+			res.redirect('/');
+		else{
+			var user_info=req.session;
+			var ad_id=input.ad_id;
+			//add rating for the add
+			advertisementFunctions.addRating(user_info.user_id,input,function(){
+				//add activity to user account
+				userFunctions.addRatingActivity(user_info,input,function(){
+					//notify user successfully rating by adding to tab
+					var notification='Successfully rated the advertisement '+input.rating+' stars.';
+					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+						//add notfication to publisher of ad
+						userFunctions.addRatingNotification(user_info,input,function(){
+							userFunctions.sendToAd(res,ad_id);
+						});
+					});
 				});
 			});
-		});
-	});
-	
-	
+		}
 	}
 }
 
@@ -122,31 +135,30 @@ exports.rate=function(req,res){
 // needs amount and ad details
 exports.bid=function(req,res){
 	//if no user logged in
+	if(req.session.user_id===undefined)
+		userFunctions.sendToLogin(res);
+	else{
 
-	/////////////////////
-	var input=req.body;
-	var bid=new Bid(input);
-	bid.user_desc=req.session.name+','+req.session.user_type+'at NITH';
-	bid.ad_id=input.ad_id;
-	bid.amount='Rs. '+bid.amount;
-	bid.user_type=req.session.user_type;
-	bid.ad_id=req.session.ad_id;
-	bid.save();
-	var session=req.session;
-	var notification=new Notification(session);
-	notification.user_id=req.session.user_id;
-	notification.user_desc=req.session.name+','+req.session.user_type+'at NITH';
-	notification.user_type=req.session.user_type;
-	notification.to_id=input.user_id;
-	notification.product_name=input.description;
-	notification.desc='Bid was done by: '+req.session.name+' for your Advertisement in '+session.category;
-	notification.save();
-
-	//add to activity
-	var activity=new Activity(input);
-	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.name;
-	activity.activity='Bidded on Advertisement by : '+input.user_desc+' at '+bid.createdAt;
-	activity.save();
-	res.redirect('/api/view/advertisement');
+		var input=req.body;
+		if(input.ad_id===''||input.bid==='')
+			res.redirect('/');
+		else{
+			var user_info=req.session;
+			var ad_id=input.ad_id;
+			//add rating for the add
+			advertisementFunctions.addBid(user_info,input,function(){
+				//add activity to user account
+				userFunctions.addBiddingActivity(user_info,input,function(){
+					//notify user successfully rating by adding to tab
+					var notification='Successfully bidded Rs.'+input.amount+' on the advertisement.';
+					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+						//add notfication to publisher of ad
+						userFunctions.addBiddingNotification(user_info,input,function(){
+							userFunctions.sendToAd(res,ad_id);
+						});
+					});
+				});
+			});
+		}
+	}
 }

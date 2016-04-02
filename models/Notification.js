@@ -10,19 +10,7 @@ var notificationModel=new Schema({
 		type:Number,
 		default:0
 	},
-	notification_desc:{
-		type:String
-	},
-	notification_ad_name:{
-		type:String
-	},
-	notification_ad_link:{
-		type:String
-	},
-	notification_user_name:{
-		type:String
-	},
-	notification_user_link:{
+	notification:{
 		type:String
 	},
 	createdAt:{

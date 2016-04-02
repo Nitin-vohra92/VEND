@@ -10,7 +10,7 @@ var rateModel=new Schema({
 		trim: true
 	},
 	rating:{
-		type: String
+		type: Number
 	}
 });
 module.exports=mongoose.model('Rating',rateModel);

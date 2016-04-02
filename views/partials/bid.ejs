@@ -1,0 +1,22 @@
+<div class="bid_item">
+  <span class="text-muted pull-right">
+  <small class="text-muted">
+  <%=response.bid.user_type%>
+  </small>
+  </span>
+  <a href=<%='/api/view/user?id='+response.bid.user_id%>>
+  <strong class="text-info">
+  <%=response.bid.user_name%>
+  </strong>
+  </a>
+  <p>
+  Rs. <%=response.bid.amount%><br>
+  <span class="text-muted">
+  <strong>
+  Bid at: 
+  </strong>
+  <%=response.bid.createdAt.toString().split('GMT')[0]%>
+  </span>
+  </p>
+  <hr style="margin-top: 6px; margin-bottom: 6px;">
+</div>

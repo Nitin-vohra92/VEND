@@ -268,4 +268,5 @@ exports.ping=function(req,res){
 	activity.save();
 
 	res.redirect('/api/view/advertisement');
+	////////////////
 }

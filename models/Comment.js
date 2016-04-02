@@ -9,13 +9,11 @@ var commentModel=new Schema({
 		type: String,
 		trim: true
 	},
-	user_desc:{
-		type:String,
-		default:'Anonymous'
+	user_name:{
+		type:String
 	},
 	user_type:{
-		type:String,
-		default:'Anonymous'
+		type:String
 	},
 	comment:{
 		type: String

@@ -1,0 +1,125 @@
+<div class="panel panel-info"  style="height: 100%;">
+              <div class="panel-heading" align="center">
+                <h1>
+                <strong class="text-info">
+                <%=response.advertisement.name%>
+                </strong>
+                </h1>
+              </div>
+              <div class="panel-body" style="padding: 10px;">
+                <div align="center">
+                  <h5>
+                  <span class="text-info">
+                  <strong>
+                  Published in:
+                  </strong>
+                  </span>
+                  <span class="text-success">
+                  <%=response.advertisement.category%>
+                  </span>
+                  </h5>
+                </div>
+              
+                <div class="well">
+                  <% if(response.advertisement.category==='Book'){%>
+                  <strong>
+                  Author of Book:
+                  </strong>
+                  <%=response.product.author%><br>
+                  <strong>
+                  Semester :
+                  </strong>
+                  <%=response.product.semester%>th<br>
+                  
+                  <%}%>
+                  <% if(response.advertisement.category!=='Book'){%>
+                  <strong>
+                  Sub-Category:
+                  </strong>
+                  <%=response.product.sub_category%><br>
+                  <strong>
+                  Brand:
+                  </strong>
+                  <%=response.product.brand%><br>
+                  <%}%>
+                  <strong>
+                  Available for:
+                  </strong>
+                  <%=response.advertisement.kind%><br>
+                  <strong>
+                  Available for Bid:
+                  </strong>
+                  <%=response.advertisement.bid%><br>
+                  <strong>
+                  Price:
+                  </strong>
+                  Rs. <%=response.advertisement.price%><br>
+                  <strong>
+                  Location of Product:
+                  </strong>
+                  <%=response.advertisement.location%><br>
+                  <strong>
+                  Description:<br>
+                  </strong>
+                  <%=response.advertisement.description%><br>
+                  <span class="text-muted">
+                  Published at:
+                    <%=response.advertisement.createdAt.toString().split('GMT')[0]%>
+                  </span>
+                </div>
+                <hr>
+                  <div class="col-md-7">
+                  <label for="input-3" class="control-label">
+                  <span class="text-info">
+                  Product Rating:
+                  </span>
+                  <span class="text-muted">
+                  <small>
+                  	(By <%=response.rating_user_count%> users)
+                  	</small>
+                  </span>
+                  </label>
+                  <input id="input-3" class="rating-loading" value='<%=response.avg_rating%>' data-size="xs">
+                  <script>
+                  $(document).on('ready', function(){
+                      $('#input-3').rating({displayOnly: true, step: 0.5});
+                      
+                  });
+                  </script>
+                  </div>
+                  <div class="col-md-5">
+                  <span class="pull-right" style="margin-right: 10px; margin-top: px;">
+                  <span class="text-success">
+                  <strong>
+                  Published By:
+                  </strong>
+                  </span><br>
+                  <a href=<%='/api/view/user?id='+response.advertisement.user_id%>>
+                  <span class="text-warning">
+                  <%=response.advertisement.user_name%>
+                  </span>
+
+                  </a><br>
+                  <span class="text-muted">
+                    User type:
+                    <%=response.advertisement.user_type%>
+                  </span>
+                  </span>
+                  </div>
+                  <br><br><br><hr style="margin-bottom: 5px;">
+                  <div class="col-md-6 col-md-offset-3" align="center" >
+                  <button id="pingButton" class="btn btn-primary btn-block" href="/api/user/ping">Ping the Publisher</button>
+                  <hr style="margin-top: 5px; margin-bottom: 5px;">
+                  
+                  </div>
+                  <span class="text-muted pull-left"><small>
+                    <%if(response.self) {%>
+                      This option unavailable for your own Ads. Please check 'Your Ads' section to see requests for your ads.
+                    <%} else%>
+                    <%if(!response.self){%>
+                     A request to publisher will be sent. You will be notified if the publisher wants to sell or loan to you.
+                    <%}%>
+                    
+                  </small></span>
+               </div>
+            </div>

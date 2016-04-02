@@ -136,10 +136,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<ul>
 					<%for(var i=0;i<response.activities.length;i++) {%>
 						
-						<li><p>
-							<%= response.activities[i].activity %><br/>
+						<li>
+							<%- response.activities[i].activity %><br/>
 							<hr style="margin-top:1px">
-						</p>
+						
 						</li>
 					<%}%>
 					</ul>

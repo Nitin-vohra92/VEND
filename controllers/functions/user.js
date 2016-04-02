@@ -74,37 +74,32 @@ function sendMessage(message_to,message_body){
 
 }
 
-
 //generalized add Activity function called by other activity functions
-function addActivity(user_info,activity_desc,activity_entity_name,activity_entity_link){
+function addActivity(user_info,activity_desc){
 	var user_id=user_info.user_id;
 	var user_name=user_info.name;
 	var activity=new Activity();
 	activity.user_id=user_id;
 	activity.user_name=user_name;
 	activity.activity=activity_desc;
-	activity.activity_entity_name=activity_entity_name;
-	activity.activity_entity_link=activity_entity_link;
 	activity.save();
 	return;
 
 }
-
-function addNotification(user_id,notification_desc,notification_ad_name,notification_ad_link,notification_user_name,notification_user_link){
+///////////////////////////////////////////
+//TODO covert methods in user.js 
+////////////////////////////////////////////
+function addNotification(user_id,notification_desc){
 	//id to which notification is made not the one who causes the notification
 	var notification=new Notification();
 	notification.user_id=user_id;
-	notification.notification_desc=notification_desc;
-	notification.notification_ad_name=notification_ad_name;
-	notification.notification_ad_link=notification_ad_link;
-	notification.notification_user_name=notification_user_name;
-	notification.notification_user_link=notification_user_link;
+	notification.notification=notification_desc;
 	notification.save();
 	// sendMail also now later think about sending on every notification???
 	return;
 
 }
-exports.validateRegistrationData= function(req){
+exports.validateRegistrationData=function(req){
 	var error;
 	// validate the input
 
@@ -416,43 +411,6 @@ exports.sendToLogin=function(res){
 			res.render('login',{response:response});
 }
 
-exports.addPublishActivity=function(user_info,advertisement){
-	var activity="Published an advertisement in "+advertisement.category+" category: ";
-	var activity_entity_name=advertisement.name;
-	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
-	addActivity(user_info,activity,activity_entity_name,activity_entity_link);
-	return;
-
-}
-
-exports.addRatingActivity=function(user_info,input,callback){
-	var activity="Rated "+input.rating+" stars for advertisement:";
-	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
-		var activity_entity_name=advertisement.name;
-		var activity_entity_link='/api/view/advertisement?id='+input.ad_id;
-		addActivity(user_info,activity,activity_entity_name,activity_entity_link);
-		callback();
-	});
-
-}
-
-exports.addRatingNotification=function(user_info,input,callback){
-	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
-		//id of the publisher
-		var user_id=advertisement.user_id;
-		var notification_desc=' rated '+input.rating+' stars on your advertisement :';
-		var notification_ad_name=advertisement.name;
-		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
-		var notification_user_name=user_info.name;
-		var notification_user_link='/api/view/user?id='+user_info.user_id;
-		addNotification(user_id,notification_desc,notification_ad_name,notification_ad_link,notification_user_name,notification_user_link);
-		callback();
-	});
-
-}
-
-
-
 exports.searchUser=function(query,callback){
 	Account.find({$or:[{name: { $regex: query, $options: "i" }},{type:{ $regex: query, $options: "i" }}]},function(err,users){
 		callback(users);
@@ -469,10 +427,166 @@ exports.sendToAd=function(res,ad_id){
 	res.redirect('/api/view/advertisement?id='+ad_id);
 }
 
+////related to adding activity
+exports.addPublishActivity=function(user_info,advertisement){
+	var activity_entity_name=advertisement.name;
+	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+	var activity="Published an advertisement: "+
+	'<a href="'+activity_entity_link+'" class="text-info">'+
+			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
+			'" class="text-info">'+advertisement.category+'</a> Category.';
+	addActivity(user_info,activity);
+	//add callback functionailty
+	return;
+
+}
+/////////////////////////////////////////
+/////////////////////////////////////////
+//think about adding as html content these things
+exports.addRatingActivity=function(user_info,input,callback){
+	
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		var activity_entity_name=advertisement.name;
+		var activity_entity_link='/api/view/advertisement?id='+input.ad_id;
+		var activity="Rated the advertisement entitled "+
+		'<a href="'+activity_entity_link+'" class="text-info">'+activity_entity_name+"</a> "+input.rating+" stars";
+		addActivity(user_info,activity);
+		callback();
+	});
+
+}
+
+exports.addViewedActivity=function(user_info,advertisement,callback){
+	var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
+
+	var activity_entity_name=advertisement.name;
+	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+	var activity='Viewed the advertisement entitled '+
+			'<a href="'+activity_entity_link+'" class="text-info">'+
+			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
+			'" class="text-info">'+advertisement.category+'</a> Category.';
+	addActivity(user_info,activity);
+	callback();
+}
+
+
+exports.addBiddingActivity=function(user_info,input,callback){
+
+	//get the ad details
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
+		var activity_entity_name=advertisement.name;
+		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+		var activity="Bidded Rs. "+input.amount+" on the advertisement entitled "+
+			'<a href="'+activity_entity_link+'" class="text-info">'+
+			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
+			'" class="text-info">'+advertisement.category+'</a> Category.';
+		addActivity(user_info,activity);
+		callback();
+	});
+
+}
+
+exports.addCommentActivity=function(user_info,input,callback){
+
+	//get the ad details
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
+		var activity_entity_name=advertisement.name;
+		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+		var activity="Commented on the advertisement entitled "+
+			'<a href="'+activity_entity_link+'" class="text-info">'+
+			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
+			'" class="text-info">'+advertisement.category+'</a> Category.';
+		addActivity(user_info,activity);
+		callback();
+	});
+
+}
+
+
+////Related to notification
+exports.getNotificationCount=function(user_id,callback){
+	Notification.find({user_id:user_id,read:0},function(err,notifications){
+		callback(notifications.length);
+	});
+}	
+
+
+exports.addRatingNotification=function(user_info,input,callback){
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		//id of the publisher
+		var user_id=advertisement.user_id;
+		
+		var notification_ad_name=advertisement.name;
+		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_user_name=user_info.name;
+		var notification_user_link='/api/view/user?id='+user_info.user_id;
+		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
+						notification_user_name+'</a> rated '+input.rating+' stars on your advertisement entitled '+
+						'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
+
+		addNotification(user_id,notification_desc);
+		callback();
+	});
+
+}
+
+exports.addBiddingNotification=function(user_info,input,callback){
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		//id of the publisher
+		var user_id=advertisement.user_id;
+		
+		var notification_ad_name=advertisement.name;
+		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_user_name=user_info.name;
+		var notification_user_link='/api/view/user?id='+user_info.user_id;
+
+		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
+			notification_user_name+'</a> bidded Rs. '+input.amount+' on your advertisement entitled '+
+			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
+
+		addNotification(user_id,notification_desc);
+		callback();
+	});
+}
+
+exports.addCommentNotification=function(user_info,input,callback){
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		//id of the publisher
+		var user_id=advertisement.user_id;
+		
+		var notification_ad_name=advertisement.name;
+		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_user_name=user_info.name;
+		var notification_user_link='/api/view/user?id='+user_info.user_id;
+
+		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
+			notification_user_name+'</a> commented on your advertisement entitled '+
+			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
+
+		addNotification(user_id,notification_desc);
+		callback();
+	});
+}
+
+
 exports.addActivityNotification=function(user_id,notification,callback){
 	var activityNotification=new ActivityNotification();
 	activityNotification.user_id=user_id;
 	activityNotification.notification=notification;
 	activityNotification.save();
 	callback();
-}	
+}
+//it also deletes the notification
+exports.getAndDeleteActivityNotification=function(user_id,callback){
+	var notification;
+	ActivityNotification.findOne({user_id:user_id},function(err,activityNotification){
+		if(activityNotification!==null){
+		notification=activityNotification.notification;
+		activityNotification.remove();
+		}
+		callback(notification);
+	});
+}
+

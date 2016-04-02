@@ -16,7 +16,7 @@
             </div>
           </div>
           <!-- nav bar options -->
-          <div class="col-md-4" style="margin-top: 8px;">
+          <div class="col-md-4" style="margin-top: 8px; padding-right: 0px;">
               <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav nav-pills">
                     <li ><a href="/">Home</a></li>
@@ -37,14 +37,14 @@
                     <li><a href="/api/view/user/notifications">
                     Updates
                     <%if(response.notification_count>0){%>
-                      <span class="badge">response.notification_count</span>
+                      <span class="badge"><small><%=response.notification_count%></small></span>
                     <%}%>
                     </a></li>
               </ul>
               </div>
           </div>
           <!-- nav search block -->
-          <div class="col-md-5" style="margin-top: 10px;">        
+          <div class="col-md-5" style="margin-top: 10px; padding-left:0px;">        
                 <form method="POST" action="/api/view/search">
                 <div class="col-md-9">
                 <input class="form-control" type="text" name="query" value="" placeholder="Enter search query here...">

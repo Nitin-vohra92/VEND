@@ -45,3 +45,9 @@ color:#fff;
      .jumbotron {
       margin-bottom: 0;
     }
+.badge{
+  padding:3px; 
+  margin-bottom:5px;
+  border-radius: 6px;
+  background-color: #A7B55A;
+}

@@ -138,7 +138,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<%for(var i=0;i<response.unread_notifications.length;i++) {%>
 						
 						<li><p>
-							<%= response.unread_notifications[i].desc %><br/>
+							<%- response.unread_notifications[i].notification %><br/>
 							<hr style="margin-top:1px">
 						</p>
 						</li>
@@ -147,7 +147,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<%for(var i=0;i<response.read_notifications.length;i++) {%>
 						
 						<li><p>
-							<%= response.read_notifications[i].desc %><br/>
+							<%- response.read_notifications[i].notification %><br/>
 							<hr style="margin-top:1px">
 						</p>
 						</li>
