@@ -1,5 +1,6 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
+var timestamp=require('../controllers/functions/timestamp');
 
 var advertisementModel=new Schema({
 	user_id:{
@@ -43,12 +44,12 @@ var advertisementModel=new Schema({
 		default:'No Description by Publisher'
 	},
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	},
 	updatedAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 });
 module.exports=mongoose.model('Advertisement',advertisementModel);

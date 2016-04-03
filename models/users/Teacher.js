@@ -1,5 +1,6 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
+var timestamp=require('../../controllers/functions/timestamp');
 
 var teacherModel=new Schema({ 
 	firstname:{
@@ -28,12 +29,12 @@ var teacherModel=new Schema({
 		type: String
 	},
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	},
 	updatedAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 	
 });

@@ -1,5 +1,6 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
+var timestamp=require('../controllers/functions/timestamp');
 
 var notificationModel=new Schema({ 
 	user_id:{
@@ -14,8 +15,8 @@ var notificationModel=new Schema({
 		type:String
 	},
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 });
 module.exports=mongoose.model('Notification',notificationModel);

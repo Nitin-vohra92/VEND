@@ -1,5 +1,6 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
+var timestamp=require('../../controllers/functions/timestamp');
 
 var productotherModel=new Schema({ 
 	brand:{
@@ -20,12 +21,12 @@ var productotherModel=new Schema({
 	}
 	}],
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	},
 	updatedAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 });
 module.exports=mongoose.model('ProductOther',productotherModel);

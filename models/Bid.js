@@ -1,5 +1,6 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
+var timestamp=require('../controllers/functions/timestamp');
 
 var bidModel=new Schema({ 
 	ad_id:{
@@ -20,8 +21,8 @@ var bidModel=new Schema({
 		default:0
 	},
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 });
 module.exports=mongoose.model('Bid',bidModel);

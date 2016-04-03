@@ -298,7 +298,7 @@ exports.addComment=function(user_info,input,callback){
 }
 
 exports.getComments=function(ad_id,callback){
-	Comment.find({ad_id:ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, comments) {
+	Comment.find({ad_id:ad_id}, null, { sort: {'_id': -1}}).exec(function(err, comments) {
 		callback(comments);
 	 });
 }

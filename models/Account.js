@@ -1,5 +1,6 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
+var timestamp=require('../controllers/functions/timestamp');
 
 var accountModel=new Schema({ 
 	username:{
@@ -24,8 +25,8 @@ var accountModel=new Schema({
 		type: String
 	},
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 	
 });

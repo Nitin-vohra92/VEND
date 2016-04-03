@@ -1,6 +1,7 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
 
+var timestamp=require('../../controllers/functions/timestamp');
 var bookModel=new Schema({ 
 	title:{
 		type: String
@@ -18,12 +19,12 @@ var bookModel=new Schema({
 	}
 	}],
 	createdAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	},
 	updatedAt:{
-		type: Date,
-		default:Date.now
+		type: String,
+		default:timestamp.getTime()
 	}
 });
 module.exports=mongoose.model('Book',bookModel);
