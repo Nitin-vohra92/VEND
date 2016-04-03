@@ -10,7 +10,7 @@ var APP_DIR = path.dirname(require.main.filename);
 var UPLOAD_DIR = "/uploads/productimages/others/";
 
 var helper=require('../functions/helper');
-
+var timestamp=require('../functions/timestamp')
 
 exports.publish=function(req,callback){
 	var input=req.body;
@@ -47,6 +47,8 @@ exports.publish=function(req,callback){
  	}
  	//images done
 
+	other.createdAt=timestamp.getTime();
+	other.updatedAt=timestamp.getTime();
 
 	other.save();
  	callback(other._id,other.images[0].path);

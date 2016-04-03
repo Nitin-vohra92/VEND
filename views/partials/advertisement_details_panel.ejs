@@ -64,7 +64,7 @@
                   <%=response.advertisement.description%><br>
                   <span class="text-muted">
                   Published at:
-                    <%=response.advertisement.createdAt.toString().split('GMT')[0]%>
+                    <%=response.advertisement.createdAt%>
                   </span>
                 </div>
                 <hr>
@@ -107,20 +107,22 @@
                   </span>
                   </div>
                   <br><br><br><hr style="margin-bottom: 5px;">
+                  <%if(!response.self) {%>
                   <div class="col-md-6 col-md-offset-3" align="center" >
-                  <form action='/api/user/ping' method="POST">
-                  <input type="hidden" name="ad_id" value=<%=response.advertisement._id%> />
-                  <button type="submit" id="pingButton" class="btn btn-primary btn-block" href="/api/user/ping">Ping the Publisher</button>
-                  <hr style="margin-top: 5px; margin-bottom: 5px;">
-                  </form>
+                    <form action='/api/user/ping' method="POST">
+                    <input type="hidden" name="ad_id" value=<%=response.advertisement._id%> />
+                    <button type="submit" id="pingButton" class="btn btn-primary btn-block" href="/api/user/ping">Ping the Publisher</button>
+                    <hr style="margin-top: 5px; margin-bottom: 5px;">
+                    </form>
                   </div>
+                  <%}%>
                   <span class="text-muted pull-left"><small>
                     Note: 
                     <%if(!response.self&&response.ping_status==='unavailable') {%>
                       This option unavailable because you have already pinged the publisher.
                     <%} else%>
                     <%if(response.self) {%>
-                      This option unavailable for your own Ads. Please check 'Your Ads' section to see requests for your ads.
+                      Ping option unavailable for your own Ads. Please check 'Your Ads' section to see requests for your ads.
                     <%} else%>
                     <%if(!response.self&&response.ping_status!=='unavailable'){%>
                      A request to publisher will be sent. You will be notified if the publisher wants to sell or loan to you.

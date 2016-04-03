@@ -28,8 +28,11 @@
 
 <!-- main content block -->
 <div class="col-md-12">
+  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
 
-    <div class="row" >
+    <!-- /container -->
+
+    <div class="row" style="margin-top: 15px;">
 
     <!-- for books panel on home -->
         <div class="col-md-12">
@@ -37,35 +40,28 @@
             <div class="panel-heading" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                  Updates
+                  Your Activities on Vend
                 </strong>
               </h4>
             </div>
 
             
-            <div class="panel-body" style="padding: 4px 10px;">
+            <div class="panel-body" style="padding: 10px; margin-top: 10px;">
             <!-- for each  activity -->
-            <div class="notification" style="overflow-y:scroll; height: 420px;">
-                  <%for(var i=0;i<response.unread_notifications.length;i++) {%>
-                  <!-- assume an object notification  -->
-                    <%response.notification=response.unread_notifications[i];%>
-                    <%include partials/notification_unread%>
+            <div class="activities" style="overflow-y:scroll; max-height: 800px;">
+                  <%for(var i=0;i<response.activities.length;i++) {%>
+                  <!-- assume an object advertisement  -->
+                    <%response.activity=response.activities[i];%>
+                    <%include partials/activity%>
 
                   <%}%>
-
-	              <%for(var i=0;i<response.read_notifications.length;i++) {%>
-                  
-                    <%response.notification=response.read_notifications[i];%>
-                    <%include partials/notification_read%>
-
-                  <%}%>
-                  <%if(response.unread_notifications.length===0&&response.read_notifications.length===0){%>
+                  <%if(response.activities.length===0){%>
                   <div align="center">
                   <strong>
                     Nothing here :(
                     </strong>
-	              </div>
-	              <% }%>
+              </div>
+              <% }%>
             </div>
           
             </div>
@@ -85,6 +81,8 @@
 
       </div>
 
+
+  </div>
 </div>
 <!-- end main content block -->
   

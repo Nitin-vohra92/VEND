@@ -15,6 +15,7 @@ var Bid=require('../../models/Bid');
 var Comment=require('../../models/Comment');
 var Ping=require('../../models/Ping');
 
+var timestamp=require('./timestamp');
 
 function convertIdsToArray(ids){
 	var result=[];
@@ -112,6 +113,8 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 	advertisement.user_name=req.session.name;
 	advertisement.user_type=req.session.user_type;
 	advertisement.thumb=thumb_path;
+	advertisement.createdAt=timestamp.getTime();
+	advertisement.updatedAt=timestamp.getTime();
 	switch(input.category){
 	case 'Book':
 		advertisement.name=input.title;
@@ -156,14 +159,14 @@ exports.searchOther=function(query,callback){
 
 //latest
 exports.latest=function(callback){
-	Advertisement.find({}, null, {sort: {'createdAt': -1}}).exec(function(err, latests) {
+	Advertisement.find({}, null, {sort: {'_id': -1}}).exec(function(err, latests) {
   		callback(latests);
 	});
 }
 
 //recently viewed
 exports.recent=function(callback){
-	RecentlyViewed.find({}, null, {}).exec(function(err, recents) {
+	RecentlyViewed.find({}, null, {sort: {'_id': -1}}).exec(function(err, recents) {
   		callback(recents);
 	});
 }
@@ -172,12 +175,12 @@ exports.recent=function(callback){
 //recommended logic here-change it
 exports.recommended=function(user_type,callback){
 	if(user_type==='Other'){
-		Advertisement.find({}, null, {sort: {'createdAt': -1}}).exec(function(err, recommendations) {
+		Advertisement.find({}, null, {sort: {'_id': -1}}).exec(function(err, recommendations) {
   			callback(recommendations);
 		});
 	}
 	else{
-		Advertisement.find({user_type:user_type}, null, {sort: {'createdAt': -1}}).exec(function(err, recommendations) {
+		Advertisement.find({user_type:user_type}, null, {sort: {'_id': -1}}).exec(function(err, recommendations) {
   			callback(recommendations);
   		});
 	}
@@ -278,6 +281,7 @@ exports.addBid=function(user_info,input,callback){
 	bid.user_id=user_info.user_id;
 	bid.user_name=user_info.name;
 	bid.user_type=user_info.user_type;
+	bid.createdAt=timestamp.getTime();
 	bid.save();
 	callback();
 }
@@ -293,6 +297,7 @@ exports.addComment=function(user_info,input,callback){
 	comment.user_id=user_info.user_id;
 	comment.user_name=user_info.name;
 	comment.user_type=user_info.user_type;
+	comment.createdAt=timestamp.getTime();
 	comment.save();
 	callback();
 }

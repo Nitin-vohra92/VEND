@@ -178,6 +178,7 @@ exports.forgot=function(req,res){
 
 
 exports.wish=function(req,res){
+	/////////changes for timestamp////////////////
 		var input=req.body;
 		var wish=new Wish(input);
 		wish.user_id=req.session.user_id;
@@ -211,24 +212,4 @@ exports.ping=function(req,res){
 			});
 		});
 	});
-	/*var input=req.body;
-	var notification=new Notification(input);
-	notification.user_id=req.session.user_id;
-	notification.user_desc=req.session.name+','+req.session.user_type+' at NITH';
-	notification.user_type=req.session.user_type;
-	notification.to_id=input.user_id;
-	notification.product_name=input.description;
-	notification.desc='Pinged by: '+req.session.user_name+' for your Advertisement in '+ req.session.category;
-	notification.save();
-
-
-	//add to activity
-	var activity=new Activity(input);
-	activity.user_id=req.session.user_id;
-	activity.user_name=req.session.name;
-	activity.activity='Pinged the user: '+notification.user_desc+' at '+notification.createdAt;
-	activity.save();
-
-	res.redirect('/api/view/advertisement');*/
-	////////////////
 }

@@ -105,8 +105,7 @@ exports.advertisement=function(req,res){
 						response.activity_notification=notification;
 						userFunctions.getNotificationCount(user_id,function(count){
 							response.notification_count=count;
-							userFunctions.addViewedActivity(user_info,advertisement,function(){
-								advertisementFunctions.getPreviousRating(user_id,ad_id,function(rating){
+							advertisementFunctions.getPreviousRating(user_id,ad_id,function(rating){
 									response.rating_user=rating;
 									advertisementFunctions.getRating(ad_id,function(rating_desc){
 										response.avg_rating=rating_desc.average;
@@ -117,16 +116,18 @@ exports.advertisement=function(req,res){
 												response.comments=comments;
 												advertisementFunctions.getPingStatus(user_info.user_id,ad_id,function(status){
 													response.ping_status=status;
+													if(notification===undefined)
+														userFunctions.addViewedActivity(user_info,advertisement,function(){});
+
 													//////////////////////////////////////////////////////////////////
 													//if time please add more items like from same seller,similar items
 													//////////////////////////////////////////////////////////////////
 													res.render('advertisement',{response:response});
 												});
 											});
+											
 										});
-										
 									});
-								});
 							});
 						});
 					});
@@ -140,14 +141,18 @@ exports.products=function(req,res){
 	
 		var response={};
 			response.user_info=req.session;
+			var user_id=req.session.user_id;
 			Advertisement.find({category: 'Book'}, null, {sort: {'createdAt': -1}}).exec(function(err, advertisement) {
 				response.books=advertisement;
 				Advertisement.find({category:'Electronics'}, null, {'createdAt': -1}).exec(function(err, advertisement) {
   					response.electronics=advertisement;
   						Advertisement.find({category:'Other'}, null, {'createdAt': -1}).exec(function(err, advertisement) {
   							response.others=advertisement;
+							userFunctions.getNotificationCount(user_id,function(count){
+								response.notification_count=count;
 							//res.json(response);
 							res.render('products',{response:response});
+						});
 						
   				});
   				});
@@ -171,10 +176,10 @@ exports.wishes=function(req,res){
 exports.activities=function(req,res){
 	var response={};
 	response.user_info=req.session;
-	Activity.find({user_id:req.session.user_id}, null, {limit: 20, sort: {'createdAt': -1}}).exec(function(err, activities) {
+	Activity.find({user_id:req.session.user_id}, null, { sort: {'_id': -1}}).exec(function(err, activities) {
 	  				response.activities=activities;
+	  				///check for any notification
 	  				res.render('activities',{response:response});
-	  				//console.log(response.activities[])
 	  				//res.json(response);
   				});
 }
@@ -185,13 +190,13 @@ exports.notifications=function(req,res){
 	var user_id=req.session.user_id;
 	var response={};
 	response.user_info=req.session;
-	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
-  				response.unread_notifications=notifications;
+	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'_id': -1}}).exec(function(err,unread_notifications) {
+  				response.unread_notifications=unread_notifications;
   				
-  				Notification.find({$and:[{read:1},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
-  				response.read_notifications=notifications;
+  				Notification.find({$and:[{read:1},{user_id:user_id}]}, null, {sort: {'_id': -1}}).exec(function(err,read_notifications) {
+  				response.read_notifications=read_notifications;
   				
-  				Notification.update({read:0 }, { read: 1 },{upsert: true}, function(err){
+  				Notification.update({$and:[{read:0},{user_id:req.session.user_id} ]}, { read: 1 },{multi: true}, function(err){
   					//res.json(response);
   					res.render('notifications',{response:response});
 				});
@@ -203,7 +208,7 @@ exports.notifications=function(req,res){
 exports.books=function(req,res){
 		var response={};
 		response.user_info=req.session;
-		Advertisement.find({category:'Book'}, null, {sort: {'createdAt': -1}}).exec(function(err, books) {
+		Advertisement.find({category:'Book'}, null, {sort: {'_id': -1}}).exec(function(err, books) {
 	  		response.books=books;
 	  		//res.json(response);
 	  		res.render('books',{response:response});
@@ -215,7 +220,7 @@ exports.books=function(req,res){
 exports.electronics=function(req,res){
 		var response={};
 		response.user_info=req.session;
-		Advertisement.find({category:'Electronics'}, null, {sort: {'createdAt': -1}}).exec(function(err, electronics) {
+		Advertisement.find({category:'Electronics'}, null, {sort: {'_id': -1}}).exec(function(err, electronics) {
 	  		response.electronics=electronics;
 	  		//res.json(response);
 	  		res.render('electronics',{response:response});
@@ -227,7 +232,7 @@ exports.electronics=function(req,res){
 exports.others=function(req,res){
 		var response={};
 		response.user_info=req.session;
-		Advertisement.find({category:'Other'}, null, {sort: {'createdAt': -1}}).exec(function(err, others) {
+		Advertisement.find({category:'Other'}, null, {sort: {'_id': -1}}).exec(function(err, others) {
 	  		response.others=others;
 	  		//res.json(response);
 	  		res.render('others',{response:response});

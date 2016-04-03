@@ -112,7 +112,7 @@ $(document).ready(function() {
                               <div>
                                   <form action="/api/advertisement/comment" method="POST">
                                   <input type="hidden" name="ad_id" value=<%=response.advertisement._id%> />
-                                  <textarea name="comment" class="form-control" placeholder="Enter your comment here..." rows="3" style="max-width: 100%; max-height: 90px;"></textarea>
+                                  <textarea name="comment" class="form-control" placeholder="Enter your comment here..." rows="3" style="max-width: 100%; max-height: 90px;" required></textarea>
                                   <br>
                                   <button href="/api/advertisement/comment" class="btn btn-primary btn-sm pull-right">Comment</a>
                                   </form>

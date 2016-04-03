@@ -9,7 +9,7 @@ var APP_DIR = path.dirname(require.main.filename);
 var UPLOAD_DIR = "\\uploads\\productimages\\electronics\\";
 
 var helper=require('../functions/helper');
-
+var timestamp=require('../functions/timestamp');
 
 exports.publish=function(req,callback){
 	var input=req.body;
@@ -46,6 +46,8 @@ exports.publish=function(req,callback){
  	}
  	//images done
 
+	electronics.createdAt=timestamp.getTime();
+	electronics.updatedAt=timestamp.getTime();
 
 	electronics.save();
 

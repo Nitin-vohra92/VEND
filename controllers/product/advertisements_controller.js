@@ -23,6 +23,7 @@ exports.publish=function(req,res){
 			res.render('publish',{response:response});
 		}
 		else{
+			var user_info=req.session;
 			var productCategory=input.category;
 			var afterProductSaved=function(product_id,thumb_path){
 				var advertisement=advertisementFunctions.saveAdvertisement(req,product_id,thumb_path);

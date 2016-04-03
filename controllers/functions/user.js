@@ -15,6 +15,7 @@ var Ping=require('../../models/Ping');
 
 var advertisementFunctions=require('./advertisement');
 
+var timestamp=require('./timestamp');
 var CONF_FILE=require('../../conf.json');
 
 //sendMail any mail function will use it 
@@ -83,6 +84,7 @@ function addActivity(user_info,activity_desc){
 	activity.user_id=user_id;
 	activity.user_name=user_name;
 	activity.activity=activity_desc;
+	activity.createdAt=timestamp.getTime();
 	activity.save();
 	return;
 
@@ -95,6 +97,7 @@ function addNotification(user_id,notification_desc){
 	var notification=new Notification();
 	notification.user_id=user_id;
 	notification.notification=notification_desc;
+	notification.createdAt=timestamp.getTime();
 	notification.save();
 	// sendMail also now later think about sending on every notification???
 	return;
@@ -320,6 +323,7 @@ exports.storeTemporaryUser=function(input,image_path){
 	temporaryUser.temp_id=shortid.generate();
 	temporaryUser.token=Math.floor(10000000+Math.random()*90000000);
 	temporaryUser.image_path=image_path;
+	temporaryUser.createdAt=timestamp.getTime();
 	temporaryUser.save();
 	return temporaryUser.temp_id;
 
@@ -357,6 +361,7 @@ exports.saveAccount=function(user,username,password,type){
 	account.user_id=user._id;
 	account.profile_pic=user.profile_pic;
 	account.type=type;
+	account.createdAt=timestamp.getTime();
 	account.save();
 	return account;
 
@@ -430,7 +435,9 @@ exports.sendToAd=function(res,ad_id){
 }
 
 ////related to adding activity
-exports.addPublishActivity=function(user_info,advertisement){
+exports.addPublishActivity=function(user_info,advertisement,callback){
+	var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
+
 	var activity_entity_name=advertisement.name;
 	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
 	var activity="Published an advertisement: "+
@@ -439,7 +446,7 @@ exports.addPublishActivity=function(user_info,advertisement){
 			'" class="text-info">'+advertisement.category+'</a> Category.';
 	addActivity(user_info,activity);
 	//add callback functionailty
-	return;
+	callback();
 
 }
 
@@ -448,8 +455,8 @@ exports.addRatingActivity=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var activity_entity_name=advertisement.name;
 		var activity_entity_link='/api/view/advertisement?id='+input.ad_id;
-		var activity="Rated the advertisement entitled "+
-		'<a href="'+activity_entity_link+'" class="text-info">'+activity_entity_name+"</a> "+input.rating+" stars";
+		var activity="Rated the advertisement "+
+		'<a href="'+activity_entity_link+'" class="text-info">'+activity_entity_name+"</a> "+input.rating+" stars.";
 		addActivity(user_info,activity);
 		callback();
 	});
@@ -461,7 +468,7 @@ exports.addViewedActivity=function(user_info,advertisement,callback){
 
 	var activity_entity_name=advertisement.name;
 	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
-	var activity='Viewed the advertisement entitled '+
+	var activity='Viewed the advertisement '+
 			'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
 			'" class="text-info">'+advertisement.category+'</a> Category.';
@@ -477,7 +484,7 @@ exports.addBiddingActivity=function(user_info,input,callback){
 		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 		var activity_entity_name=advertisement.name;
 		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
-		var activity="Bidded Rs. "+input.amount+" on the advertisement entitled "+
+		var activity="Bidded Rs. "+input.amount+" on the advertisement "+
 			'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
 			'" class="text-info">'+advertisement.category+'</a> Category.';
@@ -494,7 +501,7 @@ exports.addCommentActivity=function(user_info,input,callback){
 		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 		var activity_entity_name=advertisement.name;
 		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
-		var activity="Commented on the advertisement entitled "+
+		var activity="Commented on the advertisement "+
 			'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
 			'" class="text-info">'+advertisement.category+'</a> Category.';
@@ -544,7 +551,7 @@ exports.addRatingNotification=function(user_info,input,callback){
 		var notification_user_name=user_info.name;
 		var notification_user_link='/api/view/user?id='+user_info.user_id;
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
-						notification_user_name+'</a> rated '+input.rating+' stars on your advertisement entitled '+
+						notification_user_name+'</a> rated '+input.rating+' stars on your advertisement '+
 						'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
 
 		addNotification(user_id,notification_desc);
@@ -564,7 +571,7 @@ exports.addBiddingNotification=function(user_info,input,callback){
 		var notification_user_link='/api/view/user?id='+user_info.user_id;
 
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
-			notification_user_name+'</a> bidded Rs. '+input.amount+' on your advertisement entitled '+
+			notification_user_name+'</a> bidded Rs. '+input.amount+' on your advertisement '+
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
 
 		addNotification(user_id,notification_desc);
@@ -583,7 +590,7 @@ exports.addCommentNotification=function(user_info,input,callback){
 		var notification_user_link='/api/view/user?id='+user_info.user_id;
 
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
-			notification_user_name+'</a> commented on your advertisement entitled '+
+			notification_user_name+'</a> commented on your advertisement '+
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
 
 		addNotification(user_id,notification_desc);
@@ -602,7 +609,7 @@ exports.addPingNotification=function(user_info,input,callback){
 		var notification_user_link='/api/view/user?id='+user_info.user_id;
 
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
-			notification_user_name+'</a> pinged you for your advertisement entitled '+
+			notification_user_name+'</a> pinged you for your advertisement '+
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+
 			"</a>.<br>Check 'Your Ads' for more options";
 
@@ -639,6 +646,7 @@ exports.addPing=function(user_info,input,callback){
 		ping.ad_name=advertisement.name;
 		ping.ad_kind=advertisement.kind;
 		ping.ad_category=advertisement.category;
+		ping.createdAt=timestamp.getTime();
 		ping.save();
 		callback();
 	});

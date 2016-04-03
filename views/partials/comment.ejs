@@ -8,16 +8,14 @@
     <strong class="text-info">
     <%=response.comment.user_name%>
     </strong>
-    </a>
-    <p>
+    </a><br>
     <%=response.comment.comment%> 
     <br>
     <span class="text-muted">
     <strong>
     Posted at: 
     </strong>
-    <%=response.comment.createdAt.toString().split('GMT')[0]%>
+    <%=response.comment.createdAt%>
     </span>
-    </p>
     <hr>
-    </div>
+</div>

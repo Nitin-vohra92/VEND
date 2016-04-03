@@ -10,8 +10,8 @@ var APP_DIR = path.dirname(require.main.filename);
 var UPLOAD_DIR = "\\uploads\\productimages\\books\\";
 
 
- var helper=require('../functions/helper');
-
+var helper=require('../functions/helper');
+var timestamp=require('../functions/timestamp');
 exports.publish=function(req,callback){
 	var input=req.body;
 
@@ -49,6 +49,7 @@ exports.publish=function(req,callback){
 	
 
 
+		book.createdAt=timestamp.getTime();
 		book.save();
 		callback(book._id,book.images[0].path);
 	
