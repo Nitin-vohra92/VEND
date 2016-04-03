@@ -13,6 +13,7 @@ var RecentlyViewed=require('../../models/RecentlyViewed');
 var Rating=require('../../models/Rating');
 var Bid=require('../../models/Bid');
 var Comment=require('../../models/Comment');
+var Ping=require('../../models/Ping');
 
 
 function convertIdsToArray(ids){
@@ -300,4 +301,15 @@ exports.getComments=function(ad_id,callback){
 	Comment.find({ad_id:ad_id}, null, { sort: {'createdAt': -1}}).exec(function(err, comments) {
 		callback(comments);
 	 });
+}
+
+exports.getPingStatus=function(user_id,ad_id,callback){
+	var status;
+	Ping.findOne({user_id:user_id,ad_id:ad_id},function(err,ping){
+		if(ping===null)
+			status='available';
+		else
+			status='unavailable';
+		callback(status);
+	});
 }

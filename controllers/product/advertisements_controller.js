@@ -14,10 +14,6 @@ var advertisementFunctions=require('../functions/advertisement');
 
 exports.publish=function(req,res){
 	
-	if(req.session.user_id===undefined){
-		userFunctions.sendToLogin(res);
-	}
-	else{
 		var input=req.body;
 		var response={};
 		var error=advertisementFunctions.validatePublishData(req);
@@ -56,16 +52,11 @@ exports.publish=function(req,res){
 					break;
 		 	}
 	 	}
-	}	
 }
 exports.publishpage=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var response={};
 		response.user_info=req.session;
 		res.render('publish',{response:response});
-	}
 }
 
 
@@ -73,10 +64,7 @@ exports.publishpage=function(req,res){
 
 
 exports.comment=function(req,res){
-	//if no user logged in
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
+	
 		var input=req.body;
 		if(input.ad_id===''||input.comment==='')
 			res.redirect('/');
@@ -98,15 +86,11 @@ exports.comment=function(req,res){
 				});
 			});
 		}
-	}
 }
 
 //needs rating and ad details
 exports.rate=function(req,res){
-	//if no user logged in
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
+	
 		var input=req.body;
 		if(input.ad_id===''||input.rating==='')
 			res.redirect('/');
@@ -128,17 +112,12 @@ exports.rate=function(req,res){
 				});
 			});
 		}
-	}
 }
 
 
 // needs amount and ad details
 exports.bid=function(req,res){
-	//if no user logged in
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
-
+	
 		var input=req.body;
 		if(input.ad_id===''||input.bid==='')
 			res.redirect('/');
@@ -160,5 +139,4 @@ exports.bid=function(req,res){
 				});
 			});
 		}
-	}
 }

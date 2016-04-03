@@ -10,6 +10,7 @@ var Account=require('../../models/Account');
 
 var ActivityNotification=require('../../models/ActivityNotification');
 var Notification=require('../../models/Notification');
+var Ping=require('../../models/Ping');
 
 
 var advertisementFunctions=require('./advertisement');
@@ -87,7 +88,7 @@ function addActivity(user_info,activity_desc){
 
 }
 ///////////////////////////////////////////
-//TODO covert methods in user.js 
+//TODO covert methods in user.js to callback system
 ////////////////////////////////////////////
 function addNotification(user_id,notification_desc){
 	//id to which notification is made not the one who causes the notification
@@ -373,6 +374,7 @@ exports.setSession=function(req,account){
 	});
 	return;
 }
+
 exports.sendPasswordMail=function(email,firstname,username,password){
 	var mail_to=email;
 	var mail_subject="VEND Password Request";
@@ -440,9 +442,7 @@ exports.addPublishActivity=function(user_info,advertisement){
 	return;
 
 }
-/////////////////////////////////////////
-/////////////////////////////////////////
-//think about adding as html content these things
+
 exports.addRatingActivity=function(user_info,input,callback){
 	
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
@@ -504,6 +504,27 @@ exports.addCommentActivity=function(user_info,input,callback){
 
 }
 
+exports.addPingActivity=function(user_info,input,callback){
+
+	//get the ad details
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
+		var activity_entity_name=advertisement.name;
+		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+		var ad_publisher_name=advertisement.user_name;
+		var ad_publisher_link='/api/view/user?id='+advertisement.user_id;
+		
+		var activity="Pinged the publisher "+
+			'<a href="'+ad_publisher_link+'" class="text-info">'+
+			ad_publisher_name+"</a> for his advertisement "+
+			'<a href="'+activity_entity_link+'" class="text-info">'+
+			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
+			'" class="text-info">'+advertisement.category+'</a> Category.';
+		addActivity(user_info,activity);
+		callback();
+	});
+
+}
 
 ////Related to notification
 exports.getNotificationCount=function(user_id,callback){
@@ -570,6 +591,25 @@ exports.addCommentNotification=function(user_info,input,callback){
 	});
 }
 
+exports.addPingNotification=function(user_info,input,callback){
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		//id of the publisher
+		var user_id=advertisement.user_id;
+		
+		var notification_ad_name=advertisement.name;
+		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_user_name=user_info.name;
+		var notification_user_link='/api/view/user?id='+user_info.user_id;
+
+		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
+			notification_user_name+'</a> pinged you for your advertisement entitled '+
+			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+
+			"</a>.<br>Check 'Your Ads' for more options";
+
+		addNotification(user_id,notification_desc);
+		callback();
+	});
+}
 
 exports.addActivityNotification=function(user_id,notification,callback){
 	var activityNotification=new ActivityNotification();
@@ -587,6 +627,20 @@ exports.getAndDeleteActivityNotification=function(user_id,callback){
 		activityNotification.remove();
 		}
 		callback(notification);
+	});
+}
+
+
+exports.addPing=function(user_info,input,callback){
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		var ping=new Ping(user_info);
+		ping.ping_user_id=advertisement.user_id;
+		ping.ad_id=input.ad_id;
+		ping.ad_name=advertisement.name;
+		ping.ad_kind=advertisement.kind;
+		ping.ad_category=advertisement.category;
+		ping.save();
+		callback();
 	});
 }
 

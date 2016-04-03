@@ -176,54 +176,8 @@ exports.forgot=function(req,res){
 			});
 }
 
-exports.login=function(req,res){
-	var input=req.body;
-	var response={};
-	//first find in accounts table
-	Account.findOne({username:input.username},function(err,account){
-		if(err)
-			console.log(err);
-		else{
-			//if not found
-			if(account===null){
-				var error="Account Not found!!";
-				response.error=error;
-				res.render('login',{response:response});
-			}
-			//if found
-			else{
-				if(account.password===input.password){
-					//find name of type and then accordingly search for details in respective tables
-					
-						userFunctions.setSession(req,account);
-						res.redirect('/');
-						
-					
-	 			}
-				else{
-
-				var error="Incorrect password!!";
-				response.error=error;
-				res.render('login',{response:response});
-				}
-			}
-		}
-	});
-	 
-}
-
-
-exports.logout=function(req,res){
-	req.session.destroy(function(err) {
-  			// cannot access session here
-	});
-	res.redirect('/');	 
-}
 
 exports.wish=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var input=req.body;
 		var wish=new Wish(input);
 		wish.user_id=req.session.user_id;
@@ -240,16 +194,24 @@ exports.wish=function(req,res){
 		activity.save();
 		//res.json({status:'Success'});
 		res.redirect('/');
-	}
 }
 
 exports.ping=function(req,res){
-
-	//if not logged in??
-
-
-	//////////////////
 	var input=req.body;
+	var user_info=req.session;
+	userFunctions.addPing(user_info,input,function(){
+		userFunctions.addPingActivity(user_info,input,function(){
+			//notify user successfully rating by adding to tab
+			var notification='Successfully pinged the publisher of the advertisement.';
+			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			//add notfication to publisher of ad
+				userFunctions.addPingNotification(user_info,input,function(){
+					userFunctions.sendToAd(res,input.ad_id);
+				});
+			});
+		});
+	});
+	/*var input=req.body;
 	var notification=new Notification(input);
 	notification.user_id=req.session.user_id;
 	notification.user_desc=req.session.name+','+req.session.user_type+' at NITH';
@@ -267,6 +229,6 @@ exports.ping=function(req,res){
 	activity.activity='Pinged the user: '+notification.user_desc+' at '+notification.createdAt;
 	activity.save();
 
-	res.redirect('/api/view/advertisement');
+	res.redirect('/api/view/advertisement');*/
 	////////////////
 }

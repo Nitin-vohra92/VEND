@@ -69,15 +69,16 @@ exports.home=function(req,res){
 
 //for advertisement view
 exports.advertisement=function(req,res){
-	if(req.session.user_id===undefined){
-		userFunctions.sendToLogin(res);
-	}
-	else{
+	
 		var response={};
 		response.user_info=req.session;
 
 		var ad_id=req.query.id;
 		advertisementFunctions.getAdvertisement(ad_id,function(advertisement){
+			/////////////////////////////////////////////////
+			//later when advertisement will be deleted check for the same and redirect to page
+			//ad has been deleted by the seller
+			////////////////////////////////////////////////
 			response.advertisement=advertisement;
 			if(req.session.user_id===advertisement.user_id)
 				response.self=1;
@@ -114,7 +115,13 @@ exports.advertisement=function(req,res){
 											response.bids=bids;
 											advertisementFunctions.getComments(ad_id,function(comments){
 												response.comments=comments;
-												res.render('advertisement',{response:response});
+												advertisementFunctions.getPingStatus(user_info.user_id,ad_id,function(status){
+													response.ping_status=status;
+													//////////////////////////////////////////////////////////////////
+													//if time please add more items like from same seller,similar items
+													//////////////////////////////////////////////////////////////////
+													res.render('advertisement',{response:response});
+												});
 											});
 										});
 										
@@ -126,19 +133,11 @@ exports.advertisement=function(req,res){
 				});
 			});
 		});	
-	}
 }
 
 //for products view
 exports.products=function(req,res){
-	//if any user is logged in
-	console.log(req.session);
-	if(req.session.user_id===undefined){
-		userFunctions.sendToLogin(res);
-
-	}
-	//if no user logged in
-	else{
+	
 		var response={};
 			response.user_info=req.session;
 			Advertisement.find({category: 'Book'}, null, {sort: {'createdAt': -1}}).exec(function(err, advertisement) {
@@ -154,7 +153,6 @@ exports.products=function(req,res){
   				});
 			});
 		
-	}
 }
 
 //for viewing more wishes
@@ -171,9 +169,6 @@ exports.wishes=function(req,res){
 
 //for user activities
 exports.activities=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 	var response={};
 	response.user_info=req.session;
 	Activity.find({user_id:req.session.user_id}, null, {limit: 20, sort: {'createdAt': -1}}).exec(function(err, activities) {
@@ -182,22 +177,18 @@ exports.activities=function(req,res){
 	  				//console.log(response.activities[])
 	  				//res.json(response);
   				});
-	}
 }
 
 //for user notification
 
 exports.notifications=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 	var user_id=req.session.user_id;
 	var response={};
 	response.user_info=req.session;
 	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
   				response.unread_notifications=notifications;
   				
-  				Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
+  				Notification.find({$and:[{read:1},{user_id:user_id}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
   				response.read_notifications=notifications;
   				
   				Notification.update({read:0 }, { read: 1 },{upsert: true}, function(err){
@@ -206,14 +197,10 @@ exports.notifications=function(req,res){
 				});
 			});
 		});
-	}
 }
 
 //for viewing books
 exports.books=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var response={};
 		response.user_info=req.session;
 		Advertisement.find({category:'Book'}, null, {sort: {'createdAt': -1}}).exec(function(err, books) {
@@ -222,14 +209,10 @@ exports.books=function(req,res){
 	  		res.render('books',{response:response});
 
 		});
-	}
 }
 
 //for viewing books
 exports.electronics=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var response={};
 		response.user_info=req.session;
 		Advertisement.find({category:'Electronics'}, null, {sort: {'createdAt': -1}}).exec(function(err, electronics) {
@@ -238,14 +221,10 @@ exports.electronics=function(req,res){
 	  		res.render('electronics',{response:response});
 
 		});
-	}
 }
 
 //for viewing others
 exports.others=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var response={};
 		response.user_info=req.session;
 		Advertisement.find({category:'Other'}, null, {sort: {'createdAt': -1}}).exec(function(err, others) {
@@ -254,58 +233,42 @@ exports.others=function(req,res){
 	  		res.render('others',{response:response});
 
 		});
-	}
 }
 //for view more latest
 exports.latest=function(req,res){
 	var response={};
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		response.user_info=req.session;
 		advertisementFunctions.latest(function(advertisements){
 			response.latest=advertisements;
 			res.render('latest',{response:response});
 		});
-	}
 }
 
 //for view more recently viewed
 exports.viewed=function(req,res){
 	var response={};
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		response.user_info=req.session;
 		advertisementFunctions.recent(function(advertisements){
 			response.recent=advertisements;
 			res.render('recent',{response:response});
 		});
-	}
 }
 
 
 //for view more recently viewed
 exports.recommended=function(req,res){
 	var response={};
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var user_type=req.session.user_type;
 		response.user_info=req.session;
 		advertisementFunctions.recommended(user_type,function(advertisements){
 			response.recommended=advertisements;
 			res.render('recommended',{response:response});
 		});
-	}
 }
 
 
 //for user view
 exports.user=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
 		var input=req.body;
 		var response=[];
 		response.push({user_info:req.session});
@@ -330,22 +293,6 @@ exports.user=function(req,res){
 									Other.find(responseSetter,input);
 									break;	
 		 					}
-		}
-}
-
-//for view more comments
-exports.comments=function(req,res){
-	if(req.session.user_id===undefined)
-		userFunctions.sendToLogin(res);
-	else{
-	var response=[];
-	response.push({user_info:req.session});
-	Comment.find({ad_id:input.ad_id}, null, {limit: 10, sort: {'createdAt': -1}}).exec(function(err, comments) {
-  				response.push({comments:comments});
-  				res.render('',{response:response});
-  				
-			});
-	}
 }
 
 //for search page

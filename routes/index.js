@@ -3,6 +3,8 @@ var fs = require('fs');
 var router = express.Router();
 var response={};
 
+var auth=require('../controllers/user/auth');
+
 router.route('/')
 	.get(function(req, res) {
 			res.redirect('/api/view/home');		
@@ -44,17 +46,10 @@ router.route('/edit')
 
 //publish an advertisement page	
 router.route('/publish')
-	.get(function(req, res) {
+	.get(auth.loggedIn,function(req, res) {
 		response={};
-		if(req.session.user_id===undefined){
-			var message="Please log in to continue.";
-			response.message=message;
-			res.render('login',{response:response});
-		}
-		else{
-			response.user_info=req.session;
-			res.render('publish',{response:response});
-		}
+		response.user_info=req.session;
+		res.render('publish',{response:response});
 });
 
 //viewing an advertisement page

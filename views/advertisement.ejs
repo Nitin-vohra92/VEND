@@ -23,16 +23,22 @@
 $(document).ready(function() {
       <% include partials/dropdown%>
 
+       <%if(response.ping_status==='unavailable'){%>
+        $('button[id="pingButton"]').attr('disabled',true);
+      <%}%>
       $('div[class="rating"]').click(function(){
            //alert('Rated Product: '+$('input[id="input-4"]').val());
            $('form[id="rateForm"]').submit();
       });
+
+//if the publisher is viewing himself
       if (<%=response.self%>) {
         $('button[id="pingButton"]').attr('disabled',true);
         $('button[id="bidButton"]').attr('disabled',true);
       }
+
+     
 });
-//if the publisher is viewing himself
 
 </script>
 </head>
