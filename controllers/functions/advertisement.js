@@ -368,17 +368,125 @@ exports.getOthers=function(sort,callback){
 
 
 //latest
-exports.latest=function(callback){
-	Advertisement.find({}, null, {sort: {'_id': -1}}).exec(function(err, latests) {
-  		callback(latests);
-	});
+exports.latest=function(sort,callback){
+	switch(sort){
+		case null:
+		case 'publish_time':
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'rating':
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				advertisements.sort(function(a,b){//decreasing
+					return b.rating-a.rating;
+				});
+				callback(advertisements);
+			});
+			break;
+		case 'price_asc':
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				advertisements.sort(function(a,b){//inc
+					return a.price-b.price;
+				});
+				callback(advertisements);
+			});
+			break;
+		case 'price_desc':
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				advertisements.sort(function(a,b){//dec
+					return b.price-a.price;
+				});
+				callback(advertisements);
+			});
+			break;
+		case 'loan':
+			Advertisement.find({kind:'LOAN'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'buy':
+			Advertisement.find({kind:'BUY'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'bid':
+			Advertisement.find({bid:'YES'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'no_bid':
+			Advertisement.find({bid:'NO'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		default:
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+	}
 }
 
 //recently viewed
-exports.recent=function(callback){
-	RecentlyViewed.find({}, null, {sort: {'_id': -1}}).exec(function(err, recents) {
-  		callback(recents);
-	});
+exports.recent=function(sort,callback){
+	switch(sort){
+		case null:
+		case 'publish_time':
+			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'rating':
+			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				advertisements.sort(function(a,b){//decreasing
+					return b.rating-a.rating;
+				});
+				callback(advertisements);
+			});
+			break;
+		case 'price_asc':
+			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				advertisements.sort(function(a,b){//inc
+					return a.price-b.price;
+				});
+				callback(advertisements);
+			});
+			break;
+		case 'price_desc':
+			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				advertisements.sort(function(a,b){//dec
+					return b.price-a.price;
+				});
+				callback(advertisements);
+			});
+			break;
+		case 'loan':
+			RecentlyViewed.find({kind:'LOAN'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'buy':
+			RecentlyViewed.find({kind:'BUY'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'bid':
+			RecentlyViewed.find({bid:'YES'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'no_bid':
+			RecentlyViewed.find({bid:'NO'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		default:
+			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+	}
 }
 
 

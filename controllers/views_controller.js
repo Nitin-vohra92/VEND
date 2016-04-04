@@ -116,8 +116,10 @@ exports.advertisement=function(req,res){
 												response.comments=comments;
 												advertisementFunctions.getPingStatus(user_info.user_id,ad_id,function(status){
 													response.ping_status=status;
-													if(notification===undefined)
+													if(notification===undefined){
 														userFunctions.addViewedActivity(user_info,advertisement,function(){});
+														userFunctions.addToRecentlyViewed(advertisement,function(){});
+													}
 
 													//////////////////////////////////////////////////////////////////
 													//if time please add more items like from same seller,similar items
@@ -272,25 +274,39 @@ exports.others=function(req,res){
 }
 //for view more latest
 exports.latest=function(req,res){
-	var response={};
+		var response={};
 		response.user_info=req.session;
-		advertisementFunctions.latest(function(advertisements){
+		var user_id=req.session.user_id;
+		var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+		
+		advertisementFunctions.latest(sort,function(advertisements){
 			response.latest=advertisements;
+			response.sort_name=advertisementFunctions.getSortName(sort);
+			response.sort=sort;
 			res.render('latest',{response:response});
 		});
 }
 
 //for view more recently viewed
 exports.viewed=function(req,res){
-	var response={};
+		var response={};
 		response.user_info=req.session;
-		advertisementFunctions.recent(function(advertisements){
+		var user_id=req.session.user_id;
+		var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+		
+		advertisementFunctions.recent(sort,function(advertisements){
 			response.recent=advertisements;
+			response.sort_name=advertisementFunctions.getSortName(sort);
+			response.sort=sort;
 			res.render('recent',{response:response});
 		});
 }
 
-
+//find some logic for recommendation
 //for view more recommended
 exports.recommended=function(req,res){
 	var response={};

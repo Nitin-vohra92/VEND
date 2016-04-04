@@ -2,15 +2,16 @@ var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
 var timestamp=require('../controllers/functions/timestamp');
 
-var recentViewedModel=new Schema({ 
-	ad_id:{
+var recentViewedModel=new Schema({
+	user_id:{
 		type: String,
 		trim: true
 	},
-	user_id:{
-		type: String
+	user_name:{
+		type:String,
+		default:'Anonymous'
 	},
-	user_desc:{
+	user_type:{
 		type:String,
 		default:'Anonymous'
 	},
@@ -23,21 +24,28 @@ var recentViewedModel=new Schema({
 	kind:{
 		type: String
 	},
+	bid:{
+		type:String
+	},
 	location:{
 		type: String
 	},
 	price:{
 		type: String
 	},
+	rating:{
+		type: Number,
+		default: 0
+	},
 	thumb:{
 		type: String
 	},
-	description:{
+	name:{
 		type: String
 	},
-	createdAt:{
+	description:{
 		type: String,
-		default:timestamp.getTime()
+		default:'No Description by Publisher'
 	}
 });
 module.exports=mongoose.model('RecentView',recentViewedModel);

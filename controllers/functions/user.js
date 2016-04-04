@@ -12,6 +12,8 @@ var ActivityNotification=require('../../models/ActivityNotification');
 var Notification=require('../../models/Notification');
 var Ping=require('../../models/Ping');
 
+var RecentlyViewed=require('../../models/RecentlyViewed');
+
 
 var advertisementFunctions=require('./advertisement');
 
@@ -434,6 +436,12 @@ exports.sendToAd=function(res,ad_id){
 	res.redirect('/api/view/advertisement?id='+ad_id);
 }
 
+
+exports.addToRecentlyViewed=function(advertisement,callback){
+	var recent=new RecentlyViewed(advertisement);
+	recent.save();
+	callback();
+}
 ////related to adding activity
 exports.addPublishActivity=function(user_info,advertisement,callback){
 	var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
