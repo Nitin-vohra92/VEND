@@ -25,6 +25,24 @@ function convertIdsToArray(ids){
 	return result;
 }
 
+function setAggregateRating(ad_id,callback){
+	Rating.aggregate([{$match:{ad_id:ad_id}},{$group:{ _id: '$ad_id',average:{$avg: '$rating'},count:{$sum:1}}}],function(err,result_rating){	
+			var rating={};
+			if(result_rating.length===0){
+				rating.average=0;
+				rating.count=0;
+			}
+			else{
+				rating=result_rating[0];
+			}
+			Advertisement.findOne({_id:ad_id},function(err,advertisement){
+				advertisement.rating=rating.average*rating.count;
+				advertisement.save();
+				console.log(rating);
+				callback();
+			});
+		});
+}
 exports.validatePublishData=function(req){
 	var error;
 	var input=req.body;
@@ -156,6 +174,198 @@ exports.searchOther=function(query,callback){
 
 	
 }
+/////////////////////////////////////////////////
+//ad sort logic
+exports.getSortName=function(sort){
+	var name;
+	switch(sort){
+		case null:
+		case 'publish_time':
+			name='Newest First';
+			break;
+		case 'rating':
+			name='Rating';
+			break;
+		case 'price_asc':
+			name='Price(Low to High)';
+			break;
+		case 'price_desc':
+			name='Price(High to Low)';
+			break;
+		case 'loan':
+			name='Available for Loan';
+			break;
+		case 'buy':
+			name='Available for Buy';
+			break;
+		case 'bid':
+			name='Available for Bidding';
+			break;
+		case 'no_bid':
+			name='Not available for Bidding';
+			break;
+		default:
+			name='Newest First';
+			break;
+	}
+	return name;
+}
+//for ads for advertisement page
+exports.getBooks=function(sort,callback){
+	switch(sort){
+		case null:
+		case 'publish_time':
+			Advertisement.find({category: 'Book'}, null, {sort: {'_id': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'rating':
+			Advertisement.find({category: 'Book'}, null, {sort: {'rating': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'price_asc':
+			Advertisement.find({category: 'Book'}, null, {sort: {'price': 1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'price_desc':
+			Advertisement.find({category: 'Book'}, null, {sort: {'price': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'loan':
+			Advertisement.find({category: 'Book',kind:'LOAN'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'buy':
+			Advertisement.find({category: 'Book',kind:'BUY'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'bid':
+			Advertisement.find({category: 'Book',bid:'YES'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'no_bid':
+			Advertisement.find({category: 'Book',bid:'NO'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		default:
+			Advertisement.find({category: 'Book'}, null, {sort: {'_id': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+	}
+
+}
+
+exports.getElectronics=function(sort,callback){
+	switch(sort){
+		case null:
+		case 'publish_time':
+			Advertisement.find({category: 'Electronics'}, null, {sort: {'_id': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'rating':
+			Advertisement.find({category: 'Electronics'}, null, {sort: {'rating': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'price_asc':
+			Advertisement.find({category: 'Electronics'}, null, {sort: {'price': 1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'price_desc':
+			Advertisement.find({category: 'Electronics'}, null, {sort: {'price': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'loan':
+			Advertisement.find({category: 'Electronics',kind:'LOAN'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'buy':
+			Advertisement.find({category: 'Electronics',kind:'BUY'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'bid':
+			Advertisement.find({category: 'Electronics',bid:'YES'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'no_bid':
+			Advertisement.find({category: 'Electronics',bid:'NO'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		default:
+			Advertisement.find({category: 'Electronics'}, null, {sort: {'_id': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+	}
+}
+exports.getOthers=function(sort,callback){
+	switch(sort){
+		case null:
+		case 'publish_time':
+			Advertisement.find({category: 'Other'}, null, {sort: {'_id': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'rating':
+			Advertisement.find({category: 'Other'}, null, {sort: {'rating': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'price_asc':
+			Advertisement.find({category: 'Other'}, null, {sort: {'price': 1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'price_desc':
+			Advertisement.find({category: 'Other'}, null, {sort: {'price': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'loan':
+			Advertisement.find({category: 'Other',kind:'LOAN'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'buy':
+			Advertisement.find({category: 'Other',kind:'BUY'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'bid':
+			Advertisement.find({category: 'Other',bid:'YES'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		case 'no_bid':
+			Advertisement.find({category: 'Other',bid:'NO'}, null, {}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+		default:
+			Advertisement.find({category: 'Other'}, null, {sort: {'_id': -1}}).exec(function(err, advertisements) {
+				callback(advertisements);
+			});
+			break;
+	}
+}
+
+
+
 
 //latest
 exports.latest=function(callback){
@@ -186,6 +396,7 @@ exports.recommended=function(user_type,callback){
 	}
 }
 
+//////////////////////////////////////////////
 exports.getAdvertisement=function(id,callback){
 	Advertisement.findOne({_id:id},function(err,advertisement){
 		if(err)
@@ -235,13 +446,20 @@ exports.addRating=function(user_id,input,callback){
 		if(result===null){
 		var rating=new Rating(input);
 		rating.user_id=user_id;
-		rating.save();
+		rating.save(function(err){
+			setAggregateRating(input.ad_id,function(){
+				callback();
+			});
+		});
 		}
 		else{
 			result.rating=input.rating;
-			result.save();
+			result.save(function(err){
+				setAggregateRating(input.ad_id,function(){
+					callback();
+				});
+			});
 		}
-		callback();
 	});
 	
 }
@@ -262,7 +480,7 @@ exports.getPreviousRating=function(user_id,ad_id,callback){
 exports.getRating=function(ad_id,callback){
 	var rating={};
 	Rating.aggregate([{$match:{ad_id:ad_id}},{$group:{ _id: '$ad_id',average:{$avg: '$rating'},count:{$sum:1}}}],function(err,result){	
-		console.log(result);
+		
 		if(result.length===0){
 			rating.average=0;
 			rating.count=0;
@@ -270,7 +488,6 @@ exports.getRating=function(ad_id,callback){
 		else{
 			rating=result[0];
 		}
-
 		callback(rating);
 
 	});

@@ -611,7 +611,7 @@ exports.addPingNotification=function(user_info,input,callback){
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
 			notification_user_name+'</a> pinged you for your advertisement '+
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+
-			"</a>.<br>Check 'Your Ads' for more options";
+			"</a>.<br>Check 'Your Ads' for more options.";
 
 		addNotification(user_id,notification_desc);
 		callback();

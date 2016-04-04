@@ -136,29 +136,6 @@ exports.advertisement=function(req,res){
 		});	
 }
 
-//for products view
-exports.products=function(req,res){
-	
-		var response={};
-			response.user_info=req.session;
-			var user_id=req.session.user_id;
-			Advertisement.find({category: 'Book'}, null, {sort: {'createdAt': -1}}).exec(function(err, advertisement) {
-				response.books=advertisement;
-				Advertisement.find({category:'Electronics'}, null, {'createdAt': -1}).exec(function(err, advertisement) {
-  					response.electronics=advertisement;
-  						Advertisement.find({category:'Other'}, null, {'createdAt': -1}).exec(function(err, advertisement) {
-  							response.others=advertisement;
-							userFunctions.getNotificationCount(user_id,function(count){
-								response.notification_count=count;
-							//res.json(response);
-							res.render('products',{response:response});
-						});
-						
-  				});
-  				});
-			});
-		
-}
 
 //for viewing more wishes
 exports.wishes=function(req,res){
@@ -204,15 +181,53 @@ exports.notifications=function(req,res){
 		});
 }
 
+//for products view
+exports.products=function(req,res){
+	
+			var response={};
+			response.user_info=req.session;
+			var user_id=req.session.user_id;
+			var sort=req.query.sort;
+			if(!sort)
+				sort=null;
+			advertisementFunctions.getBooks(sort,function(books){
+				response.books=books;
+				advertisementFunctions.getElectronics(sort,function(electronics){
+					response.electronics=electronics;
+					advertisementFunctions.getOthers(sort,function(others){
+						response.others=others;
+						userFunctions.getNotificationCount(user_id,function(count){
+								response.notification_count=count;
+								response.sort_name=advertisementFunctions.getSortName(sort);
+								response.sort=sort;
+								//res.json(response);
+								res.render('products',{response:response});
+						});
+					});
+				});
+			});
+		
+}
+
+
+
 //for viewing books
 exports.books=function(req,res){
 		var response={};
 		response.user_info=req.session;
-		Advertisement.find({category:'Book'}, null, {sort: {'_id': -1}}).exec(function(err, books) {
-	  		response.books=books;
-	  		//res.json(response);
-	  		res.render('books',{response:response});
-
+		var user_id=req.session.user_id;
+		var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+		advertisementFunctions.getBooks(sort,function(books){
+			response.books=books;
+			response.sort_name=advertisementFunctions.getSortName(sort);
+			response.sort=sort;
+			userFunctions.getNotificationCount(user_id,function(count){
+				response.notification_count=count;
+	  			//res.json(response);
+	  			res.render('books',{response:response});
+	  		});
 		});
 }
 
@@ -220,11 +235,19 @@ exports.books=function(req,res){
 exports.electronics=function(req,res){
 		var response={};
 		response.user_info=req.session;
-		Advertisement.find({category:'Electronics'}, null, {sort: {'_id': -1}}).exec(function(err, electronics) {
-	  		response.electronics=electronics;
-	  		//res.json(response);
-	  		res.render('electronics',{response:response});
-
+		var user_id=req.session.user_id;
+		var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+		advertisementFunctions.getElectronics(sort,function(electronics){
+			response.electronics=electronics;
+			response.sort_name=advertisementFunctions.getSortName(sort);
+			response.sort=sort;
+			userFunctions.getNotificationCount(user_id,function(count){
+				response.notification_count=count;
+	  			//res.json(response);
+	  			res.render('electronics',{response:response});
+	  		});
 		});
 }
 
@@ -232,11 +255,19 @@ exports.electronics=function(req,res){
 exports.others=function(req,res){
 		var response={};
 		response.user_info=req.session;
-		Advertisement.find({category:'Other'}, null, {sort: {'_id': -1}}).exec(function(err, others) {
-	  		response.others=others;
-	  		//res.json(response);
-	  		res.render('others',{response:response});
-
+		var user_id=req.session.user_id;
+		var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+		advertisementFunctions.getOthers(sort,function(others){
+			response.others=others;
+			response.sort_name=advertisementFunctions.getSortName(sort);
+			response.sort=sort;
+			userFunctions.getNotificationCount(user_id,function(count){
+				response.notification_count=count;
+	  			//res.json(response);
+	  			res.render('others',{response:response});
+	  		});
 		});
 }
 //for view more latest
@@ -260,7 +291,7 @@ exports.viewed=function(req,res){
 }
 
 
-//for view more recently viewed
+//for view more recommended
 exports.recommended=function(req,res){
 	var response={};
 		var user_type=req.session.user_type;

@@ -6,7 +6,6 @@ var now;
 exports.getTime=function(){
 // Create a date object with the current time
   now = new Date();
-  console.log(now);
   var month_names_short= ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
 // Create an array with the current month, day and time

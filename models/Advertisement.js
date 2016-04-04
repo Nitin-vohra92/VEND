@@ -33,6 +33,10 @@ var advertisementModel=new Schema({
 	price:{
 		type: String
 	},
+	rating:{
+		type: Number,
+		default: 0
+	},
 	thumb:{
 		type: String
 	},

@@ -68,8 +68,12 @@ router.route('/view/user/notifications').get(auth.loggedIn,view.notifications);
 //for pinging the seller
 router.route('/user/ping').post(auth.loggedIn,user.ping);
 
-//for view books
+
+////////////////////////////////////////////////////////
+//add sort query check middle ware
+//for view all ads
 router.route('/view/products').get(auth.loggedIn,view.products);
+
 
 //for view books
 router.route('/view/books').get(auth.loggedIn,view.books);
@@ -92,7 +96,7 @@ router.route('/view/advertisement/recommended').get(auth.loggedIn,view.recommend
 //for viewing any user
 router.route('/view/user').post(auth.loggedIn,view.user);
 
-//for search page
+//for search page And add sorting option
 router.route('/view/search').post(auth.loggedIn,view.search);
 
 module.exports=router;
