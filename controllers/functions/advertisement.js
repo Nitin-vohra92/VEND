@@ -15,6 +15,9 @@ var Bid=require('../../models/Bid');
 var Comment=require('../../models/Comment');
 var Ping=require('../../models/Ping');
 
+var userFunctions=require('./user');
+
+
 var timestamp=require('./timestamp');
 
 function convertIdsToArray(ids){
@@ -25,6 +28,12 @@ function convertIdsToArray(ids){
 	return result;
 }
 
+function getAdvertisementFromIds(products,callback){
+	var result=convertIdsToArray(products);
+	Advertisement.find({product_id:{$in:result}},function(err,advertisements){
+		callback(advertisements);
+	});
+}
 function setAggregateRating(ad_id,callback){
 	Rating.aggregate([{$match:{ad_id:ad_id}},{$group:{ _id: '$ad_id',average:{$avg: '$rating'},count:{$sum:1}}}],function(err,result_rating){	
 			var rating={};
@@ -148,28 +157,25 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 
 exports.searchBook=function(query,callback){
 	Book.search(query,function(books){
-		var result=convertIdsToArray(books);
-		Advertisement.find({product_id:{$in:result}},function(err,advertisements){
-		callback(advertisements);
-		});
+		getAdvertisementFromIds(books,function(advertisements){
+			callback(advertisements);
+		});		
 	});
 }
 
 exports.searchElectronics=function(query,callback){
 	Electronics.search(query,function(electronics){
-		var result=convertIdsToArray(electronics);
-		Advertisement.find({product_id:{$in:result}},function(err,advertisements){
-		callback(advertisements);
-		});
+		getAdvertisementFromIds(electronics,function(advertisements){
+			callback(advertisements);
+		});	
 	});
 
 }
 exports.searchOther=function(query,callback){
 	Other.search(query,function(others){
-		var result=convertIdsToArray(others);
-		Advertisement.find({product_id:{$in:result}},function(err,advertisements){
-		callback(advertisements);
-		});
+		getAdvertisementFromIds(others,function(advertisements){
+			callback(advertisements);
+		});	
 	});
 
 	
@@ -368,16 +374,19 @@ exports.getOthers=function(sort,callback){
 
 
 //latest
-exports.latest=function(sort,callback){
+exports.getLatest=function(limit,sort,callback){
+	if(limit===null){
+		limit=40;
+	}
 	switch(sort){
 		case null:
 		case 'publish_time':
-			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'rating':
-			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				advertisements.sort(function(a,b){//decreasing
 					return b.rating-a.rating;
 				});
@@ -385,7 +394,7 @@ exports.latest=function(sort,callback){
 			});
 			break;
 		case 'price_asc':
-			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				advertisements.sort(function(a,b){//inc
 					return a.price-b.price;
 				});
@@ -393,7 +402,7 @@ exports.latest=function(sort,callback){
 			});
 			break;
 		case 'price_desc':
-			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				advertisements.sort(function(a,b){//dec
 					return b.price-a.price;
 				});
@@ -401,27 +410,27 @@ exports.latest=function(sort,callback){
 			});
 			break;
 		case 'loan':
-			Advertisement.find({kind:'LOAN'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({kind:'LOAN'}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'buy':
-			Advertisement.find({kind:'BUY'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({kind:'BUY'}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'bid':
-			Advertisement.find({bid:'YES'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({bid:'YES'}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'no_bid':
-			Advertisement.find({bid:'NO'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({bid:'NO'}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		default:
-			Advertisement.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			Advertisement.find({}, null, {sort: {'_id': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
@@ -429,16 +438,19 @@ exports.latest=function(sort,callback){
 }
 
 //recently viewed
-exports.recent=function(sort,callback){
+exports.getRecentlyViewed=function(limit,sort,callback){
+	if(limit===null){
+		limit=40;
+	}
 	switch(sort){
 		case null:
 		case 'publish_time':
-			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'rating':
-			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				advertisements.sort(function(a,b){//decreasing
 					return b.rating-a.rating;
 				});
@@ -446,7 +458,7 @@ exports.recent=function(sort,callback){
 			});
 			break;
 		case 'price_asc':
-			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				advertisements.sort(function(a,b){//inc
 					return a.price-b.price;
 				});
@@ -454,7 +466,7 @@ exports.recent=function(sort,callback){
 			});
 			break;
 		case 'price_desc':
-			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				advertisements.sort(function(a,b){//dec
 					return b.price-a.price;
 				});
@@ -462,48 +474,61 @@ exports.recent=function(sort,callback){
 			});
 			break;
 		case 'loan':
-			RecentlyViewed.find({kind:'LOAN'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({kind:'LOAN'}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'buy':
-			RecentlyViewed.find({kind:'BUY'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({kind:'BUY'}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'bid':
-			RecentlyViewed.find({bid:'YES'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({bid:'YES'}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		case 'no_bid':
-			RecentlyViewed.find({bid:'NO'}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({bid:'NO'}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 		default:
-			RecentlyViewed.find({}, null, {sort: {'_id': -1},limit:40}).exec(function(err, advertisements) {
+			RecentlyViewed.find({}, null, {sort: {'updatedAt': -1},limit:limit}).exec(function(err, advertisements) {
 				callback(advertisements);
 			});
 			break;
 	}
 }
 
+exports.getRecommended=function(user_type,callback){
+	var recommended={};
 
-//recommended logic here-change it
-exports.recommended=function(user_type,callback){
-	if(user_type==='Other'){
-		Advertisement.find({}, null, {sort: {'_id': -1}}).exec(function(err, recommendations) {
-  			callback(recommendations);
+
+}
+exports.getRecommendedBooks=function(view_tags,callback){
+	Book.getRecommendedBooks(view_tags,function(books){
+		getAdvertisementFromIds(books,function(advertisements){
+			callback(advertisements);
 		});
-	}
-	else{
-		Advertisement.find({user_type:user_type}, null, {sort: {'_id': -1}}).exec(function(err, recommendations) {
-  			callback(recommendations);
-  		});
-	}
+	});
 }
 
+exports.getRecommendedElectronics=function(view_tags,callback){
+	Electronics.getRecommendedElectronics(view_tags,function(electronics){
+		getAdvertisementFromIds(electronics,function(advertisements){
+			callback(advertisements);
+		});
+	});
+}
+
+exports.getRecommendedOthers=function(view_tags,callback){
+	Other.getRecommendedOthers(view_tags,function(others){
+		getAdvertisementFromIds(others,function(advertisements){
+			callback(advertisements);
+		});
+	});
+}
 //////////////////////////////////////////////
 exports.getAdvertisement=function(id,callback){
 	Advertisement.findOne({_id:id},function(err,advertisement){
@@ -546,6 +571,24 @@ exports.getProduct=function(category,product_id,callback){
 			});
 			break;
 	}
+}
+
+exports.addToRecentlyViewed=function(advertisement,callback){
+	RecentlyViewed.findOne({_id:advertisement._id},function(err,result){
+		if(result===null){
+			var recent=new RecentlyViewed(advertisement);
+			recent.ad_id=advertisement._id;
+			recent.updatedAt=Date.now();
+			recent.save();
+		}
+		else{
+			result.updatedAt=Date.now();
+			result.save();
+		}
+		callback();
+	});
+	
+	
 }
 
 exports.addRating=function(user_id,input,callback){

@@ -1,6 +1,6 @@
 
-var userFunctions=require("../functions/user");
-var Account=require('../../models/Account');
+var userFunctions=require("./functions/user");
+var Account=require('../models/Account');
 
 
 exports.login=function(req,res){
@@ -52,4 +52,14 @@ exports.logout=function(req,res){
   			// cannot access session here
 	});
 	res.redirect('/');	 
+}
+
+exports.validateGetRequest=function(req,res,next){
+	var query=req.query[0];
+	query=Object.keys(req.query)[0];
+	if(query!=='id'&&query!=='sort'){
+		res.json({message:"Invalid request!!"});
+	}
+	else
+		next();
 }

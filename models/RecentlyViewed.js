@@ -46,6 +46,10 @@ var recentViewedModel=new Schema({
 	description:{
 		type: String,
 		default:'No Description by Publisher'
+	},
+	updatedAt:{
+		type:Date,
+		default:Date.now
 	}
 });
 module.exports=mongoose.model('RecentView',recentViewedModel);

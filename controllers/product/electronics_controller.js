@@ -66,3 +66,8 @@ exports.search=function(query,callback){
 		callback(electronics);
 	});
 }
+exports.getRecommendedElectronics=function(view_tags,callback){
+	Electronics.find({sub_category:{$in:view_tags}},function(err,electronics){
+			callback(electronics);
+	});
+}

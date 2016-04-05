@@ -53,7 +53,7 @@ var advertisementModel=new Schema({
 	},
 	updatedAt:{
 		type: String,
-		default:timestamp.getTime()
+		default:Date.now()
 	}
 });
 module.exports=mongoose.model('Advertisement',advertisementModel);

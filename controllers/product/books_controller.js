@@ -67,3 +67,8 @@ exports.search=function(query,callback){
 		callback(books);
 	});
 }
+exports.getRecommendedBooks=function(view_tags,callback){
+	Book.find({semester:{$in:view_tags}},function(err,books){
+			callback(books);
+	});
+}

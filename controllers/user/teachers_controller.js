@@ -68,22 +68,16 @@ exports.home=function(req,res){
 			//getting latest advertisements
 			Advertisement.find({}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
 				response.latest=advertisement;
-				console.log('Inside latest');
 				//getting recently viewed
 				RecentlyViewed.find({}, null, {limit: 4}).exec(function(err, advertisement) {
   					response.recent=advertisement;
-  					console.log('Inside recents');
   					Advertisement.find({user_type:'Teacher'}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, recommendations) {
   						response.recommended=recommendations;
-  						console.log('Inside recommended');
   						Wish.find({user_type:'Teacher'}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
   							response.wishes=wishes;
-  						
-  							console.log('Inside wishes');
   							Notification.find({$and:[{user_id:req.session.user_id},{read:0}]}, null, {sort: {'createdAt': -1}}).exec(function(err, notifications) {
   							response.notification_count=notifications.length;
   						
-  							console.log('Inside wishes');
 							 // res.json(response);
 							res.render('index',{response:response});
 						});

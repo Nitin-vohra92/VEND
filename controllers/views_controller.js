@@ -29,40 +29,35 @@ var advertisementFunctions=require('./functions/advertisement');
 
 //for home view
 exports.home=function(req,res){
+	var response={};
 	//if any user is logged in
 	if(req.session.user_id){
-		var user_type=req.session.user_type;
-			switch(user_type){
-	 			case 'Teacher':
-	 				Teacher.home(req,res);
-	 				break;
-	 			case 'Student':
-	 				Student.home(req,res);
-	 				break;
-	 			case 'Other':
-					Other.home(req,res);
-					break;	
-	 		}
+		response.user_info=req.session;
+		var user_info=req.session;
+		advertisementFunctions.getLatest(4,null,function(latests){
+			response.latest=latests;
+			advertisementFunctions.getRecentlyViewed(4,null,function(recents){
+				response.recent=recents;
+				userFunctions.getRecommended(user_info,4,null,function(recommended){
+					response.recommended=recommended;
+					//add for wishes
+					res.render('index',{response:response});
+				});
+				
+			});
+		});
 
 	}
 	//if no user logged in
 	else{
-		var response={};
-			//getting latest advertisements
-			Advertisement.find({}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
-				response.latest=advertisement;
-				//console.log('Inside latest');
-				//getting recently viewed
-				RecentlyViewed.find({}, null, {limit: 4}).exec(function(err, advertisement) {
-  					response.recent=advertisement;
-  					//console.log('Inside recents');
-  						Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
-  							response.wishes=wishes;
-  							//res.json(response);
-							res.render('index',{response:response});
-						});
-  				});
+		advertisementFunctions.getLatest(4,null,function(latests){
+			response.latest=latests;
+			advertisementFunctions.getRecentlyViewed(4,null,function(recents){
+				response.recent=recents;
+				//add for wishes
+				res.render('index',{response:response});
 			});
+		});
 		
 	}
 }
@@ -118,7 +113,8 @@ exports.advertisement=function(req,res){
 													response.ping_status=status;
 													if(notification===undefined){
 														userFunctions.addViewedActivity(user_info,advertisement,function(){});
-														userFunctions.addToRecentlyViewed(advertisement,function(){});
+														advertisementFunctions.addToRecentlyViewed(advertisement,function(){});
+														userFunctions.addToRecommendation(user_id,null,ad_id,function(){});
 													}
 
 													//////////////////////////////////////////////////////////////////
@@ -281,7 +277,7 @@ exports.latest=function(req,res){
 		if(!sort)
 			sort=null;
 		
-		advertisementFunctions.latest(sort,function(advertisements){
+		advertisementFunctions.getLatest(null,sort,function(advertisements){
 			response.latest=advertisements;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
@@ -298,7 +294,7 @@ exports.viewed=function(req,res){
 		if(!sort)
 			sort=null;
 		
-		advertisementFunctions.recent(sort,function(advertisements){
+		advertisementFunctions.getRecentlyViewed(null,sort,function(advertisements){
 			response.recent=advertisements;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
@@ -310,10 +306,15 @@ exports.viewed=function(req,res){
 //for view more recommended
 exports.recommended=function(req,res){
 	var response={};
-		var user_type=req.session.user_type;
-		response.user_info=req.session;
-		advertisementFunctions.recommended(user_type,function(advertisements){
-			response.recommended=advertisements;
+		var user_info=req.session;
+		response.user_info=user_info;
+		var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+		userFunctions.getRecommended(user_info,null,sort,function(advertisements){
+			response.books=advertisements.books;
+			response.electronics=advertisements.electronics;
+			response.others=advertisements.others;
 			res.render('recommended',{response:response});
 		});
 }
@@ -353,7 +354,9 @@ exports.search=function(req,res){
 	console.log('In search');
 	var response={};
 	var query=input.query;
+	var user_id=req.session.user_id;
 	response.user_info=req.session;
+	userFunctions.addToRecommendation(user_id,query,null,function(){});							
 	switch(input.category){
 		case 'User':
 			userFunctions.searchUser(query,function(users){

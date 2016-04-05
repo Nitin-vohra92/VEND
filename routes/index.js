@@ -3,7 +3,7 @@ var fs = require('fs');
 var router = express.Router();
 var response={};
 
-var auth=require('../controllers/user/auth');
+var auth=require('../controllers/auth');
 
 router.route('/')
 	.get(function(req, res) {

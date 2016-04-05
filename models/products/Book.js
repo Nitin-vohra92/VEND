@@ -11,7 +11,7 @@ var bookModel=new Schema({
 		default:'Anonymous'
 	},
 	semester:{
-		type:Number
+		type:String
 	},
 	images:[{
 		path:{

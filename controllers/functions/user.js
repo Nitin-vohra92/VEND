@@ -13,13 +13,51 @@ var Notification=require('../../models/Notification');
 var Ping=require('../../models/Ping');
 
 var RecentlyViewed=require('../../models/RecentlyViewed');
-
-
+var Recommendation=require('../../models/Recommendation');
 var advertisementFunctions=require('./advertisement');
+
 
 var timestamp=require('./timestamp');
 var CONF_FILE=require('../../conf.json');
 
+function mergeArrays(array1, array2) {
+    var array3 = [];
+    var arr = array1.concat(array2);
+    var len = arr.length;
+    var assoc = {};
+
+    while(len--) {
+        var itm = arr[len];
+
+        if(!assoc[itm]) { // Eliminate the indexOf call
+            array3.unshift(itm);
+            assoc[itm] = true;
+        }
+    }
+
+    return array3;
+};
+
+
+Array.prototype.contains = function(v) {
+    for(var i = 0; i < this.length; i++) {
+        if(this[i].toString().indexOf(v)>-1) return true;
+    }
+    return false;
+};
+
+function setHomeContent(books,electronics,others){
+	var home=[];
+	if(books.length>=1)
+		home.push(books[0]);
+	if(electronics.length>=1)
+		home.push(electronics[0]);
+	if(others.length>=1)
+		home.push(others[0]);
+	if(books.length>=2)
+		home.push(books[1]);
+	return home;
+}
 //sendMail any mail function will use it 
 function sendMail(mail_to,mail_subject,mail_body){
 	var nodemailer=require("nodemailer");
@@ -437,11 +475,8 @@ exports.sendToAd=function(res,ad_id){
 }
 
 
-exports.addToRecentlyViewed=function(advertisement,callback){
-	var recent=new RecentlyViewed(advertisement);
-	recent.save();
-	callback();
-}
+
+
 ////related to adding activity
 exports.addPublishActivity=function(user_info,advertisement,callback){
 	var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
@@ -660,3 +695,123 @@ exports.addPing=function(user_info,input,callback){
 	});
 }
 
+exports.addToRecommendation=function(user_id,search_tag,ad_id,callback){
+	//for each id there will be two types of tags:
+	// 1. based on what ads he views
+	// 2. based on what he searches 
+	Recommendation.findOne({user_id:user_id},function(err,recommendation){
+		if(recommendation===null){
+			recommendation=new Recommendation();
+			recommendation.user_id=user_id;
+		}
+		var view_tags=recommendation.view_tags;
+		var search_tags=recommendation.search_tags;
+		//1.what he views
+		if(search_tag===null){//i.e based on ad_id, get similar ads and add to recommendation
+			advertisementFunctions.getAdvertisement(ad_id,function(advertisement){
+				//based on type of advertisement
+				//if book add semester to tags
+				var category=advertisement.category;
+				advertisementFunctions.getProduct(category,advertisement.product_id,function(product){
+					switch(category){
+						case 'Book':
+							if(!(view_tags.indexOf(product.semester)>-1)){
+								view_tags.push(product.semester);
+								recommendation.view_tags=view_tags;
+							}
+							recommendation.save();
+							break;
+						case 'Electronics':
+						case 'Other':
+							if(!(view_tags.indexOf(product.sub_category)>-1)){
+								view_tags.push(product.sub_category);
+								recommendation.view_tags=view_tags;
+							}
+							recommendation.save();
+							break;
+					}
+				});
+			});
+		}
+		//2. what he searches
+		else{//based on search tag
+			if(!search_tags.contains(search_tag)){
+				search_tags.push(search_tag);
+				recommendation.search_tags=search_tags;
+			}
+			recommendation.save();
+		}
+		callback();
+	});
+}
+
+//recommended logic here-change it
+exports.getRecommended=function(user_info,limit,sort,callback){
+	if(limit===null){
+		limit=100;
+	}
+	//for home it should be overall recommendation no categories
+	//
+		var books=[];
+		var electronics=[];
+		var others=[];
+		var complete={};
+		var home=[];
+		var view_tags=[];
+		var search_tags;
+		var user_id=user_info.user_id;
+		var user_type=user_info.user_type;
+		Recommendation.findOne({user_id:user_id},function(err,recommendation){
+			if(recommendation!==null){
+				view_tags=recommendation.view_tags;
+				search_tags=recommendation.search_tags;
+			}
+			//first in books
+			advertisementFunctions.getRecommendedBooks(view_tags,function(book_advertisements){
+				books=mergeArrays(books,book_advertisements);
+				// books.concat(book_advertisements);
+				advertisementFunctions.getRecommendedElectronics(view_tags,function(electronics_advertisements){
+					electronics=mergeArrays(electronics,electronics_advertisements);
+					//electronics.concat(electronics_advertisements);
+					advertisementFunctions.getRecommendedOthers(view_tags,function(other_advertisements){
+						others=mergeArrays(others,other_advertisements);
+						//others.concat(other_advertisements);
+						advertisementFunctions.searchRecommendedBooks(search_tags,function(searched_books){
+							books=mergeArrays(books,searched_books);
+							//books.concat(searched_books);
+							advertisementFunctions.searchRecommendedElectronics(search_tags,function(searched_electronics){
+								electronics=mergeArrays(electronics,searched_electronics);
+								//electronics.concat(searched_electronics);
+								advertisementFunctions.searchRecommendedOthers(search_tags,function(searched_others){
+									others=mergeArrays(others,searched_others);
+									//others.concat(searched_others);
+									advertisementFunctions.getRecommendedBooks(user_type,function(advertisements){
+										books=mergeArrays(books,advertisements.books);
+										electronics=mergeArrays(electronics,advertisements.electronics);
+										others=mergeArrays(others,advertisements.others);
+										// books.concat(advertisements.books);
+										// electronics.concat(advertisements.electronics);
+										// others.concat(advertisements.others);
+										//for home page pick from every category result
+	
+										home=setHomeContent(books,electronics,others);
+										if(limit===4)
+											callback(home);
+										else{
+											complete.books=books;
+											complete.electronics=electronics;
+											complete.others=others;
+											callback(complete);
+										}
+									});
+								});
+							});
+						});
+					});
+				});
+			});
+			
+		});
+
+
+}
