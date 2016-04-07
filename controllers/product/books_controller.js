@@ -65,19 +65,19 @@ exports.find=function(id,callback){
 }
 
 exports.search=function(query,callback){
-	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},function(err,books){
+	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},{sort: {'_id': -1}},function(err,books){
 		callback(books);
 	});
 }
 exports.getRecommendedBooks=function(view_tags,callback){
-	Book.find({semester:{$in:view_tags}},function(err,books){
+	Book.find({semester:{$in:view_tags}},null,{sort: {'_id': -1}},function(err,books){
 			callback(books);
 	});
 }
 
 exports.searchRecommendedBooks=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
-	Book.find({$or:[{title:{$in:search_tags}},{author: {$in:search_tags}}]},{_id:1},function(err,books){
+	Book.find({$or:[{title:{$in:search_tags}},{author: {$in:search_tags}}]},{_id:1},{sort: {'_id': -1}},function(err,books){
 		callback(books);
 	});
 }

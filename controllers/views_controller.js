@@ -358,8 +358,10 @@ exports.recommended=function(req,res){
 			response.books=advertisements.books;
 			response.electronics=advertisements.electronics;
 			response.others=advertisements.others;
-			userFunctions.getNotificationCount(user_id,function(count){
+			userFunctions.getNotificationCount(user_info.user_id,function(count){
 				response.notification_count=count;
+				response.sort_name=advertisementFunctions.getSortName(sort);
+				response.sort=sort;
 				res.render('recommended',{response:response});
 			});
 		});

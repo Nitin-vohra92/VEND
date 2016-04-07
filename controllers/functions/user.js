@@ -785,16 +785,20 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 											others=mergeArrays(others,advertisements.others);
 										}
 										//for home page pick from every category result
-	
-										home=setHomeContent(books,electronics,others);
-										if(limit===4)
-											callback(home);
-										else{
-											complete.books=books;
-											complete.electronics=electronics;
-											complete.others=others;
-											callback(complete);
-										}
+										advertisementFunctions.sortRecommendedAdvertisements(sort,books,electronics,others,function(sorted_books,sorted_electronics,sorted_others){
+											books=sorted_books;
+											electronics=sorted_electronics;
+											others=sorted_others;
+											home=setHomeContent(books,electronics,others);
+											if(limit===4)
+												callback(home);
+											else{
+												complete.books=books;
+												complete.electronics=electronics;
+												complete.others=others;
+												callback(complete);
+											}
+										});
 									});
 								});
 							});

@@ -29,6 +29,18 @@ function convertIdsToArray(ids){
 	return result;
 }
 
+function getObjects(obj, key, val) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getObjects(obj[i], key, val));
+        } else if (i == key && obj[key] == val) {
+            objects.push(obj);
+        }
+    }
+    return objects;
+}
 
 function findIndexByKeyValue(obj, key, value){
     for (var i = 0; i < obj.length; i++) {
@@ -514,11 +526,11 @@ exports.getRecentlyViewed=function(limit,sort,callback){
 
 exports.getRecommended=function(user_type,callback){
 	var recommended={};
-	Advertisement.find({user_type:user_type,category:'Book'},function(err,books){
+	Advertisement.find({user_type:user_type,category:'Book'},null,{sort: {'_id': -1}},function(err,books){
 		recommended.books=books;
-		Advertisement.find({user_type:user_type,category:'Electronics'},function(err,electronics){
+		Advertisement.find({user_type:user_type,category:'Electronics'},null,{sort: {'_id': -1}},function(err,electronics){
 			recommended.electronics=electronics;
-			Advertisement.find({user_type:user_type,category:'Other'},function(err,others){
+			Advertisement.find({user_type:user_type,category:'Other'},null,{sort: {'_id': -1}},function(err,others){
 				recommended.others=others;
 				callback(recommended);
 			});
@@ -573,6 +585,78 @@ exports.searchRecommendedOthers=function(search_tags,callback){
 			callback(advertisements);
 		});
 	});
+}
+
+exports.sortRecommendedAdvertisements=function(sort,books,electronics,others,callback){
+	switch(sort){
+		case null:
+		case 'publish_time':
+			callback(books,electronics,others);
+			break;
+		case 'rating':
+			books.sort(function(a,b){//inc
+				return b.rating-a.rating;
+			});
+			electronics.sort(function(a,b){//inc
+				return b.rating-a.rating;
+			});
+			others.sort(function(a,b){//inc
+				return b.rating-a.rating;
+			});
+			callback(books,electronics,others);
+			break;
+		case 'price_asc':
+			books.sort(function(a,b){//inc
+				return a.price-b.price;
+			});
+			electronics.sort(function(a,b){//inc
+				return a.price-b.price;
+			});
+			others.sort(function(a,b){//inc
+				return a.price-b.price;
+			});
+			callback(books,electronics,others);
+			break;
+		case 'price_desc':
+			books.sort(function(a,b){//inc
+				return b.price-a.price;
+			});
+			electronics.sort(function(a,b){//inc
+				return b.price-a.price;
+			});
+			others.sort(function(a,b){//inc
+				return b.price-a.price;
+			});
+			callback(books,electronics,others);
+			break;
+		case 'loan':
+			books=getObjects(books,'kind','LOAN');
+			electronics=getObjects(electronics,'kind','LOAN');
+			others=getObjects(others,'kind','LOAN');
+			callback(books,electronics,others);
+			break;
+		case 'buy':
+			books=getObjects(books,'kind','BUY');
+			electronics=getObjects(electronics,'kind','BUY');
+			others=getObjects(others,'kind','BUY');
+			callback(books,electronics,others);
+			break;
+		case 'bid':
+			books=getObjects(books,'bid','YES');
+			electronics=getObjects(electronics,'bid','YES');
+			others=getObjects(others,'bid','YES');
+			callback(books,electronics,others);
+			break;
+		case 'no_bid':
+			books=getObjects(books,'bid','NO');
+			electronics=getObjects(electronics,'bid','NO');
+			others=getObjects(others,'bid','NO');
+			callback(books,electronics,others);
+			break;
+		default:
+			callback(books,electronics,others);
+			break;
+	}
 }
 
 //////////////////////////////////////////////

@@ -57,34 +57,4 @@ exports.find=function(callback,account){
 		});
 }
 
-exports.home=function(req,res){
-	var response={};
-	Student.findOne({_id:req.session.user_id},function(err,student){
-		if(err)
-			console.log(err);
-		else{
-			response.user_info=req.session;
-			//getting latest advertisements
-			Advertisement.find({}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, advertisement) {
-				response.latest=advertisement;
-				//getting recently viewed
-				RecentlyViewed.find({}, null, {limit: 4}).exec(function(err, advertisement) {
-  					response.recent=advertisement;
 
-  					//change it
-  					Advertisement.find({user_type:'Student'}, null, {limit: 4, sort: {'createdAt': -1}}).exec(function(err, recommendations) {
-  						response.recommended=recommendations;
-	  					Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes) {
-	  						response.wishes=wishes;
-	  						Notification.find({$and:[{user_id:req.session.user_id},{read:0}]}, null, { sort: {'createdAt': -1}}).exec(function(err, notifications) {
-		  						response.notification_count=notifications.length;
-								// res.json(response);
-								res.render('index',{response:response});
-							});
-						});
-					});
-  				});
-			});
-		}
-	});
-}
