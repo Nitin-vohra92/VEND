@@ -40,7 +40,7 @@ router.route('/user/wish').post(auth.loggedIn,user.wish);
 router.route('/advertisement/publish').post(auth.loggedIn,advertisement.publish);
 
 //editing the advertisement
-router.route('/advertisement/publish').get(auth.loggedIn,advertisement.publishpage);
+router.route('/advertisement/publish').get(auth.loggedIn,view.publishpage);
 
 //sending content for home page
 router.route('/view/home').get(view.home);
@@ -64,6 +64,10 @@ router.route('/view/user/activities').get(auth.loggedIn,view.activities);
 
 //for user notifications
 router.route('/view/user/notifications').get(auth.loggedIn,view.notifications);
+
+//your ads page
+router.route('/view/user/advertisements').get(auth.loggedIn,view.myAdvertisements);
+
 
 //for pinging the seller
 router.route('/user/ping').post(auth.loggedIn,user.ping);

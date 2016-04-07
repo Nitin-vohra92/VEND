@@ -51,3 +51,10 @@ color:#fff;
   border-radius: 6px;
   background-color: #A7B55A;
 }
+
+.dropdown-menu {
+    min-width: 140px;
+}
+.dropdown-menu .divider {
+    margin: 2px 0;
+}

@@ -71,3 +71,10 @@ exports.getRecommendedElectronics=function(view_tags,callback){
 			callback(electronics);
 	});
 }
+
+exports.searchRecommendedElectronics=function(search_tags,callback){
+	search_tags=helper.changeToRegexArray(search_tags);
+	Electronics.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},function(err,electronics){		
+		callback(electronics);
+	});
+}

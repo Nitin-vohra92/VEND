@@ -12,3 +12,11 @@ exports.resizeAndMoveImage=function (oldpath,newpath) {
 		});
 	});
 }
+
+exports.changeToRegexArray=function(tags){
+	var result=[];
+	for(var i=0;i<tags.length;i++){
+		result[i]=new RegExp(tags[i], 'i');
+	}
+	return result;
+}

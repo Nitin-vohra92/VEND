@@ -40,8 +40,15 @@ exports.home=function(req,res){
 				response.recent=recents;
 				userFunctions.getRecommended(user_info,4,null,function(recommended){
 					response.recommended=recommended;
+					userFunctions.getNotificationCount(user_info.user_id,function(count){
+						response.notification_count=count;
+						userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
+							response.activity_notification=activity;
+							res.render('index',{response:response});
+						});
+					});
 					//add for wishes
-					res.render('index',{response:response});
+					
 				});
 				
 			});
@@ -62,6 +69,16 @@ exports.home=function(req,res){
 	}
 }
 
+
+exports.publishpage=function(req,res){
+		var response={};
+		response.user_info=req.session;
+		var user_id=req.session.user_id;
+		userFunctions.getNotificationCount(user_id,function(count){
+			response.notification_count=count;
+			res.render('publish',{response:response});
+		});
+}
 //for advertisement view
 exports.advertisement=function(req,res){
 	
@@ -151,11 +168,15 @@ exports.wishes=function(req,res){
 exports.activities=function(req,res){
 	var response={};
 	response.user_info=req.session;
-	Activity.find({user_id:req.session.user_id}, null, { sort: {'_id': -1}}).exec(function(err, activities) {
+	var user_id=req.session.user_id;
+	Activity.find({user_id:user_id}, null, { sort: {'_id': -1}}).exec(function(err, activities) {
 	  				response.activities=activities;
-	  				///check for any notification
-	  				res.render('activities',{response:response});
-	  				//res.json(response);
+	  				userFunctions.getNotificationCount(user_id,function(count){
+	  					response.notification_count=count;
+		  				///check for any notification
+		  				res.render('activities',{response:response});
+		  				//res.json(response);
+	  				});
   				});
 }
 
@@ -177,6 +198,22 @@ exports.notifications=function(req,res){
 				});
 			});
 		});
+}
+
+//for your ads 
+
+exports.myAdvertisements=function(req,res){
+	var response={};
+	var user_info=req.session;
+	response.user_info=user_info;
+	userFunctions.getMyAdvertisementsAndPings(user_info.user_id,function(advertisements){
+		response.advertisements=advertisements;
+		userFunctions.getNotificationCount(user_info.user_id,function(count){
+			response.notification_count=count;
+			// res.json({response:response});
+			res.render('my_advertisements',{response:response});
+		});
+	});
 }
 
 //for products view
@@ -281,7 +318,10 @@ exports.latest=function(req,res){
 			response.latest=advertisements;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
-			res.render('latest',{response:response});
+			userFunctions.getNotificationCount(user_id,function(count){
+				response.notification_count=count;
+				res.render('latest',{response:response});
+			});
 		});
 }
 
@@ -298,7 +338,10 @@ exports.viewed=function(req,res){
 			response.recent=advertisements;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
-			res.render('recent',{response:response});
+			userFunctions.getNotificationCount(user_id,function(count){
+				response.notification_count=count;
+				res.render('recent',{response:response});
+			});
 		});
 }
 
@@ -315,7 +358,10 @@ exports.recommended=function(req,res){
 			response.books=advertisements.books;
 			response.electronics=advertisements.electronics;
 			response.others=advertisements.others;
-			res.render('recommended',{response:response});
+			userFunctions.getNotificationCount(user_id,function(count){
+				response.notification_count=count;
+				res.render('recommended',{response:response});
+			});
 		});
 }
 
@@ -391,7 +437,10 @@ exports.search=function(req,res){
 						response.electronics=advertisements;
 						advertisementFunctions.searchOther(query,function(advertisements){
 							response.others=advertisements;
-							res.render('search',{response:response});
+							userFunctions.getNotificationCount(user_id,function(count){
+								response.notification_count=count;
+								res.render('search',{response:response});
+							});
 						});
 					});
 				});

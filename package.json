@@ -24,6 +24,7 @@
     "shortid": "^2.2.4",
     "sinch-sms": "0.0.8",
     "textbelt": "0.0.3",
+    "underscore": "^1.8.3",
     "validator": "^5.1.0"
   }
 }

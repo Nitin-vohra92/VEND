@@ -10,7 +10,7 @@
 
   <script src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-	  $(document).ready(function() {
+    $(document).ready(function() {
 <% include partials/dropdown%>
 });
 </script>
@@ -25,7 +25,6 @@
 <!--content-->
 <div class="container" style="margin-top: 5%;">
 
-
 <!-- main content block -->
 <div class="col-md-12">
   <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
@@ -34,13 +33,13 @@
 
     <div class="row" style="margin-top: 15px;">
 
-    <!-- for books panel on home -->
+    <!-- for books panel  -->
         <div class="col-md-12">
           <div class="panel panel-success">
             <div class="panel-heading" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                  Recommended for You on Vend
+                  Recommended in Books
                 </strong>
               </h4>
             </div>
@@ -48,16 +47,16 @@
             
             <div class="row" style="padding: 10px;">
             <!-- for each  advertisement -->
-          <%for(var i=0;i<response.recommended.length;i++) {%>
+          <%for(var i=0;i<response.books.length;i++) {%>
           <!-- assume an object advertisement  -->
-          	<%response.advertisement=response.recommended[i];%>
+            <%response.advertisement=response.books[i];%>
               <%include partials/advertisement%>
 
           <%}%>
-          <%if(response.recommended.length===0){%>
+          <%if(response.books.length===0){%>
           <div align="center">
           <strong>
-            No Results Found!!
+            Nothing here.
             </strong>
           </div>
           <% }%>
@@ -66,13 +65,97 @@
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
                 <strong>
-                  That's all in Recommended.
+                  That's all in Books.
                 </strong>
               </h4>
             </div>
           </div>
         </div>
 
+        <!-- for Elctronics panel  -->
+        <div class="col-md-12">
+          <div class="panel panel-success">
+            <div class="panel-heading" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  Recommeneded Products in Electronics
+                </strong>
+              </h4>
+            </div>
+
+            <!-- for each  advertisement -->
+            <div class="row" style="padding: 10px;">
+
+
+            <%for(var i=0;i<response.electronics.length;i++) {%>
+
+              
+            <%response.advertisement=response.electronics[i];%>
+              <%include partials/advertisement%>
+
+          <%}%>
+          <%if(response.electronics.length===0){%>
+          <div align="center">
+          <strong>
+            Nothing here.
+            </strong>
+          </div>
+          <% }%>
+
+            </div>
+
+            <div class="panel-footer" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  That's all in Electronics.
+                </strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- for Others panel -->
+
+        <div class="col-md-12">
+          <div class="panel panel-success">
+            <div class="panel-heading" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  Recommended Products in Others
+                </strong>
+              </h4>
+            </div>
+
+            <!-- for each  advertisement -->
+            <div class="row" style="padding: 10px;">
+
+            <%for(var i=0;i<response.others.length;i++) {%>
+
+              
+            <%response.advertisement=response.others[i];%>
+              <%include partials/advertisement%>
+
+          <%}%>
+
+          <%if(response.others.length===0){%>
+          <div align="center">
+          <strong>
+            Nothing here.
+            </strong>
+          </div>
+          <% }%>
+
+            </div>
+
+            <div class="panel-footer" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  That's all in Others.
+                </strong>
+              </h4>
+            </div>
+          </div>
+        </div>
 
 
 
@@ -93,4 +176,4 @@
 <%include partials/footer%>
 </body>
 </html>
-			
+      

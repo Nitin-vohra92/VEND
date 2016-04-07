@@ -18,6 +18,7 @@ var Ping=require('../../models/Ping');
 var userFunctions=require('./user');
 
 
+
 var timestamp=require('./timestamp');
 
 function convertIdsToArray(ids){
@@ -26,6 +27,16 @@ function convertIdsToArray(ids){
 	result[i]=ids[i]._id;
 	}
 	return result;
+}
+
+
+function findIndexByKeyValue(obj, key, value){
+    for (var i = 0; i < obj.length; i++) {
+        if (obj[i][key] == value) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 function getAdvertisementFromIds(products,callback){
@@ -503,11 +514,29 @@ exports.getRecentlyViewed=function(limit,sort,callback){
 
 exports.getRecommended=function(user_type,callback){
 	var recommended={};
-
-
+	Advertisement.find({user_type:user_type,category:'Book'},function(err,books){
+		recommended.books=books;
+		Advertisement.find({user_type:user_type,category:'Electronics'},function(err,electronics){
+			recommended.electronics=electronics;
+			Advertisement.find({user_type:user_type,category:'Other'},function(err,others){
+				recommended.others=others;
+				callback(recommended);
+			});
+		});
+	});
 }
+
 exports.getRecommendedBooks=function(view_tags,callback){
 	Book.getRecommendedBooks(view_tags,function(books){
+		getAdvertisementFromIds(books,function(advertisements){
+			callback(advertisements);
+		});
+	});
+}
+
+
+exports.searchRecommendedBooks=function(search_tags,callback){
+	Book.searchRecommendedBooks(search_tags,function(books){
 		getAdvertisementFromIds(books,function(advertisements){
 			callback(advertisements);
 		});
@@ -522,6 +551,14 @@ exports.getRecommendedElectronics=function(view_tags,callback){
 	});
 }
 
+exports.searchRecommendedElectronics=function(search_tags,callback){
+	Electronics.searchRecommendedElectronics(search_tags,function(electronics){
+		getAdvertisementFromIds(electronics,function(advertisements){
+			callback(advertisements);
+		});
+	});
+}
+
 exports.getRecommendedOthers=function(view_tags,callback){
 	Other.getRecommendedOthers(view_tags,function(others){
 		getAdvertisementFromIds(others,function(advertisements){
@@ -529,6 +566,15 @@ exports.getRecommendedOthers=function(view_tags,callback){
 		});
 	});
 }
+
+exports.searchRecommendedOthers=function(search_tags,callback){
+	Other.searchRecommendedOthers(search_tags,function(others){
+		getAdvertisementFromIds(others,function(advertisements){
+			callback(advertisements);
+		});
+	});
+}
+
 //////////////////////////////////////////////
 exports.getAdvertisement=function(id,callback){
 	Advertisement.findOne({_id:id},function(err,advertisement){
@@ -537,6 +583,12 @@ exports.getAdvertisement=function(id,callback){
 		callback(advertisement);
 	});
 }
+exports.getAdvertisementByUser=function(user_id,callback){
+	Advertisement.find({user_id:user_id},function(err,advertisements){
+		callback(advertisements);
+	});
+}
+
 
 exports.getAdCategoryLink=function(advertisement){
 	var link;
@@ -685,4 +737,20 @@ exports.getPingStatus=function(user_id,ad_id,callback){
 			status='unavailable';
 		callback(status);
 	});
+}
+
+exports.addPingsToAdvertisements=function(advertisements,callback){
+	var ad_ids=convertIdsToArray(advertisements);
+	
+	Ping.find({ad_id:{$in:ad_ids}},null,{sort:{'_id':1}},function(err,pings){
+		var ads=advertisements;
+		for (var i =0;i<ads.length;i++) {
+			ads[i].pings=[];
+		}
+		for (var i =0;i<pings.length;i++) {
+			ads[findIndexByKeyValue(ads,'_id',pings[i].ad_id)].pings.push(pings[i]);
+		}
+		callback(ads);
+	});
+
 }

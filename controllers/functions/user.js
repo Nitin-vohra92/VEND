@@ -1,7 +1,7 @@
 var validator=require('validator');
 var path=require('path');
 var shortid=require('shortid');
-
+var _=require('underscore');
 
 var TemporaryUser=require('../../models/users/TemporaryUser');
 
@@ -20,22 +20,11 @@ var advertisementFunctions=require('./advertisement');
 var timestamp=require('./timestamp');
 var CONF_FILE=require('../../conf.json');
 
+
+
+
 function mergeArrays(array1, array2) {
-    var array3 = [];
-    var arr = array1.concat(array2);
-    var len = arr.length;
-    var assoc = {};
-
-    while(len--) {
-        var itm = arr[len];
-
-        if(!assoc[itm]) { // Eliminate the indexOf call
-            array3.unshift(itm);
-            assoc[itm] = true;
-        }
-    }
-
-    return array3;
+	return _.union(array1,array2);
 };
 
 
@@ -56,6 +45,11 @@ function setHomeContent(books,electronics,others){
 		home.push(others[0]);
 	if(books.length>=2)
 		home.push(books[1]);
+	else if(electronics.length>=2)
+		home.push(electronics[1]);
+	else if(others.length>=2)
+		home.push(others[1]);
+
 	return home;
 }
 //sendMail any mail function will use it 
@@ -654,7 +648,7 @@ exports.addPingNotification=function(user_info,input,callback){
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
 			notification_user_name+'</a> pinged you for your advertisement '+
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+
-			"</a>.<br>Check 'Your Ads' for more options.";
+			"</a>.<br>Check <a href='/api/view/user/advertisements' class='text-success'>Your Ads</a> for more options.";
 
 		addNotification(user_id,notification_desc);
 		callback();
@@ -685,6 +679,7 @@ exports.addPing=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var ping=new Ping(user_info);
 		ping.ping_user_id=advertisement.user_id;
+		ping.user_name=user_info.name;
 		ping.ad_id=input.ad_id;
 		ping.ad_name=advertisement.name;
 		ping.ad_kind=advertisement.kind;
@@ -716,7 +711,7 @@ exports.addToRecommendation=function(user_id,search_tag,ad_id,callback){
 					switch(category){
 						case 'Book':
 							if(!(view_tags.indexOf(product.semester)>-1)){
-								view_tags.push(product.semester);
+								view_tags.unshift(product.semester);
 								recommendation.view_tags=view_tags;
 							}
 							recommendation.save();
@@ -724,7 +719,7 @@ exports.addToRecommendation=function(user_id,search_tag,ad_id,callback){
 						case 'Electronics':
 						case 'Other':
 							if(!(view_tags.indexOf(product.sub_category)>-1)){
-								view_tags.push(product.sub_category);
+								view_tags.unshift(product.sub_category);
 								recommendation.view_tags=view_tags;
 							}
 							recommendation.save();
@@ -736,7 +731,7 @@ exports.addToRecommendation=function(user_id,search_tag,ad_id,callback){
 		//2. what he searches
 		else{//based on search tag
 			if(!search_tags.contains(search_tag)){
-				search_tags.push(search_tag);
+				search_tags.unshift(search_tag);
 				recommendation.search_tags=search_tags;
 			}
 			recommendation.save();
@@ -758,7 +753,7 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 		var complete={};
 		var home=[];
 		var view_tags=[];
-		var search_tags;
+		var search_tags=[];
 		var user_id=user_info.user_id;
 		var user_type=user_info.user_type;
 		Recommendation.findOne({user_id:user_id},function(err,recommendation){
@@ -769,29 +764,26 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 			//first in books
 			advertisementFunctions.getRecommendedBooks(view_tags,function(book_advertisements){
 				books=mergeArrays(books,book_advertisements);
-				// books.concat(book_advertisements);
 				advertisementFunctions.getRecommendedElectronics(view_tags,function(electronics_advertisements){
 					electronics=mergeArrays(electronics,electronics_advertisements);
-					//electronics.concat(electronics_advertisements);
 					advertisementFunctions.getRecommendedOthers(view_tags,function(other_advertisements){
 						others=mergeArrays(others,other_advertisements);
-						//others.concat(other_advertisements);
 						advertisementFunctions.searchRecommendedBooks(search_tags,function(searched_books){
 							books=mergeArrays(books,searched_books);
-							//books.concat(searched_books);
 							advertisementFunctions.searchRecommendedElectronics(search_tags,function(searched_electronics){
 								electronics=mergeArrays(electronics,searched_electronics);
-								//electronics.concat(searched_electronics);
 								advertisementFunctions.searchRecommendedOthers(search_tags,function(searched_others){
 									others=mergeArrays(others,searched_others);
-									//others.concat(searched_others);
-									advertisementFunctions.getRecommendedBooks(user_type,function(advertisements){
-										books=mergeArrays(books,advertisements.books);
-										electronics=mergeArrays(electronics,advertisements.electronics);
-										others=mergeArrays(others,advertisements.others);
-										// books.concat(advertisements.books);
-										// electronics.concat(advertisements.electronics);
-										// others.concat(advertisements.others);
+									advertisementFunctions.getRecommended(user_type,function(advertisements){
+										if(books.length===0){
+											books=mergeArrays(books,advertisements.books);
+										}
+										if(electronics.length===0){
+											electronics=mergeArrays(electronics,advertisements.electronics);
+										}
+										if(others.length===0){
+											others=mergeArrays(others,advertisements.others);
+										}
 										//for home page pick from every category result
 	
 										home=setHomeContent(books,electronics,others);
@@ -813,5 +805,15 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 			
 		});
 
+
+}
+
+
+exports.getMyAdvertisementsAndPings=function(user_id,callback){
+	advertisementFunctions.getAdvertisementByUser(user_id,function(advertisements){
+		advertisementFunctions.addPingsToAdvertisements(advertisements,function(result){
+			callback(result);
+		});
+	});
 
 }

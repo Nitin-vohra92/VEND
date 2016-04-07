@@ -33,7 +33,7 @@
                     </ul>
                     </li>
 
-                    <li><a href="/publish">Publish an Ad</a></li>
+                    <li><a href="/api/advertisement/publish">Publish an Ad</a></li>
                     <li><a href="/api/view/user/notifications">
                     Updates
                     <%if(response.notification_count>0){%>
@@ -69,9 +69,14 @@
                   <button class="btn btn-info btn-block dropdown-toggle" type="button" data-toggle="dropdown" text-align="left" ><%=response.user_info.username%>
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Account</a></li>
                     <li><a href="/api/view/user/activities">Your Activities</a></li>
-                    <li><a href="#">Your Ads</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/api/view/user/advertisements">Your Ads</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Messages</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Settings</a></li>
+                    <li class="divider"></li>
                     <li><a href="/api/user/logout">Logout</a></li>
                   </ul>
                 </div>

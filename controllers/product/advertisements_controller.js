@@ -54,11 +54,6 @@ exports.publish=function(req,res){
 		 	}
 	 	}
 }
-exports.publishpage=function(req,res){
-		var response={};
-		response.user_info=req.session;
-		res.render('publish',{response:response});
-}
 
 
 
