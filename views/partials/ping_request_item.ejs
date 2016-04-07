@@ -1,0 +1,15 @@
+<div id=<%=response.ping._id%> class="row" style="padding: 2px 10px 2px; min-height: 40px;">
+    <!-- for each  request -->
+    <button id="confirmPopupButton" class="btn btn-success pull-right" style="margin:  5px 4px 0px;">Confirm</button>
+    <a href=<%='/api/view/user?id='+response.ping.user_id%>>
+    <strong class="text-info">
+    <%=response.ping.user_name%>
+    </strong>
+    </a>
+    requested to <%=response.ping.ad_kind%>. 
+    <br>
+    <span class="text-muted">
+    <%=response.ping.createdAt%>
+    </span>
+</div>
+<hr style="margin-top: 1px; margin-bottom: 1px;">

@@ -69,14 +69,14 @@ exports.search=function(query,callback){
 }
 
 exports.getRecommendedOthers=function(view_tags,callback){
-	Others.find({sub_category:{$in:view_tags}},null,{sort: {'_id': -1}},function(err,others){
+	Others.find({sub_category:{$in:view_tags}},function(err,others){
 			callback(others);
 	});
 }
 
 exports.searchRecommendedOthers=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
-	Others.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},{sort: {'_id': -1}},function(err,others){
+	Others.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},function(err,others){
 		callback(others);
 	});
 }

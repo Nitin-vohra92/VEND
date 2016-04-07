@@ -1,0 +1,16 @@
+            <div class="row" style="padding: 2px 10px;">
+             <!-- for each  request -->
+              <%for(var i=0;i<response.advertisement.pings.length;i++) {%>
+              <!-- assume an object advertisement  -->
+              	 <%response.ping=response.advertisement.pings[i];%>
+                  <%include ping_request_item%>
+
+              <%}%>
+              <%if(response.advertisement.pings.length===0){%>
+              <div align="center">
+              <strong>
+                No requests yet.
+                </strong>
+              </div>
+              <% }%>
+            </div>

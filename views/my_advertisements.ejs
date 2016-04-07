@@ -24,57 +24,22 @@
 
 <!--content-->
 <div class="container" style="margin-top: 5%;">
+<% include partials/activity_notifier%>
 
 <!-- main content block -->
 <div class="col-md-12">
-  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
+  <div>
 
     <!-- /container -->
 
     <div class="row" style="margin-top: 15px;">
 
+
     <!-- for each advertisement-->
-        <div class="col-md-12">
-          <div class="panel panel-info">
-            <div class="panel-heading" style="padding: 5px;">
-              <h4>
-                <strong>
-                  Avertisement name
-                </strong>
-              </h4>
-              <div class="pull-right">
-                <button class="btn btn-info">Delete Ad</button>
-              </div>
-            </div>
-
-            
-            <div class="row" style="padding: 10px;">
-            <!-- for each  advertisement -->
-          <%for(var i=0;i<response.advertisements[0].pings.length;i++) {%>
-          <!-- assume an object advertisement  -->
-          	<%response.ping_request=response.advertisements[0].pings[i];%>
-              <%include partials/advertisement%>
-
-          <%}%>
-          <%if(response.advertisements[i].pings.length===0){%>
-          <div align="center">
-          <strong>
-            No Requests yet.
-            </strong>
-          </div>
-          <% }%>
-            </div>
-
-            <div class="panel-footer" align="center" style="padding: 5px;">
-              <h4>
-                <strong>
-                </strong>
-              </h4>
-            </div>
-          </div>
-        </div>
-
-
+        <%for(var i=0;i<response.advertisements.length;i++){%>
+          <% response.current_advertisement=response.advertisements[i];%>
+          <%include partials/advertisement_ping_box%>
+        <%}%>
 
 
 

@@ -210,8 +210,11 @@ exports.myAdvertisements=function(req,res){
 		response.advertisements=advertisements;
 		userFunctions.getNotificationCount(user_info.user_id,function(count){
 			response.notification_count=count;
+			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
+				response.activity_notification=activity;
+				res.render('my_advertisements',{response:response});
+			});
 			// res.json({response:response});
-			res.render('my_advertisements',{response:response});
 		});
 	});
 }

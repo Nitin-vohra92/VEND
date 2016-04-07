@@ -558,7 +558,7 @@ exports.addPingActivity=function(user_info,input,callback){
 		var ad_publisher_name=advertisement.user_name;
 		var ad_publisher_link='/api/view/user?id='+advertisement.user_id;
 		
-		var activity="Pinged the publisher "+
+		var activity="Pinged "+
 			'<a href="'+ad_publisher_link+'" class="text-info">'+
 			ad_publisher_name+"</a> for his advertisement "+
 			'<a href="'+activity_entity_link+'" class="text-info">'+

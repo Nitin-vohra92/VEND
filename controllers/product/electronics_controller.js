@@ -67,14 +67,14 @@ exports.search=function(query,callback){
 	});
 }
 exports.getRecommendedElectronics=function(view_tags,callback){
-	Electronics.find({sub_category:{$in:view_tags}},null,{sort: {'_id': -1}},function(err,electronics){
+	Electronics.find({sub_category:{$in:view_tags}},function(err,electronics){
 			callback(electronics);
 	});
 }
 
 exports.searchRecommendedElectronics=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
-	Electronics.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},{sort: {'_id': -1}},function(err,electronics){		
+	Electronics.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},function(err,electronics){		
 		callback(electronics);
 	});
 }

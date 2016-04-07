@@ -589,18 +589,26 @@ exports.searchRecommendedOthers=function(search_tags,callback){
 
 exports.sortAdvertisements=function(sort,books,electronics,others,callback){
 	switch(sort){
-		case null:
 		case 'publish_time':
+			books.sort(function(a,b){//dec
+				return b._id-a._id;
+			});
+			electronics.sort(function(a,b){//dec
+				return b._id-a._id;
+			});
+			others.sort(function(a,b){//dec
+				return b._id-a._id;
+			});
 			callback(books,electronics,others);
 			break;
 		case 'rating':
-			books.sort(function(a,b){//inc
+			books.sort(function(a,b){//dec
 				return b.rating-a.rating;
 			});
-			electronics.sort(function(a,b){//inc
+			electronics.sort(function(a,b){//dec
 				return b.rating-a.rating;
 			});
-			others.sort(function(a,b){//inc
+			others.sort(function(a,b){//dec
 				return b.rating-a.rating;
 			});
 			callback(books,electronics,others);
@@ -618,13 +626,13 @@ exports.sortAdvertisements=function(sort,books,electronics,others,callback){
 			callback(books,electronics,others);
 			break;
 		case 'price_desc':
-			books.sort(function(a,b){//inc
+			books.sort(function(a,b){//dec
 				return b.price-a.price;
 			});
-			electronics.sort(function(a,b){//inc
+			electronics.sort(function(a,b){//dec
 				return b.price-a.price;
 			});
-			others.sort(function(a,b){//inc
+			others.sort(function(a,b){//dec
 				return b.price-a.price;
 			});
 			callback(books,electronics,others);
@@ -653,6 +661,7 @@ exports.sortAdvertisements=function(sort,books,electronics,others,callback){
 			others=getObjects(others,'bid','NO');
 			callback(books,electronics,others);
 			break;
+		case null:
 		default:
 			callback(books,electronics,others);
 			break;

@@ -66,7 +66,7 @@ router.route('/view/user/activities').get(auth.loggedIn,view.activities);
 router.route('/view/user/notifications').get(auth.loggedIn,view.notifications);
 
 //your ads page
-router.route('/view/user/advertisements').get(auth.loggedIn,auth.validateGetRequest,view.myAdvertisements);
+router.route('/view/user/advertisements').get(auth.loggedIn,view.myAdvertisements);
 
 
 //for pinging the seller
