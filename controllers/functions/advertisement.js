@@ -587,7 +587,7 @@ exports.searchRecommendedOthers=function(search_tags,callback){
 	});
 }
 
-exports.sortRecommendedAdvertisements=function(sort,books,electronics,others,callback){
+exports.sortAdvertisements=function(sort,books,electronics,others,callback){
 	switch(sort){
 		case null:
 		case 'publish_time':

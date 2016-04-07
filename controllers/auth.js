@@ -57,7 +57,7 @@ exports.logout=function(req,res){
 exports.validateGetRequest=function(req,res,next){
 	var query=req.query[0];
 	query=Object.keys(req.query)[0];
-	if(query!=='id'&&query!=='sort'){
+	if(query!=='id'&&query!=='sort'&&query!=='q'){
 		res.json({message:"Invalid request!!"});
 	}
 	else

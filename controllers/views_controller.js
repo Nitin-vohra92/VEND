@@ -401,9 +401,12 @@ exports.search=function(req,res){
 	var input=req.body;
 	console.log('In search');
 	var response={};
-	var query=input.query;
+	var query=req.query.q;
 	var user_id=req.session.user_id;
 	response.user_info=req.session;
+	var sort=req.query.sort;
+		if(!sort)
+			sort=null;
 	userFunctions.addToRecommendation(user_id,query,null,function(){});							
 	switch(input.category){
 		case 'User':
@@ -441,7 +444,15 @@ exports.search=function(req,res){
 							response.others=advertisements;
 							userFunctions.getNotificationCount(user_id,function(count){
 								response.notification_count=count;
-								res.render('search',{response:response});
+								advertisementFunctions.sortAdvertisements(sort,response.books,response.electronics,response.others,function(sorted_books,sorted_electronics,sorted_others){
+									response.books=sorted_books;
+									response.electronics=sorted_electronics;
+									response.others=sorted_others;
+									response.query=query;
+									response.sort_name=advertisementFunctions.getSortName(sort);
+									response.sort=sort;
+									res.render('search',{response:response});
+								});
 							});
 						});
 					});
