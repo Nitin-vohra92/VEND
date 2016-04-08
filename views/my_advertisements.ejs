@@ -7,13 +7,19 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/custom_style.css">
     <script src="/js/jquery.min.js"></script>
-
   <script src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	  $(document).ready(function() {
-<% include partials/dropdown%>
+  <% include partials/dropdown%>
+  $('a[data-target="#deletePopUp"]').click(function(){
+    var id=$(this).parent().attr("id");
+    $('input[name="delete_ad_id"]').attr("value",id);
+   
+  });
+
 });
 </script>
+
 </head>
 <body>
 
@@ -25,6 +31,8 @@
 <!--content-->
 <div class="container" style="margin-top: 5%;">
 <% include partials/activity_notifier%>
+<% include partials/delete_popup%>
+<% include partials/detail_popup%>
 
 <!-- main content block -->
 <div class="col-md-12">
@@ -35,22 +43,26 @@
     <div class="row" style="margin-top: 15px;">
 
 
-    <!-- for each advertisement-->
+        <!-- for each advertisement-->
         <%for(var i=0;i<response.advertisements.length;i++){%>
           <% response.current_advertisement=response.advertisements[i];%>
           <%include partials/advertisement_ping_box%>
         <%}%>
 
-
-
-
+        <%if(response.advertisements.length===0){%>
+            <div align="center">
+          <strong>
+             You have no advertisements published on Vend right now.
+            </strong>
+          </div>
+          
+          <%}%>
       </div>
 
 
   </div>
 </div>
 <!-- end main content block -->
-  
 <!-- /conatainer after nav -->
 </div>
 <!-- below two /div for main and wrap -->

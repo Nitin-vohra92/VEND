@@ -1,6 +1,5 @@
 var mongoose=require('mongoose'),
 	Schema=mongoose.Schema;
-var timestamp=require('../controllers/functions/timestamp');
 
 var recentViewedModel=new Schema({
 	user_id:{

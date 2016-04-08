@@ -1,0 +1,72 @@
+<div id="detailPopUp" class="modal fade" role="dialog" >
+  <div class="modal-dialog " style="margin-top: 100px;">
+
+    <!-- Modal content-->
+    <div class="modal-content" >
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-primary">
+        <strong>
+        Advertisement Details
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p>
+        <span class="text-info" align="center">
+        <strong>Info:</strong>
+         You can edit only few details .
+         </span>
+         </p>
+         <div class="well text-info">
+                  <% if(response==='Book'){%>
+                  <strong>
+                  Author of Book:
+                  </strong>
+                  Information Security<br>
+                  <strong>
+                  Semester :
+                  </strong>
+                  7th<br>
+                  
+                  <%}%>
+                  
+                  <strong>
+                  Available for:
+                  </strong>
+                  LOAN<br>
+                  <strong>
+                  Available for Bid:
+                  </strong>
+                  YES<br>
+                  <strong>
+                  Price:
+                  </strong>
+                  Rs. 200<br>
+                  <strong>
+                  Location of Product:
+                  </strong>
+                  AS-316, VBH Hostel<br>
+                  <strong>
+                  Description:<br>
+                  </strong>
+                  Very Good Book<br>
+                  <span class="text-muted">
+                  Published at:
+                    $:32 AM
+                  </span>
+                </div>
+      </div>
+      <div class="modal-footer">
+        
+        <form id="adDeleteForm" class="pull-right" action="/api/advertisement/delete" method="POST" >
+        <input type="hidden" name="edit_ad_id" value="" />
+        <button type="button" class="btn btn-primary"  data-dismiss="modal">Close</button>
+        </form>
+        <button type="button" class="btn btn-success pull-right" style="margin-right:8px;">Edit Details</button>
+      </div>
+    </div>
+
+  </div>
+</div>

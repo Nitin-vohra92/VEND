@@ -24,7 +24,22 @@ var CONF_FILE=require('../../conf.json');
 
 
 function mergeArrays(array1, array2) {
-	return _.union(array1,array2);
+	//return _.union(array1,array2);
+	var array3 = [];
+    var arr = array1.concat(array2);
+    var len = arr.length;
+    var assoc = {};
+
+    while(len--) {
+        var itm = arr[len];
+
+        if(!assoc[itm]) { // Eliminate the indexOf call
+            array3.unshift(itm);
+            assoc[itm] = true;
+        }
+    }
+
+    return array3;
 };
 
 
@@ -775,13 +790,9 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 								advertisementFunctions.searchRecommendedOthers(search_tags,function(searched_others){
 									others=mergeArrays(others,searched_others);
 									advertisementFunctions.getRecommended(user_type,function(advertisements){
-										if(books.length===0){
+										if(books.length===0&&electronics.length===0&&others.length===0){
 											books=mergeArrays(books,advertisements.books);
-										}
-										if(electronics.length===0){
 											electronics=mergeArrays(electronics,advertisements.electronics);
-										}
-										if(others.length===0){
 											others=mergeArrays(others,advertisements.others);
 										}
 										//for home page pick from every category result

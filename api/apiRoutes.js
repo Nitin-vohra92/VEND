@@ -42,6 +42,12 @@ router.route('/advertisement/publish').post(auth.loggedIn,advertisement.publish)
 //editing the advertisement
 router.route('/advertisement/publish').get(auth.loggedIn,view.publishpage);
 
+//deleting the advertisement
+router.route('/advertisement/delete').post(auth.loggedIn,advertisement.delete);
+
+
+
+
 //sending content for home page
 router.route('/view/home').get(view.home);
 

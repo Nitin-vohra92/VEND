@@ -1,6 +1,4 @@
 var Others=require('../../models/products/Other');
-var Advertisement=require('../../models/Advertisement');
-var Activity=require('../../models/Activity');
 
 //for images
 var fs=require('fs');
@@ -78,5 +76,11 @@ exports.searchRecommendedOthers=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
 	Others.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},function(err,others){
 		callback(others);
+	});
+}
+
+exports.deleteProduct=function(product_id,callback){
+	Others.remove({_id:product_id},function(){
+		callback();
 	});
 }

@@ -178,6 +178,44 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 	return advertisement;
 }
 
+exports.deleteAdvertisement=function(user_info,ad_id,res,callback){
+	var user_id=user_info.user_id;
+	Advertisement.findOne({user_id:user_id,_id:ad_id},function(err,advertisement){
+		if(advertisement===null){
+			res.json({message:'Invalid Request! Ad not found.'});
+		}
+		else{
+			var category=advertisement.category;
+			var product_id=advertisement.product_id;
+			//delete Advertisement
+			Advertisement.remove({_id:ad_id},function(){
+				//delete from respective table
+				switch(category){
+					case 'Book':
+						Book.deleteProduct(product_id,function(){});
+						break;
+					case 'Electronics':
+						Electronics.deleteProduct(product_id,function(){});
+						break;
+					case 'Other':
+						Other.deleteProduct(product_id,function(){});
+						break;
+				}
+				//delete pings,comments,bids,rating
+				Ping.remove({ad_id:ad_id});
+				Comment.remove({ad_id:ad_id});
+				Bid.remove({ad_id:ad_id});
+				Rating.remove({ad_id:ad_id});
+
+				//also delete from recently viewed
+				RecentlyViewed.remove({_id:ad_id});
+				callback();
+			});
+			
+		}
+	});
+}
+
 exports.searchBook=function(query,callback){
 	Book.search(query,function(books){
 		getAdvertisementFromIds(books,function(advertisements){
@@ -677,7 +715,7 @@ exports.getAdvertisement=function(id,callback){
 	});
 }
 exports.getAdvertisementByUser=function(user_id,callback){
-	Advertisement.find({user_id:user_id},function(err,advertisements){
+	Advertisement.find({user_id:user_id},null,{sort:{'_id':-1}},function(err,advertisements){
 		callback(advertisements);
 	});
 }
@@ -722,7 +760,7 @@ exports.addToRecentlyViewed=function(advertisement,callback){
 	RecentlyViewed.findOne({_id:advertisement._id},function(err,result){
 		if(result===null){
 			var recent=new RecentlyViewed(advertisement);
-			recent.ad_id=advertisement._id;
+			recent._id=advertisement._id;
 			recent.updatedAt=Date.now();
 			recent.save();
 		}
@@ -732,7 +770,6 @@ exports.addToRecentlyViewed=function(advertisement,callback){
 		}
 		callback();
 	});
-	
 	
 }
 
@@ -847,3 +884,4 @@ exports.addPingsToAdvertisements=function(advertisements,callback){
 	});
 
 }
+

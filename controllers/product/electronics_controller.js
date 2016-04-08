@@ -1,7 +1,4 @@
 var Electronics=require('../../models/products/Electronics');
-var Advertisement=require('../../models/Advertisement');
-
-var Activity=require('../../models/Activity');
 //for images
 var fs=require('fs');
 var path = require('path');
@@ -76,5 +73,11 @@ exports.searchRecommendedElectronics=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
 	Electronics.find({$or:[{name: {$in:search_tags}},{brand: {$in:search_tags}},{sub_category: {$in:search_tags}}]},{_id:1},function(err,electronics){		
 		callback(electronics);
+	});
+}
+
+exports.deleteProduct=function(product_id,callback){
+	Electronics.remove({_id:product_id},function(){
+		callback();
 	});
 }

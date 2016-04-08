@@ -1,6 +1,4 @@
 var Book=require('../../models/products/Book');
-var Advertisement=require('../../models/Advertisement');
-var Activity=require('../../models/Activity');
 
 
 //for images
@@ -79,5 +77,11 @@ exports.searchRecommendedBooks=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
 	Book.find({$or:[{title:{$in:search_tags}},{author: {$in:search_tags}}]},{_id:1},function(err,books){
 		callback(books);
+	});
+}
+
+exports.deleteProduct=function(product_id,callback){
+	Book.remove({_id:product_id},function(){
+		callback();
 	});
 }

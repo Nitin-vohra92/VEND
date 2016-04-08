@@ -1,12 +1,13 @@
+   
+
         <div id=<%=response.current_advertisement._id%> class="col-md-10 col-md-offset-1">
           <div class="panel panel-info">
-              <div class="panel-heading" style="padding: 5px; min-height: 50px;">
-                <div class="pull-right" style="margin-top:  3px;">
-                    <form class="pull-right" id="adDeleteForm" action="/api/advertisement/delete" method="POST" style="margin-right:  4px;">
-                      <input type="hidden" name="ad_id" value="####################"/>
-                      <button id="deletePopupButton" class="btn btn-danger ">Delete Ad</button>
-                    </form>
-                    <button id="detailButton" class="btn btn-primary pull-right" style="margin-right:  8px;">Details</button>     
+              <div id=<%=i%> class="panel-heading" style="padding: 5px; min-height: 50px;">
+                <div id=<%=response.current_advertisement._id%> class="ad_options pull-right" style="margin-top:  3px; margin-right:8px;">
+                  <a id="detailButton" class="btn btn-primary" data-toggle="modal" 
+                    data-target="#detailPopUp" style="margin-right:8px;">Details</a>
+                  <a id="deletePopUpButton" class="btn btn-danger" data-toggle="modal" 
+                    data-target="#deletePopUp">Delete Ad</a>      
                 </div>
                   <h4>
                   <strong>
@@ -24,6 +25,7 @@
                   </strong>
                 </h4>
               </div>
+              
           </div>
         </div>
 
