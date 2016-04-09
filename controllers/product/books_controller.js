@@ -36,7 +36,7 @@ exports.publish=function(req,callback){
  	else{
  		var oldPath=imagefiles.path;
 		var ext=path.extname(oldPath);
-	 	var savedPath = UPLOAD_DIR+book._id+i+ext;
+	 	var savedPath = UPLOAD_DIR+book._id+ext;
 	 	var newPath=APP_DIR+'\\public\\'+savedPath;
         book.images.push({path:savedPath}); 
 
@@ -55,6 +55,42 @@ exports.publish=function(req,callback){
 	
 }
 
+exports.saveImages=function(req,product_id,callback){
+	var images=[];
+	var imagefiles=req.files.images;
+ 	if(Array.isArray(imagefiles)){
+ 		for(var i=0; i<imagefiles.length;i++){
+ 			var oldPath=imagefiles[i].path;
+
+ 			var ext=path.extname(oldPath);
+			var savedPath = UPLOAD_DIR+product_id+i+ext;
+	 		var newPath=APP_DIR+'\\public'+savedPath;
+         	images.push({path:savedPath});        
+	
+			helper.resizeAndMoveImage(oldPath,newPath);     	
+ 		}
+
+ 	}
+ 	else{
+ 		var oldPath=imagefiles.path;
+		var ext=path.extname(oldPath);
+	 	var savedPath = UPLOAD_DIR+product_id+ext;
+	 	var newPath=APP_DIR+'\\public\\'+savedPath;
+        images.push({path:savedPath}); 
+
+		helper.resizeAndMoveImage(oldPath,newPath);
+ 		
+ 	}
+ 	Book.findOne({_id:product_id},function(err,product){
+ 		helper.deleteImages(product.images);
+ 		product.images=images;
+ 		product.updatedAt=timestamp.getTime();
+ 		product.save();
+ 		callback(product.images[0].path);
+ 	});
+
+}
+
 
 exports.find=function(id,callback){
 	Book.findOne({_id:id},function(err,product){
@@ -62,6 +98,11 @@ exports.find=function(id,callback){
 	});
 }
 
+exports.findBooksByIds=function(ids,callback){
+	Book.find({_id:{$in:ids}},function(err,products){
+		callback(products);
+	});
+}
 exports.search=function(query,callback){
 	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},{sort: {'_id': -1}},function(err,books){
 		callback(books);

@@ -1,4 +1,4 @@
-<div id="detailPopUp" class="modal fade" role="dialog" >
+<div id="detailPopUp<%=response.current_advertisement._id%>" class="modal fade" role="dialog" >
   <div class="modal-dialog " style="margin-top: 100px;">
 
     <!-- Modal content-->
@@ -14,57 +14,82 @@
       </div>
       <div class="modal-body">
         <p>
-        <span class="text-info" align="center">
+        <span class="text-warning" align="center">
         <strong>Info:</strong>
-         You can edit only few details .
+         You can edit only few details.
          </span>
          </p>
          <div class="well text-info">
-                  <% if(response==='Book'){%>
+                  <% if(response.current_advertisement.category==='Book'){%>
+                  <strong>
+                  Title of Book:
+                  </strong>
+                  <%=response.current_advertisement.product.title%><br>
                   <strong>
                   Author of Book:
                   </strong>
-                  Information Security<br>
+                  <%=response.current_advertisement.product.author%><br>
                   <strong>
                   Semester :
                   </strong>
-                  7th<br>
+                  <%=response.current_advertisement.product.semester%>th<br>
                   
                   <%}%>
-                  
+                  <% if(response.current_advertisement.category!=='Book'){%>
+                  <strong>
+                  Name:
+                  </strong>
+                  <%=response.current_advertisement.product.name%><br>
+                  <strong>
+                  Sub-Category:
+                  </strong>
+                  <%=response.current_advertisement.product.sub_category%><br>
+                  <strong>
+                  Brand:
+                  </strong>
+                  <%=response.current_advertisement.product.brand%><br>
+                  <%}%>
+
+
                   <strong>
                   Available for:
                   </strong>
-                  LOAN<br>
+                  <%=response.current_advertisement.kind%><br>
                   <strong>
                   Available for Bid:
                   </strong>
-                  YES<br>
+                  <%=response.current_advertisement.bid%><br>
                   <strong>
                   Price:
                   </strong>
-                  Rs. 200<br>
+                  Rs. <%=response.current_advertisement.price%><br>
                   <strong>
                   Location of Product:
                   </strong>
-                  AS-316, VBH Hostel<br>
+                  <%=response.current_advertisement.location%><br>
                   <strong>
                   Description:<br>
                   </strong>
-                  Very Good Book<br>
+                  <%=response.current_advertisement.description%><br>
                   <span class="text-muted">
                   Published at:
-                    $:32 AM
+                    <%=response.current_advertisement.createdAt%>
                   </span>
                 </div>
       </div>
+      <p align="center">
+        <span class="text-default" align="center">
+         To see comments,bids on the ad <a class="text-primary" href='/api/view/advertisement?id=<%=response.current_advertisement._id%>'>Go to Ads Page.</a>
+         </span>
+         </p>
       <div class="modal-footer">
-        
-        <form id="adDeleteForm" class="pull-right" action="/api/advertisement/delete" method="POST" >
-        <input type="hidden" name="edit_ad_id" value="" />
-        <button type="button" class="btn btn-primary"  data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary pull-right"  data-dismiss="modal">Close</button>
+        <form id="adEditForm" class="pull-right" action="/api/view/advertisement/edit" method="POST" >
+        <input type="hidden" name="ad_id" value="<%=response.current_advertisement._id%>" />
+        <button type="submit" class="btn btn-success pull-right" style="margin-right:8px;">Edit Details</button>
         </form>
-        <button type="button" class="btn btn-success pull-right" style="margin-right:8px;">Edit Details</button>
+        
+        
       </div>
     </div>
 

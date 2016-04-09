@@ -29,6 +29,14 @@ function convertIdsToArray(ids){
 	return result;
 }
 
+function getProductIdsToArray(advertisements){
+	var result=[];
+	for (var i = 0; i<advertisements.length; i++) {
+	result[i]=advertisements[i].product_id;
+	}
+	return result;
+}
+
 function getObjects(obj, key, val) {
     var objects = [];
     for (var i in obj) {
@@ -147,7 +155,7 @@ exports.validatePublishData=function(req){
 		return error;
 	}
 	if(validator.isNull(input.description)){
-		error="Please give desription of product.";
+		error="Please give description of product.";
 		return error;
 	}
 
@@ -177,6 +185,55 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 	advertisement.save();
 	return advertisement;
 }
+
+exports.editAdvertisement=function(req,callback){
+	var input=req.body;
+	Advertisement.findOne({_id:input.ad_id},function(err,advertisement){
+		advertisement.kind=input.kind;
+		advertisement.bid=input.bid;
+		advertisement.location=input.location;
+		advertisement.price=input.price;
+		advertisement.description=input.description;
+		advertisement.updatedAt=timestamp.getTime();
+		var imagefiles=req.files.images;
+		var product_id=advertisement.product_id;
+		if(imagefiles[0].size>0){
+
+			switch(input.category){
+				case 'Book':
+						console.log("Inside Image Edit");
+			
+					Book.saveImages(req,product_id,function(thumb_path){
+						advertisement.thumb=thumb_path;
+						advertisement.save();
+						callback();
+					});
+					break;
+				case 'Electronics':
+					Electronics.saveImages(req,product_id,function(thumb_path){
+						advertisement.thumb=thumb_path;
+						advertisement.save();
+						callback();
+					});
+					break;
+				case 'Other':
+					Other.saveImages(req,product_id,function(thumb_path){
+						advertisement.thumb=thumb_path;
+						advertisement.save();
+						callback();
+					});
+					break;
+				}
+		}
+		else{
+			advertisement.save();
+			callback();
+		}
+		
+	});
+}
+
+
 
 exports.deleteAdvertisement=function(user_info,ad_id,res,callback){
 	var user_id=user_info.user_id;
@@ -885,3 +942,27 @@ exports.addPingsToAdvertisements=function(advertisements,callback){
 
 }
 
+exports.addProductDetailsToAdvertisements=function(advertisements,callback){
+	var ads=advertisements;
+	var product_ids=getProductIdsToArray(advertisements);
+	for (var i =0;i<ads.length;i++) {
+			ads[i].product={};
+	}
+	Book.findBooksByIds(product_ids,function(books){
+		for (var i =0;i<books.length;i++) {
+			ads[findIndexByKeyValue(ads,'product_id',books[i]._id)].product=books[i];
+		}
+		Electronics.findElectronicsByIds(product_ids,function(electronics){
+			for (var i =0;i<electronics.length;i++) {
+				ads[findIndexByKeyValue(ads,'product_id',electronics[i]._id)].product=electronics[i];
+			}
+			Other.findOthersByIds(product_ids,function(others){
+				for (var i =0;i<others.length;i++) {
+					ads[findIndexByKeyValue(ads,'product_id',others[i]._id)].product=others[i];
+				}
+				// console.log("added"+ads[0].product._id);
+				callback(ads);
+			});
+		});
+	});
+}

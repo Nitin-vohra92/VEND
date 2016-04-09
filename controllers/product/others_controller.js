@@ -36,7 +36,7 @@ exports.publish=function(req,callback){
  		var oldPath=imagefiles.path;
  		var ext=path.extname(oldPath);
  		
- 		var savedPath = UPLOAD_DIR+other._id+i+ext;
+ 		var savedPath = UPLOAD_DIR+other._id+ext;
  		var newPath=APP_DIR+'/public/'+savedPath;
 
         other.images.push({path:savedPath});
@@ -54,9 +54,53 @@ exports.publish=function(req,callback){
 
 }
 
+exports.saveImages=function(req,product_id,callback){
+	var images=[];
+	var imagefiles=req.files.images;
+ 	if(Array.isArray(imagefiles)){
+ 		for(var i=0; i<imagefiles.length;i++){
+ 			var oldPath=imagefiles[i].path;
+
+ 			var ext=path.extname(oldPath);
+			var savedPath = UPLOAD_DIR+product_id+i+ext;
+	 		var newPath=APP_DIR+'\\public'+savedPath;
+         	images.push({path:savedPath});        
+	
+			helper.resizeAndMoveImage(oldPath,newPath);     	
+ 		}
+
+ 	}
+ 	else{
+ 		var oldPath=imagefiles.path;
+		var ext=path.extname(oldPath);
+	 	var savedPath = UPLOAD_DIR+product_id+ext;
+	 	var newPath=APP_DIR+'\\public\\'+savedPath;
+        images.push({path:savedPath}); 
+
+		helper.resizeAndMoveImage(oldPath,newPath);
+ 		
+ 	}
+ 	Others.findOne({_id:product_id},function(err,product){
+ 		helper.deleteImages(product.images);
+ 		product.images=images;
+ 		product.updatedAt=timestamp.getTime();
+ 		product.save();
+ 		callback(product.images[0].path);
+ 	});
+
+}
+
+
+
 exports.find=function(id,callback){
 	Others.findOne({_id:id},function(err,product){
 		callback(product);
+	});
+}
+
+exports.findOthersByIds=function(ids,callback){
+	Others.find({_id:{$in:ids}},function(err,products){
+		callback(products);
 	});
 }
 

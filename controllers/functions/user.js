@@ -467,6 +467,15 @@ exports.sendToLogin=function(res){
 			res.render('login',{response:response});
 }
 
+exports.sendToError=function(req,res,error){
+			var response={};
+			response.user_info=req.session;
+			response.error=error;
+			res.render('error',{response:response});
+}
+
+
+
 exports.searchUser=function(query,callback){
 	Account.find({$or:[{name: { $regex: query, $options: "i" }},{type:{ $regex: query, $options: "i" }}]},function(err,users){
 		callback(users);
@@ -826,8 +835,10 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 
 exports.getMyAdvertisementsAndPings=function(user_id,callback){
 	advertisementFunctions.getAdvertisementByUser(user_id,function(advertisements){
-		advertisementFunctions.addPingsToAdvertisements(advertisements,function(result){
-			callback(result);
+		advertisementFunctions.addProductDetailsToAdvertisements(advertisements,function(result_advertisements){
+			advertisementFunctions.addPingsToAdvertisements(result_advertisements,function(result){
+				callback(result);
+			});
 		});
 	});
 

@@ -32,50 +32,34 @@
     <div class="row" >
 
     <!-- for books panel on home -->
-        <div class="col-md-12">
-          <div class="panel panel-success">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="panel panel-success" style="margin-top: 10%;">
             <div class="panel-heading" align="center" style="padding: 5px;">
-              <h4>
+              <h3>
                 <strong>
-                  Notifications
+                  Something went wrong :|
                 </strong>
-              </h4>
+              </h3>
             </div>
 
             
             <div class="panel-body" style="padding: 4px 10px;">
             <!-- for each  activity -->
-            <div class="notification" style="overflow-y:scroll; height: 420px;">
-                  <%for(var i=0;i<response.unread_notifications.length;i++) {%>
-                  <!-- assume an object notification  -->
-                    <%response.notification=response.unread_notifications[i];%>
-                    <%include partials/notification_unread%>
-
-                  <%}%>
-
-	              <%for(var i=0;i<response.read_notifications.length;i++) {%>
-                  
-                    <%response.notification=response.read_notifications[i];%>
-                    <%include partials/notification_read%>
-
-                  <%}%>
-                  <%if(response.unread_notifications.length===0&&response.read_notifications.length===0){%>
-                  <div align="center">
-                  <strong>
-                    Nothing here :(
-                    </strong>
-	              </div>
-	              <% }%>
+            <div class="error">
+                <h5>
+                <strong>
+                  Error: 
+                </strong>
+                <%=response.error%>
+              </h5>
             </div>
           
             </div>
 
             <div class="panel-footer" align="center" style="padding: 5px;">
-              <h4>
-                <strong>
-                  
-                </strong>
-              </h4>
+              <span class="text-default" align="center">
+               <a class="text-primary" href='/api/view/home'>Go to home page :(</a>
+         </span>
             </div>
           </div>
         </div>

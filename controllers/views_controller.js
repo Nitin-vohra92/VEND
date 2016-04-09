@@ -70,7 +70,7 @@ exports.home=function(req,res){
 }
 
 
-exports.publishpage=function(req,res){
+exports.publish=function(req,res){
 		var response={};
 		response.user_info=req.session;
 		var user_id=req.session.user_id;
@@ -78,6 +78,25 @@ exports.publishpage=function(req,res){
 			response.notification_count=count;
 			res.render('publish',{response:response});
 		});
+}
+
+exports.edit=function(req,res){
+	var response={};
+	var input=req.body;
+	var user_info=req.session;
+	response.user_info=user_info;
+	console.log('Delete for '+input.ad_id);
+	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+		if(advertisement.user_id!==user_info.user_id||advertisement===null){
+			var error='Invalid request recieved. The advertisement was not published from this account. Advertisement might have been deleted. Please check again.'
+			userFunctions.sendToError(req,res,error);
+		}
+		response.advertisement=advertisement;
+		advertisementFunctions.getProduct(advertisement.category,advertisement.product_id,function(product){
+			response.product=product;
+			res.render('advertisement_edit',{response:response});
+		});
+	});
 }
 //for advertisement view
 exports.advertisement=function(req,res){
@@ -152,6 +171,8 @@ exports.advertisement=function(req,res){
 }
 
 
+
+
 //for viewing more wishes
 exports.wishes=function(req,res){
 	var response=[];
@@ -212,9 +233,10 @@ exports.myAdvertisements=function(req,res){
 			response.notification_count=count;
 			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
 				response.activity_notification=activity;
+				// res.json({response:response});
 				res.render('my_advertisements',{response:response});
 			});
-			// res.json({response:response});
+			
 		});
 	});
 }

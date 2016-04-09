@@ -37,10 +37,16 @@ router.route('/user/logout').get(auth.logout);
 router.route('/user/wish').post(auth.loggedIn,user.wish);
 
 //publishing an advertisement
+router.route('/advertisement/publish').get(auth.loggedIn,view.publish);
+
+//publishing an advertisement
 router.route('/advertisement/publish').post(auth.loggedIn,advertisement.publish);
 
 //editing the advertisement
-router.route('/advertisement/publish').get(auth.loggedIn,view.publishpage);
+router.route('/view/advertisement/edit').post(auth.loggedIn,view.edit);
+
+//editing the advertisement
+router.route('/advertisement/edit').post(auth.loggedIn,advertisement.edit);
 
 //deleting the advertisement
 router.route('/advertisement/delete').post(auth.loggedIn,advertisement.delete);

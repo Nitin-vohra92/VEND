@@ -57,6 +57,29 @@ exports.publish=function(req,res){
 
 
 
+exports.edit=function(req,res){
+	var response={};
+	var user_info=req.session;
+	advertisementFunctions.editAdvertisement(req,function(){
+		var notification="Successfully updated Advertisement.";
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect('/api/view/user/advertisements');
+		});
+	});
+}
+
+
+exports.delete=function(req,res){
+	var input=req.body;
+	var ad_id=input.ad_id;
+	var user_info=req.session;
+	advertisementFunctions.deleteAdvertisement(user_info,ad_id,res,function(){
+		var notification='Successfully deleted the advertisement.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect("/api/view/user/advertisements");
+		});			
+	});
+}
 
 
 exports.comment=function(req,res){
@@ -137,14 +160,4 @@ exports.bid=function(req,res){
 		}
 }
 
-exports.delete=function(req,res){
-	var input=req.body;
-	var ad_id=input.delete_ad_id;
-	var user_info=req.session;
-	advertisementFunctions.deleteAdvertisement(user_info,ad_id,res,function(){
-		var notification='Successfully deleted the advertisement.';
-		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-			res.redirect("/api/view/user/advertisements");
-		});			
-	});
-}
+

@@ -2933,7 +2933,7 @@ select[multiple].input-lg {
     vertical-align: middle;
   }
   .form-inline .input-group .input-group-addon,
-  .form-inline .input-group .input-group-btn,
+  .form-inline .input-group,
   .form-inline .input-group .form-control {
     width: auto;
   }
@@ -4331,6 +4331,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   padding-bottom: 10px;
   line-height: 20px;
 }
+
+
 @media (max-width: 767px) {
   .navbar-nav .open .dropdown-menu {
     position: static;

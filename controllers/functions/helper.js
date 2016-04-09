@@ -1,5 +1,6 @@
 var fs=require('fs');
-
+var path = require('path');
+var APP_DIR = path.dirname(require.main.filename);
 
 
 exports.resizeAndMoveImage=function (oldpath,newpath) {
@@ -19,4 +20,12 @@ exports.changeToRegexArray=function(tags){
 		result[i]=new RegExp(tags[i], 'i');
 	}
 	return result;
+}
+
+exports.deleteImages=function(images){
+	var dirname=APP_DIR+'\\public';
+	for(var i=0;i<images.length;i++){
+		fs.unlink(dirname+images[i].path);
+	}
+	return;
 }

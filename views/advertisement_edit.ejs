@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Vend</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+<% include partials/dropdown%>
+  	
+
+    //initial setting
+    });
+</script>
+</head>
+<body>
+
+<div id="wrap">
+<div id="main">
+<%include partials/header%>
+<div class="container-fluid">
+     
+   <div class="row">
+          <div class="col-md-6 col-md-offset-3" style="margin-top: 8%;">
+                    <div class="col-md-10 col-md-offset-1">
+
+                              <%if(response.error!==undefined){%>
+                              <div class="alert alert-warning" align="center">
+                                 <strong>Error:</strong> <%=response.error%>
+                              </div>  
+                              <%}%>
+
+
+                              <div class="well">
+                                  <h3 class="card-title" align="center" style="color: #337ab7"><strong >EDIT ADVERTISEMENT</strong></h3>
+                                  <form id="adEditForm" action='/api/advertisement/edit' method='POST' enctype="multipart/form-data">
+                                       <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                        <label class="panel-heading" style="width: 100%" align="center"><span class="text-warning"><small>Few details can be changed. For changing details that are not available, Please delete this Ad from <a href='/api/view/user/advertisements'>You Ads</a> and publish a new one.</small></span></label>
+                                        <input type="hidden" id="ad_id" name="ad_id" value=<%=response.advertisement._id%> />
+                                        <input type="hidden" id="category" name="category" value=<%=response.advertisement.category%> />
+                                          <ul class="nav nav-pills nav-justified" style="padding: 4px">
+                                            <li class="active"><a data-toggle="pill"><%=response.advertisement.category%></a></li>
+                                          </ul>
+                                          
+                                          <div>
+                                          <%if(response.advertisement.category==='Book'){%>
+                                          <!-- Book specific details -->
+                                            <div style="padding: 10px">
+                                              <label name="title" type="text" class="form-control"  style="margin-top: 5%;">Title: <%=response.product.title%></label>
+
+                                              <label name="author" type="text" class="form-control" placeholder="Enter the author of Book(e.g. William Stalling)" style="margin-top: 5%;" >Author: <%=response.product.author%></label>
+
+                                              <label name="semester" type="number" class="form-control" placeholder="Enter the semester of Book(0 if not applicable,e.g. 7 for 7th sem)" style="margin-top: 5%;" >Semester: <%=response.product.semester%></label>
+
+                                              
+                                            </div>
+                                            <%} else%>
+                                            <%if(response.advertisement.category!=='Book'){%>
+
+                                            <!-- Electronics and other Specific Detail -->
+                                            <div style="padding: 10px">
+                                              <label name="brand" type="text"  class="form-control" style="margin-top: 5%;">
+                                                Brand: <%=response.product.brand%>
+                                              </label>
+                                              <label name="sub_category" type="text" class="form-control" style="margin-top: 5%;" >
+                                                Sub Category: <%=response.product.sub_category%>
+                                              </label>
+                                              <label name="name" type="text" class="form-control" style="margin-top: 5%;">
+                                                Name: <%=response.product.name%>
+                                              </label>
+                                              </div>
+
+                                              <%}%>
+                                            <div class="common" style="padding: 10px">
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                              <label for="kind" class="panel-heading" style="width: 100%"><span>What it will be available for? (LOAN or BUY)</span></label>
+                                              <div style="padding: 4px;">
+                                                <select class="form-control" name="kind" required>
+                                               <option value='<%=response.advertisement.kind%>'><%=response.advertisement.kind%></option>
+                                                <option value="BUY">BUY</option>
+                                                <option value="LOAN">LOAN</option>
+                      
+                                               </select>
+                                                </div>
+                                              </div>
+
+                                              <div class="panel panel-info"  style="margin-top: 5%;">
+                                              <label for="bid" class="panel-heading" style="width: 100%"><span>Will it be available for bid?</span></label>
+                                              <div style="padding: 4px;">
+                                                <select class="form-control" name="bid" required>
+                                               <option value='<%=response.advertisement.bid%>'><%=response.advertisement.bid%></option>
+                                                <option value="YES">Yes</option>
+                                                <option value="NO">No</option>
+                      
+                                               </select>
+                                                </div>
+                                              </div>
+                                              <div class="panel panel-success" style="margin-top: 5%; width: 100%">
+                                                <label for="picture" class="panel-heading" style="width: 100%;" align="center"  >
+                                                <span>
+                                                Images of the product
+                                                </span><br>
+                                                <small class="text-muted">For multiple images: Ctrl + Click on Image files
+                                                <br>(if uploaded previous Images will be overriden)</small>
+                                                </label>
+                                                <input name="images[]" type="file" class="form-control" value="Upload Picture" style="padding: 3px; width: 100%" accept="image/*" multiple />
+                                              </div>
+                                              <input name="location" type="text" class="form-control" required style="margin-top: 5%;" placeholder='Where is the product? (e.g. AS-XXX, VBH Hostel)' value='<%=response.advertisement.location%>' />
+                                              <input name="price" type="number" class="form-control" required style="margin-top: 5%;" placeholder='What do you want for the Product?( i.e. Price in Rs. e.g. 200)' value=<%=response.advertisement.price%> />
+                                              <div style="width: 100%;">
+                                              <textarea name="description" class="form-control" placeholder="Give a little description of your product and why do you want to sell or loan?(if loan, Please specify time period for the same.)" style="margin-top: 5%; max-width: 100%;" rows="3" value='<%=response.advertisement.description%>' ><%=response.advertisement.description%></textarea>
+                                              </div>
+                                            </div>
+
+                                            </div>
+                                          </div>
+
+                                          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10%;">Save Advertisement</button>
+                                      </div>
+
+                                      
+                                  </form>
+                              </div>
+                    </div>     
+          </div>
+      </div>
+
+</div>
+
+<!-- below two /div for main and wrap -->
+</div>
+</div>
+<% include partials/footer%>
+</body>
+</html>
