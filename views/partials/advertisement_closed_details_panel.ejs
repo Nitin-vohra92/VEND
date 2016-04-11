@@ -1,0 +1,112 @@
+<div class="panel panel-info"  style="height: 100%;">
+              <div class="panel-heading" align="center">
+                <h1>
+                <strong class="text-info">
+                <%=response.advertisement.name%>
+                </strong>
+                </h1>
+              </div>
+              <div class="panel-body" style="padding: 10px;">
+                <div align="center">
+                  <h5>
+                  <span class="text-info">
+                  <strong>
+                  Published in:
+                  </strong>
+                  </span>
+                  <span class="text-success">
+                  <%=response.advertisement.category%>
+                  </span>
+                  </h5>
+                </div>
+              
+                <div class="well text-info">
+                  <% if(response.advertisement.category==='Book'){%>
+                  <strong>
+                  Author of Book:
+                  </strong>
+                  <%=response.product.author%><br>
+                  <strong>
+                  Semester :
+                  </strong>
+                  <%=response.product.semester%>th<br>
+                  
+                  <%}%>
+                  <% if(response.advertisement.category!=='Book'){%>
+                  <strong>
+                  Sub-Category:
+                  </strong>
+                  <%=response.product.sub_category%><br>
+                  <strong>
+                  Brand:
+                  </strong>
+                  <%=response.product.brand%><br>
+                  <%}%>
+                  <strong>
+                  Available for:
+                  </strong>
+                  <%=response.advertisement.kind%><br>
+                  <strong>
+                  Available for Bid:
+                  </strong>
+                  <%=response.advertisement.bid%><br>
+                  <strong>
+                  Price:
+                  </strong>
+                  Rs. <%=response.advertisement.price%><br>
+                  <strong>
+                  Location of Product:
+                  </strong>
+                  <%=response.advertisement.location%><br>
+                  <strong>
+                  Description:<br>
+                  </strong>
+                  <%=response.advertisement.description%><br>
+                  <span class="text-muted">
+                  Published at:
+                    <%=response.advertisement.createdAt%>
+                  </span>
+                </div>
+                <hr>
+                  <div class="col-md-7">
+                  <label for="input-3" class="control-label">
+                  <span class="text-info">
+                  Product Rating:
+                  </span>
+                  </label>
+                  <input id="input-3" class="rating-loading" value='<%=response.avg_rating%>' data-size="xs">
+                  <script>
+                  $(document).on('ready', function(){
+                      $('#input-3').rating({displayOnly: true, step: 0.5});
+                      
+                  });
+                  </script>
+                  </div>
+                  <div class="col-md-5">
+                  <span class="pull-right" style="margin-right: 10px; margin-top: px;">
+                  <span class="text-success">
+                  <strong>
+                  Published By:
+                  </strong>
+                  </span><br>
+                  <a href=<%='/api/view/user?id='+response.advertisement.user_id%>>
+                  <span class="text-warning">
+                  <%=response.advertisement.user_name%>
+                  </span>
+
+                  </a><br>
+                  <span class="text-muted">
+                    User type:
+                    <%=response.advertisement.user_type%>
+                  </span>
+                  </span>
+                  </div>
+                  <br><br><br><hr style="margin-bottom: 5px;">
+                  <p style="text-align: justify;">
+                  <span class="text-muted pull-left"><small>
+                    Note: This advertisement is closed. The seller confirmed the request made by <a href='/api/view/user?id=<%=response.advertisement.to_user_id%>'>
+                    <%=response.advertisement.to_user_name%></a> to <%=response.advertisement.kind%> this product for above price.                    
+                  </small></span>
+                  </p>
+               </div>
+            </div>

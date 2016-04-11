@@ -62,6 +62,10 @@ router.route('/view/home').get(view.home);
 
 router.route('/view/advertisement').get(auth.loggedIn,auth.validateGetRequest,view.advertisement);
 
+//will show closed advertisements and to whom it was sold
+router.route('/view/advertisement/closed').get(auth.loggedIn,auth.validateGetRequest,view.closedAdvertisement);
+
+
 //for commenting on  of any advertisement post
  router.route('/advertisement/comment').post(auth.loggedIn,advertisement.comment);
 
@@ -83,6 +87,9 @@ router.route('/view/user/advertisements').get(auth.loggedIn,view.myAdvertisement
 
 //for pinging the seller
 router.route('/user/ping').post(auth.loggedIn,user.ping);
+
+//for confirm ping request
+router.route('/user/ping/confirm').post(auth.loggedIn,advertisement.confirmPing);
 
 
 ////////////////////////////////////////////////////////

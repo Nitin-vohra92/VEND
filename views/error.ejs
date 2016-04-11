@@ -37,7 +37,7 @@
             <div class="panel-heading" align="center" style="padding: 5px;">
               <h3>
                 <strong>
-                  Something went wrong :|
+                  Something went wrong!
                 </strong>
               </h3>
             </div>
@@ -45,12 +45,15 @@
             
             <div class="panel-body" style="padding: 4px 10px;">
             <!-- for each  activity -->
-            <div class="error">
+            <div class="error text-default">
+            
                 <h5>
+                <p style="text-align: justify;">
                 <strong>
                   Error: 
                 </strong>
-                <%=response.error%>
+                <%-response.error%>
+            </p>
               </h5>
             </div>
           

@@ -24,7 +24,6 @@
 
 <!--content-->
 <div class="container-fluid" style="margin-top: 5%;">
-<% include partials/activity_notifier%>
 <!-- wish box -->
 <div class="col-md-3" style=" position: fixed;">                  
     <div class="panel panel-info">
@@ -65,6 +64,8 @@
 </div>
 <!-- main content block -->
 <div class="col-md-9 col-md-offset-3">
+<% include partials/activity_notifier%>
+
   <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
 
 
@@ -101,7 +102,7 @@
           <%if(response.latest.length===0){%>
           <div align="center">
           <strong>
-            No Results Found!!
+            Nothing here :(
             </strong>
           </div>
           <% }%>

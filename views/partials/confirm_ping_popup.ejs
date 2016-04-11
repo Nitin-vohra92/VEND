@@ -1,0 +1,35 @@
+<div id="confirmPopUp<%=response.ping._id%>" class="modal fade" role="dialog" >
+  <div class="modal-dialog modal-vertical-centered">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-primary">
+        <strong>
+        Confirm Request
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p style="text-align: justify;">
+        <span class="text-success" >
+        <strong>Note:</strong>
+         This will confirm the request made by <a href='/api/view/user?id=<%=response.ping.user_id%>'><%=response.ping.user_name%></a> to <%=response.advertisement.kind%> your product. All other request will be deleted and advertisement will be marked as successful. The user you confirm will be sent a notification for the confirmation of his request. The user whose request you reject will also be notified. Make sure before you do so. This can not be undone.
+         </span>
+         </p>
+      </div>
+      <div class="modal-footer">
+        
+        <form id="confirmRequestForm" class="pull-right" action="/api/user/ping/confirm" method="POST">
+        <input type="hidden" name="ping_id" value='<%=response.ping._id%>' />
+        <input type="hidden" name="ad_id" value='<%=response.ping.ad_id%>' />
+        <button id="confirmPopupButton" class="btn btn-success pull-right" style="">Confirm</button>
+        </form>
+        <button type="button" class="btn btn-primary pull-right" style="margin-right:8px;" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -106,73 +106,113 @@ exports.advertisement=function(req,res){
 
 		var ad_id=req.query.id;
 		advertisementFunctions.getAdvertisement(ad_id,function(advertisement){
-			/////////////////////////////////////////////////
-			//later when advertisement will be deleted check for the same and redirect to page
-			//ad has been deleted by the seller
-			////////////////////////////////////////////////
-			response.advertisement=advertisement;
-			if(req.session.user_id===advertisement.user_id)
-				response.self=1;
-			else
-				response.self=0;
-			var category=advertisement.category;
-			var product_id=advertisement.product_id;
-			var user_id=req.session.user_id;
-			var user_info=req.session;
-			advertisementFunctions.getProduct(category,product_id,function(product){
-				response.product=product;
-				userFunctions.getAccount(advertisement.user_id,function(publisher){
+			if(advertisement===null){
+				var error="The advertisement was not found.Following may be the reasons:<br>"+
+				"1. The advertisement might have been deleted by the publisher.<br>"+
+				'2. The publisher might have confirmed to sell/loan to someone who requested for it,<a href="/api/view/advertisement/closed?id='+ad_id+
+				'"> Check here.</a><br>';
+				userFunctions.sendToError(req,res,error);
+			}
+			else if(advertisement._id===undefined){
+				var error="The advertisement was not found.Following may be the reasons:<br>"+
+				"1. The advertisement might have been deleted by the publisher.<br>"+
+				"2. Invalid Ad Id .Please check again.";
+				userFunctions.sendToError(req,res,error);
+			}
+			else{
+				/////////////////////////////////////////////////
+				//later when advertisement will be deleted check for the same and redirect to page
+				//ad has been deleted by the seller
+				////////////////////////////////////////////////
+				response.advertisement=advertisement;
+				if(req.session.user_id===advertisement.user_id)
+					response.self=1;
+				else
+					response.self=0;
 
-					response.publisher=publisher;
-					//some of the tasks are to be done for every page i.e with *
-					//*also get activity notification i.e done something like commented,rated orr 
-					//  bid or after he published a ad or anything activity
-					//*get any notification for the user i.e 'Updates'-notification count
-					//add to activity viewed advertisement
-					//get the rating previously done by user
-					//get the average rating for the add.
-					//bids,comments for  ad
-					userFunctions.getAndDeleteActivityNotification(user_id,function(notification){
-						response.activity_notification=notification;
-						userFunctions.getNotificationCount(user_id,function(count){
-							response.notification_count=count;
-							advertisementFunctions.getPreviousRating(user_id,ad_id,function(rating){
-									response.rating_user=rating;
-									advertisementFunctions.getRating(ad_id,function(rating_desc){
-										response.avg_rating=rating_desc.average;
-										response.rating_user_count=rating_desc.count;
-										advertisementFunctions.getBids(ad_id,function(bids){
-											response.bids=bids;
-											advertisementFunctions.getComments(ad_id,function(comments){
-												response.comments=comments;
-												advertisementFunctions.getPingStatus(user_info.user_id,ad_id,function(status){
-													response.ping_status=status;
-													if(notification===undefined){
-														userFunctions.addViewedActivity(user_info,advertisement,function(){});
-														advertisementFunctions.addToRecentlyViewed(advertisement,function(){});
-														userFunctions.addToRecommendation(user_id,null,ad_id,function(){});
-													}
+				var category=advertisement.category;
+				var product_id=advertisement.product_id;
+				var user_id=req.session.user_id;
+				var user_info=req.session;
+				advertisementFunctions.getProduct(category,product_id,function(product){
+					response.product=product;
+					userFunctions.getAccount(advertisement.user_id,function(publisher){
 
-													//////////////////////////////////////////////////////////////////
-													//if time please add more items like from same seller,similar items
-													//////////////////////////////////////////////////////////////////
-													res.render('advertisement',{response:response});
+						response.publisher=publisher;
+						//some of the tasks are to be done for every page i.e with *
+						//*also get activity notification i.e done something like commented,rated orr 
+						//  bid or after he published a ad or anything activity
+						//*get any notification for the user i.e 'Updates'-notification count
+						//add to activity viewed advertisement
+						//get the rating previously done by user
+						//get the average rating for the add.
+						//bids,comments for  ad
+						userFunctions.getAndDeleteActivityNotification(user_id,function(notification){
+							response.activity_notification=notification;
+							userFunctions.getNotificationCount(user_id,function(count){
+								response.notification_count=count;
+								advertisementFunctions.getPreviousRating(user_id,ad_id,function(rating){
+										response.rating_user=rating;
+										advertisementFunctions.getRating(ad_id,function(rating_desc){
+											response.avg_rating=rating_desc.average;
+											response.rating_user_count=rating_desc.count;
+											advertisementFunctions.getBids(ad_id,function(bids){
+												response.bids=bids;
+												advertisementFunctions.getComments(ad_id,function(comments){
+													response.comments=comments;
+													advertisementFunctions.getPingStatus(user_info.user_id,ad_id,function(status){
+														response.ping_status=status;
+														if(notification===undefined){
+															userFunctions.addViewedActivity(user_info,advertisement,function(){});
+															advertisementFunctions.addToRecentlyViewed(advertisement,function(){});
+															userFunctions.addToRecommendation(user_id,null,ad_id,function(){});
+														}
+
+														//////////////////////////////////////////////////////////////////
+														//if time please add more items like from same seller,similar items
+														//////////////////////////////////////////////////////////////////
+														res.render('advertisement',{response:response});
+													});
 												});
+												
 											});
-											
 										});
-									});
+								});
 							});
 						});
 					});
 				});
-			});
+			}
 		});	
 }
 
+exports.closedAdvertisement=function(req,res){
+	var response={};
+	response.user_info=req.session;
+	var ad_id=req.query.id;
+	var user_id=req.session.user_id;
+	advertisementFunctions.getClosedAdvertisement(ad_id,function(advertisement){
+		if(advertisement===null||advertisement._id===undefined){
+			var error="The advertisement was not found.Following may be the reasons:<br>"+
+			"1. The advertisement might have been deleted by the publisher.<br>"+
+			"2. Invalid Ad Id .Please check again.";
+			userFunctions.sendToError(req,res,error);
+		}
+		else{
+			response.advertisement=advertisement;
+			var category=advertisement.category;
+			var product_id=advertisement.product_id;
+			advertisementFunctions.getProduct(category,product_id,function(product){
+				response.product=product;
+				userFunctions.getNotificationCount(user_id,function(count){
+					response.notification_count=count;
+					res.render('advertisement_closed',{response:response});
+				});
+			});
+		}
+	});
 
-
-
+}
 //for viewing more wishes
 exports.wishes=function(req,res){
 	var response=[];
@@ -229,15 +269,18 @@ exports.myAdvertisements=function(req,res){
 	response.user_info=user_info;
 	userFunctions.getMyAdvertisementsAndPings(user_info.user_id,function(advertisements){
 		response.advertisements=advertisements;
-		userFunctions.getNotificationCount(user_info.user_id,function(count){
-			response.notification_count=count;
-			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
-				response.activity_notification=activity;
-				// res.json({response:response});
-				res.render('my_advertisements',{response:response});
+		advertisementFunctions.getSuccessFulAdvertisements(user_info.user_id,function(successful_advertisements){
+			response.successful_advertisements=successful_advertisements;
+			userFunctions.getNotificationCount(user_info.user_id,function(count){
+				response.notification_count=count;
+				userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
+					response.activity_notification=activity;
+					// res.json({response:response});
+					res.render('my_advertisements',{response:response});
+				});
+				
 			});
-			
-		});
+		});	
 	});
 }
 

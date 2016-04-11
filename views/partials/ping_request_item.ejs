@@ -1,6 +1,9 @@
 <div id=<%=response.ping._id%> class="row" style="padding: 2px 10px 2px; min-height: 40px;">
     <!-- for each  request -->
-    <button id="confirmPopupButton" class="btn btn-success pull-right" style="margin:  5px 4px 0px;">Confirm</button>
+    <a id="confirmPopupButton" class="btn btn-success pull-right" data-toggle="modal" 
+    data-target="#confirmPopUp<%=response.ping._id%>" style="margin:  6px 4px 0px;">
+    Confirm
+    </a>
     <a href=<%='/api/view/user?id='+response.ping.user_id%>>
     <strong class="text-info">
     <%=response.ping.user_name%>
@@ -8,8 +11,21 @@
     </a>
     requested to <%=response.ping.ad_kind%>. 
     <br>
+    <%if(response.advertisement.bid==='YES'){%>
+       <strong class="text-info">
+        Bid Amount:
+        </strong> 
+        <%if(response.ping.bid===undefined){%>
+            None
+        <%} else%>
+        <%if(response.ping.bid!==undefined){%>
+            Rs. <%=response.ping.bid%>
+        <%}%>
+    <br>     
+    <%}%>
     <span class="text-muted">
     <%=response.ping.createdAt%>
     </span>
 </div>
+<%include confirm_ping_popup%>
 <hr style="margin-top: 1px; margin-bottom: 1px;">

@@ -13,7 +13,7 @@
   <% include partials/dropdown%>
   $('a[data-target="#deletePopUp"]').click(function(){
     var id=$(this).parent().attr("id");
-    $('input[name="delete_ad_id"]').attr("value",id);
+    $('input[name="ad_id"]').attr("value",id);
    
   });
 
@@ -41,7 +41,20 @@
 
     <div class="row" style="margin-top: 15px;">
 
-
+        <div class="col-md-12">
+        <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+        <h3>
+        <p align="center">
+          <span class="text-info">
+            <strong>
+              Pending Ads
+            
+            </strong>
+          </span>
+        </p>
+        </h3>
+        <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+        </div>
         <!-- for each advertisement-->
         <%for(var i=0;i<response.advertisements.length;i++){%>
           <% response.current_advertisement=response.advertisements[i];%>
@@ -51,7 +64,43 @@
         <%if(response.advertisements.length===0){%>
             <div align="center">
           <strong>
-             You have no advertisements published on Vend right now.
+             You have no pending advertisements on Vend right now.
+            </strong>
+          </div>
+          
+          <%}%>
+        </div>
+          <!-- for successful ads -->
+
+    <div class="row" style="margin-top: 5%;">
+
+        <div class="col-md-12" >
+        <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+        <h3>
+        <p align="center">
+          <span class="text-success">
+            <strong>
+              Concluded Ads
+            
+            </strong>
+          </span>
+        </p>
+        </h3>
+        <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+        </div>
+
+        <!-- add successful ads -->
+        <!-- for each advertisement-->
+        <%for(var i=0;i<response.successful_advertisements.length;i++){%>
+          <% response.successful_advertisement=response.successful_advertisements[i];%>
+          <%include partials/advertisement_successful_item%>
+        <%}%>
+
+
+          <%if(response.successful_advertisements.length===0){%>
+            <div align="center">
+          <strong>
+             You have no concluded advertisements right now.
             </strong>
           </div>
           

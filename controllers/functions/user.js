@@ -594,6 +594,16 @@ exports.addPingActivity=function(user_info,input,callback){
 
 }
 
+exports.addConfirmedRequestActivity=function(user_info,ping,callback){
+	var activity="Confirmed "+ping.ad_type+" request by "+'<a href="/api/view/user?id='+
+	ping.user_id+'" class="text-info">'+ping.user_name+"</a> for advertisement "+
+	'<a href="/api/view/advertisement/closed?id='+ping.ad_id+'" class="text-info">'+
+	ping.ad_name+"</a>.";
+	addActivity(user_info,activity);
+	callback();
+}
+
+
 ////Related to notification
 exports.getNotificationCount=function(user_id,callback){
 	Notification.find({user_id:user_id,read:0},function(err,notifications){
@@ -677,6 +687,35 @@ exports.addPingNotification=function(user_info,input,callback){
 		addNotification(user_id,notification_desc);
 		callback();
 	});
+}
+
+exports.addConfirmationNotification=function(user_info,ping,callback){
+	var user_link='/api/view/user?id='+user_info.user_id;
+	var user_name=user_info.name;
+	var ad_link='/api/view/advertisement/closed?id='+ping.ad_id;
+	var ad_name=ping.ad_name;
+	var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
+		'</a> confirmed your request to '+ping.ad_kind+
+		' the product. For details of advertisement visit the <a href="'+ad_link+'" class="text-info"> Ad page</a>.'+
+		'<br>Contact publisher <a href="'+user_link+'" class="text-info">here.</a>';
+	addNotification(ping.user_id,notification_desc);
+	callback();
+}
+
+exports.addRejectionNotification=function(user_info,ping,callback){
+	var user_link='/api/view/user?id='+user_info.user_id;
+	var user_name=user_info.name;
+	var ad_link='/api/view/advertisement/closed?id='+ping.ad_id;
+	var ad_name=ping.ad_name;
+	Ping.find({ad_id:ping.ad_id,user_id:{$nin:[ping.user_id]}},function(err,pings){
+		for(var i=0;i<pings.length;i++){
+			var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
+			'</a> rejected your request to '+ping.ad_kind+
+			' the product. For further details, visit the <a href="'+ad_link+'" class="text-info"> Ad page</a>.';
+			addNotification(pings[i].user_id,notification_desc);
+		}
+		callback();
+	});	
 }
 
 exports.addActivityNotification=function(user_id,notification,callback){
@@ -835,9 +874,11 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 
 exports.getMyAdvertisementsAndPings=function(user_id,callback){
 	advertisementFunctions.getAdvertisementByUser(user_id,function(advertisements){
-		advertisementFunctions.addProductDetailsToAdvertisements(advertisements,function(result_advertisements){
-			advertisementFunctions.addPingsToAdvertisements(result_advertisements,function(result){
-				callback(result);
+		advertisementFunctions.addProductDetailsToAdvertisements(advertisements,function(product_advertisements){
+			advertisementFunctions.addPingsToAdvertisements(product_advertisements,function(ping_product_advertisements){
+				advertisementFunctions.addBidsToAdvertisements(ping_product_advertisements,function(bids_pings_product_advertisements){
+					callback(bids_pings_product_advertisements);
+				});
 			});
 		});
 	});

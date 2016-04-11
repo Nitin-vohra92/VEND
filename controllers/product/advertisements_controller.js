@@ -30,14 +30,14 @@ exports.publish=function(req,res){
 				//add to activity
 				userFunctions.addPublishActivity(req.session,advertisement,function(){
 					//also add activity notification
-					var notification='Successfully published the advertisement. Check Your Ads for more options.';
+					var notification='Successfully published the advertisement.'+
+					"Check <a href='/api/view/user/advertisements' class='text-success'>Your Ads</a> for more options.";
 					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 						
 						//redirect to home
 						res.redirect('/');
 					});
-				});
-				
+				});	
 			};
 			//first find category
 
@@ -61,7 +61,7 @@ exports.edit=function(req,res){
 	var response={};
 	var user_info=req.session;
 	advertisementFunctions.editAdvertisement(req,function(){
-		var notification="Successfully updated Advertisement.";
+		var notification="Successfully updated Advertisement details.";
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 			res.redirect('/api/view/user/advertisements');
 		});
@@ -160,4 +160,38 @@ exports.bid=function(req,res){
 		}
 }
 
+exports.confirmPing=function(req,res){
+	var input=req.body;
+	advertisementFunctions.getPing(input.ping_id,function(ping){
+		if(ping.ad_id!==input.ad_id||ping===null){
+			var error="Invalid Request to confirm a ping. Ping does not correspond to the advertisement.";
+			userFunctions.sendToError(req,res,error);
+		}
+		else{
+			var response={};
+			var user_info=req.session;
+			response.user_info=user_info;
+				//add advertisement to successful advertisement and delete related comments,bids etc
+				advertisementFunctions.moveToSuccessfulAdvertisement(ping,function(){
+				//add an activity
+					userFunctions.addConfirmedRequestActivity(user_info,ping,function(){
+						//add notification to all requesters for rejection as well as confirmation ...product sold to.
+						userFunctions.addConfirmationNotification(user_info,ping,function(){
 
+							//send rejection notification and delete other pings
+							userFunctions.addRejectionNotification(user_info,ping,function(){
+								// delete all pings
+								advertisementFunctions.deletePings(input.ad_id,function(){
+									//add activity notification
+									var notification="Successfully confirmed the request.";
+									userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+										res.redirect('/api/view/user/advertisements');
+									});
+								});
+							});
+						});
+					});
+				});
+		}
+	});
+}

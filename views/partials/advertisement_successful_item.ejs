@@ -1,0 +1,26 @@
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-success">
+        <div class="panel-heading">
+        	<h4>
+            <strong>
+            <%=response.successful_advertisement.name%> 
+            </strong> 
+            </h4>
+        </div>
+
+        <div class="panel-body" style="padding: 3px 15px 3px;">
+        	<span class="text-muted pull-right" style="padding-top:6px;">
+        	<%=response.successful_advertisement.createdAt%>
+        	</span>
+            Confirmed to 
+            <a href='/api/view/user?id=<%=response.successful_advertisement.to_user_id%>'>
+            <%=response.successful_advertisement.to_user_name%>.
+            </a>
+            <br>
+            You can check details of Advertisement 
+            <a href='/api/view/advertisement/closed?id=<%=response.successful_advertisement._id%>'>
+             here.
+            </a>
+        </div>
+	</div>
+</div>

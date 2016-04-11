@@ -2,6 +2,7 @@ var validator=require('validator');
 var path=require('path');
 
 var Advertisement=require('../../models/Advertisement');
+var ClosedAdvertisement=require('../../models/ClosedAdvertisement');
 
 var Book=require('../product/books_controller');
 var Electronics=require('../product/electronics_controller');
@@ -83,6 +84,8 @@ function setAggregateRating(ad_id,callback){
 			});
 		});
 }
+
+
 exports.validatePublishData=function(req){
 	var error;
 	var input=req.body;
@@ -239,7 +242,8 @@ exports.deleteAdvertisement=function(user_info,ad_id,res,callback){
 	var user_id=user_info.user_id;
 	Advertisement.findOne({user_id:user_id,_id:ad_id},function(err,advertisement){
 		if(advertisement===null){
-			res.json({message:'Invalid Request! Ad not found.'});
+			var error='Invalid Request! Ad not found.';			
+			userFunctions.sendToError(req,res,error);
 		}
 		else{
 			var category=advertisement.category;
@@ -259,13 +263,13 @@ exports.deleteAdvertisement=function(user_info,ad_id,res,callback){
 						break;
 				}
 				//delete pings,comments,bids,rating
-				Ping.remove({ad_id:ad_id});
-				Comment.remove({ad_id:ad_id});
-				Bid.remove({ad_id:ad_id});
-				Rating.remove({ad_id:ad_id});
+				Ping.remove({ad_id:ad_id},function(){});
+				Comment.remove({ad_id:ad_id},function(){});
+				Bid.remove({ad_id:ad_id},function(){});
+				Rating.remove({ad_id:ad_id},function(){});
 
 				//also delete from recently viewed
-				RecentlyViewed.remove({_id:ad_id});
+				RecentlyViewed.remove({_id:ad_id},function(){});
 				callback();
 			});
 			
@@ -766,11 +770,25 @@ exports.sortAdvertisements=function(sort,books,electronics,others,callback){
 //////////////////////////////////////////////
 exports.getAdvertisement=function(id,callback){
 	Advertisement.findOne({_id:id},function(err,advertisement){
-		if(err)
+		if(err){
 			console.log(err);
-		callback(advertisement);
+			callback(err);
+		}
+		else
+			callback(advertisement);
 	});
 }
+exports.getClosedAdvertisement=function(id,callback){
+	ClosedAdvertisement.findOne({_id:id},function(err,advertisement){
+		if(err){
+			console.log(err);
+			callback(err);
+		}
+		else
+			callback(advertisement);
+	});
+}
+
 exports.getAdvertisementByUser=function(user_id,callback){
 	Advertisement.find({user_id:user_id},null,{sort:{'_id':-1}},function(err,advertisements){
 		callback(advertisements);
@@ -884,13 +902,22 @@ exports.getRating=function(ad_id,callback){
 }
 
 exports.addBid=function(user_info,input,callback){
-	var bid=new Bid(input);
-	bid.user_id=user_info.user_id;
-	bid.user_name=user_info.name;
-	bid.user_type=user_info.user_type;
-	bid.createdAt=timestamp.getTime();
-	bid.save();
-	callback();
+	Bid.findOne({$and:[{user_id:user_info.user_id},{ad_id:input.ad_id}]},function(err,bid){
+		if(bid===null){
+			var bid=new Bid(input);
+			bid.user_id=user_info.user_id;
+			bid.user_name=user_info.name;
+			bid.user_type=user_info.user_type;
+			bid.createdAt=timestamp.getTime();
+			bid.save();
+		}
+		else{
+			bid.amount=input.amount;
+			bid.createdAt=timestamp.getTime();
+			bid.save();
+		}
+		callback();
+	});
 }
 
 exports.getBids=function(ad_id,callback){
@@ -923,6 +950,18 @@ exports.getPingStatus=function(user_id,ad_id,callback){
 		else
 			status='unavailable';
 		callback(status);
+	});
+}
+
+exports.getPing=function(ping_id,callback){
+	Ping.findOne({_id:ping_id},function(err,ping){
+		callback(ping);
+	});
+}
+
+exports.deletePings=function(ad_id,callback){
+	Ping.remove({ad_id:ad_id},function(){
+		callback();
 	});
 }
 
@@ -964,5 +1003,58 @@ exports.addProductDetailsToAdvertisements=function(advertisements,callback){
 				callback(ads);
 			});
 		});
+	});
+}
+
+exports.addBidsToAdvertisements=function(advertisements,callback){
+	var ads=advertisements;
+	var ad_ids=convertIdsToArray(advertisements);
+	Bid.find({ad_id:{$in:ad_ids}},function(err,bids){
+		if(bids!==null){
+			for(var i=0;i<bids.length;i++){
+				var ad_index=findIndexByKeyValue(ads,'_id',bids[i].ad_id);
+				var ping_index=findIndexByKeyValue(ads[ad_index].pings,'user_id',bids[i].user_id);
+				
+				if(ping_index> -1){
+					ads[ad_index].pings[ping_index].bid=bids[i].amount;
+				}
+			}
+		}
+		callback(ads);
+	});
+}
+
+exports.moveToSuccessfulAdvertisement=function(ping,callback){
+	var ad_id=ping.ad_id;
+	Advertisement.findOne({_id:ping.ad_id},function(err,advertisement){
+		var closedAd=new ClosedAdvertisement(advertisement);
+		closedAd.to_user_id=ping.user_id;
+		closedAd.to_user_type=ping.user_type;
+		closedAd.to_user_name=ping.user_name;
+		closedAd.createdAt=timestamp.getTime();
+		closedAd.updatedAt=Date.now();
+		Bid.findOne({ad_id:ad_id,user_id:ping.user_id},function(err,bid){
+			if(bid!==null){
+				closedAd.price=bid.amount;
+			}
+			closedAd.save();
+			
+			Comment.remove({ad_id:ad_id},function(){});
+			Bid.remove({ad_id:ad_id},function(){});
+			Rating.remove({ad_id:ad_id},function(){});
+
+			//also delete from recently viewed
+			RecentlyViewed.remove({_id:ad_id},function(){});
+			Advertisement.remove({_id:ad_id},function(){
+				callback();
+			});
+		});
+	});
+}
+
+
+exports.getSuccessFulAdvertisements=function(user_id,callback){
+	ClosedAdvertisement.find({user_id:user_id},null,{ sort: {'updatedAt':-1}},function(err,advertisements){
+		callback(advertisements);
 	});
 }
