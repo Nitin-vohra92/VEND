@@ -2,6 +2,7 @@ var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 
+var validator=require('validator');
 
 exports.resizeAndMoveImage=function (oldpath,newpath) {
 	var jimp=require('jimp');
@@ -28,4 +29,43 @@ exports.deleteImages=function(images){
 		fs.unlink(dirname+images[i].path);
 	}
 	return;
+}
+
+exports.validateWish=function(input){
+	var error;
+	if(validator.isNull(input.title)||validator.isNull(input.category)){
+		error='Invalid wish input.';
+		return error;
+	}
+	return error;
+}
+
+exports.convertWishToTags=function(wish){
+	var tags=[];
+	tags=wish.title.split(" ");
+	var desc_tags=wish.description.split(" ");
+	for(var i=0;i<desc_tags.length;i++){
+		switch(desc_tags[i]){
+			case 'a':
+			case 'an':
+			case 'the':
+			case 'is':
+			case 'am':
+			case 'are':
+			case 'I':
+			case 'i':
+			case 'to':
+			case 'this':
+			case 'will':
+			case 'shall':
+			case 'you':
+			case 'You':
+			case 'any':
+				break;
+			default:
+				tags.push(desc_tags[i]);
+				break;
+		}
+	}
+	return tags;
 }

@@ -1,0 +1,37 @@
+
+          
+          
+  <div class="row">
+
+      
+    <div class="col-md-8 col-md-offset-2">
+      <div class="alert alert-warning" style=" padding: 8px; height: 50px;">
+      <form action='' method='GET'>
+        <input type="hidden" name="id" value='<%=response.wish_id%>'>
+      	<div class="col-md-4">
+	      	<label for="sort" class="form-label" style="margin-top: 6px;"">
+	      	Sort the advertisements by:
+	      	</label>
+      	</div>
+      	<div class="col-md-6">
+	      	<select id="sort" class="form-control" name="sort" required>
+	      		<option value='<%=response.sort%>'><%=response.sort_name%></option>
+	            <option value="publish_time">Newest First</option>
+	            <option value="price_asc">Price(Low to High)</option>
+	            <option value="price_desc">Price(High to Low)</option>
+	            <option value="rating">Rating</option>
+	            <option value="loan">Available for Loan</option>
+	            <option value="buy">Available for Buy</option>  
+	            <option value="bid">Available for Bidding</option>      
+	            <option value="no_bid">Not available for Bidding</option>      
+	        </select>
+        </div>
+        <div class="col-md-2">
+        	<button type='submit' class='btn btn-primary btn-block'>Sort</button>
+        </div>
+
+     
+       </form>
+       </div>
+    </div>
+  </div>

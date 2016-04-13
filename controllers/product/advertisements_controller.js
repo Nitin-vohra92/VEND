@@ -31,7 +31,7 @@ exports.publish=function(req,res){
 				userFunctions.addPublishActivity(req.session,advertisement,function(){
 					//also add activity notification
 					var notification='Successfully published the advertisement.'+
-					"Check <a href='/api/view/user/advertisements' class='text-success'>Your Ads</a> for more options.";
+					"Check <a href='/api/view/user/advertisements' class='text-info'>Your Ads</a> for more options.";
 					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 						
 						//redirect to home

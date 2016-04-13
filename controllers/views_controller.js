@@ -44,10 +44,16 @@ exports.home=function(req,res){
 						response.notification_count=count;
 						userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
 							response.activity_notification=activity;
-							res.render('index',{response:response});
+							userFunctions.getWishes(function(wishes){
+								response.wishes=wishes;
+								//res.json({response:response});
+								res.render('index',{response:response});
+							});
+							
 						});
 					});
 					//add for wishes
+
 					
 				});
 				
@@ -61,8 +67,11 @@ exports.home=function(req,res){
 			response.latest=latests;
 			advertisementFunctions.getRecentlyViewed(4,null,function(recents){
 				response.recent=recents;
-				//add for wishes
-				res.render('index',{response:response});
+				userFunctions.getWishes(function(wishes){
+					response.wishes=wishes;
+					//res.json({response:response});
+					res.render('index',{response:response});
+				});
 			});
 		});
 		
@@ -303,6 +312,8 @@ exports.products=function(req,res){
 								response.notification_count=count;
 								response.sort_name=advertisementFunctions.getSortName(sort);
 								response.sort=sort;
+								if(sort===null)
+									response.sort='publish_time';
 								//res.json(response);
 								res.render('products',{response:response});
 						});
@@ -326,6 +337,8 @@ exports.books=function(req,res){
 			response.books=books;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
+			if(sort===null)
+				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
 	  			//res.json(response);
@@ -346,6 +359,8 @@ exports.electronics=function(req,res){
 			response.electronics=electronics;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
+			if(sort===null)
+				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
 	  			//res.json(response);
@@ -366,6 +381,8 @@ exports.others=function(req,res){
 			response.others=others;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
+			if(sort===null)
+				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
 	  			//res.json(response);
@@ -386,6 +403,8 @@ exports.latest=function(req,res){
 			response.latest=advertisements;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
+			if(sort===null)
+				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
 				res.render('latest',{response:response});
@@ -406,6 +425,8 @@ exports.viewed=function(req,res){
 			response.recent=advertisements;
 			response.sort_name=advertisementFunctions.getSortName(sort);
 			response.sort=sort;
+			if(sort===null)
+				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
 				res.render('recent',{response:response});
@@ -430,6 +451,8 @@ exports.recommended=function(req,res){
 				response.notification_count=count;
 				response.sort_name=advertisementFunctions.getSortName(sort);
 				response.sort=sort;
+				if(sort===null)
+					response.sort='publish_time';
 				res.render('recommended',{response:response});
 			});
 		});
@@ -464,6 +487,34 @@ exports.user=function(req,res){
 		 					}
 }
 
+
+exports.wish=function(req,res){
+	var wish_id=req.query.id;
+	var user_info=req.session;
+	var response={};
+	response.user_info=user_info;
+	response.wish_id=wish_id;
+	var sort=req.query.sort;
+		if(!sort)
+			sort=null;
+	userFunctions.getWish(wish_id,function(wish){
+		response.wish=wish;
+		advertisementFunctions.getWishRecommendations(wish,sort,function(advertisements){
+			response.advertisements=advertisements;
+			response.sort_name=advertisementFunctions.getSortName(sort);
+			response.sort=sort;
+			if(sort===null){
+				response.sort='publish_time';
+				userFunctions.addViewedWishActivity(user_info,wish,function(){});
+			}
+			userFunctions.getNotificationCount(user_info.user_id,function(count){
+				response.notification_count=count;
+				// res.json({response:response});
+				res.render('wish',{response:response});
+			});
+		});		
+	});
+}
 //for search page
 exports.search=function(req,res){
 	var input=req.body;
@@ -519,6 +570,8 @@ exports.search=function(req,res){
 									response.query=query;
 									response.sort_name=advertisementFunctions.getSortName(sort);
 									response.sort=sort;
+									if(sort===null)
+										response.sort='publish_time';
 									res.render('search',{response:response});
 								});
 							});

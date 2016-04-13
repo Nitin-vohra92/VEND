@@ -16,12 +16,12 @@ var Bid=require('../../models/Bid');
 var Comment=require('../../models/Comment');
 var Ping=require('../../models/Ping');
 
+
 var userFunctions=require('./user');
-
-
-
+var helper=require('./helper');
 var timestamp=require('./timestamp');
 
+var _this=this;
 function convertIdsToArray(ids){
 	var result=[];
 	for (var i = 0; i<ids.length; i++) {
@@ -1057,4 +1057,38 @@ exports.getSuccessFulAdvertisements=function(user_id,callback){
 	ClosedAdvertisement.find({user_id:user_id},null,{ sort: {'updatedAt':-1}},function(err,advertisements){
 		callback(advertisements);
 	});
+}
+
+exports.getWishRecommendations=function(wish,sort,callback){
+	var tags=helper.convertWishToTags(wish);
+	var category=wish.category;
+	switch(category){
+		case 'Book':
+			Book.searchRecommendedBooks(tags,function(books){
+				getAdvertisementFromIds(books,function(advertisements){
+					_this.sortAdvertisements(sort,advertisements,[],[],function(sorted_advertisements,a,b){	
+						callback(sorted_advertisements);
+					});
+				});
+			});
+			break;
+		case 'Electronics':
+			Electronics.searchRecommendedElectronics(tags,function(electronics){
+				getAdvertisementFromIds(electronics,function(advertisements){
+					_this.sortAdvertisements(sort,[],advertisements,[],function(a,sorted_advertisements,b){	
+						callback(sorted_advertisements);
+					});
+				});
+			});
+			break;
+		case 'Other':
+			Other.searchRecommendedOthers(tags,function(others){
+				getAdvertisementFromIds(others,function(advertisements){
+					_this.sortAdvertisements(sort,[],[],advertisements,function(a,b,sorted_advertisements){	
+						callback(sorted_advertisements);
+					});
+				});
+			});
+			break;
+	}
 }

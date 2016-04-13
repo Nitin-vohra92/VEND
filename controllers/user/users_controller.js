@@ -2,13 +2,11 @@ var Teacher=require('./teachers_controller');
 var Student=require('./students_controller');
 var Other=require('./others_controller');
 var Account=require('../../models/Account');
-var Wish=require('../../models/Wish');
-var Notification=require('../../models/Notification');
-var Activity=require('../../models/Activity');
 
 var userFunctions=require("../functions/user");
 var TemporaryUser=require('../../models/users/TemporaryUser');
 
+var helper=require('../functions/helper');
 
 
 
@@ -178,23 +176,30 @@ exports.forgot=function(req,res){
 
 
 exports.wish=function(req,res){
-	/////////changes for timestamp////////////////
 		var input=req.body;
-		var wish=new Wish(input);
-		wish.user_id=req.session.user_id;
-		wish.user_desc=req.session.name+','+req.session.user_type+' at NITH';
-		wish.user_type=req.session.user_type;
-		wish.save();
-		//add to activity
-		var activity=new Activity(input);
-		activity.user_id=req.session.user_id;
-		//check later
-		activity.user_name=req.session.user_name;
-
-		activity.activity='Posted a wish: '+wish.description+ ' at '+wish.createdAt;
-		activity.save();
-		//res.json({status:'Success'});
-		res.redirect('/');
+		var user_info=req.session;
+		//check for errors
+		var error=helper.validateWish(input);
+		if(error){
+			var notification='Could not post a wish.'+error;
+			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+				res.redirect('/');
+			});
+		}
+		else{
+			//add wish
+			userFunctions.saveWish(user_info,input,function(wish){
+				//add activity
+				userFunctions.addWishActivity(user_info,wish,function(){
+					//add activity notifier
+					var notification='Successfully posted a wish. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
+					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+						res.redirect('/');
+					});
+				});
+			});
+		}
+		//make page for wish recommendation
 }
 
 exports.ping=function(req,res){

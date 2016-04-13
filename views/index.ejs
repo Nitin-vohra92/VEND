@@ -7,11 +7,19 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/custom_style.css">
     <script src="/js/jquery.min.js"></script>
+    <script src="/js/enscroll-0.6.2.min.js"></script>
+
 
   <script src="/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-	  $(document).ready(function() {
-<% include partials/dropdown%>
+$(document).ready(function() {
+  <% include partials/dropdown%>
+
+  $('#scrollbox3').enscroll({
+      showOnHover: true,
+      verticalTrackClass: 'track3',
+      verticalHandleClass: 'handle3'
+  });
 });
 </script>
 </head>
@@ -25,45 +33,63 @@
 <!--content-->
 <div class="container-fluid" style="margin-top: 5%;">
 <!-- wish box -->
-<div class="col-md-3" style=" position: fixed;">                  
+<div class="col-md-3" style="padding-right: 0px; padding-left: 0px;">
     <div class="panel panel-info">
                         <div class="panel-heading" align="center" >
                             Wishes
                         </div>
-                        <div class="panel-body" style="padding: 8px;">
-                            <textarea class="form-control" placeholder="Enter your wish here..." rows="3" style="max-width: 100%; max-height: 90px;"></textarea>
-                            <br>
-                            <a href="#" class="btn btn-primary btn-sm pull-right">Post</a>
+                        <div class="panel-body" style="padding: 6px;">
+                            <form id="wishForm" action="/api/user/wish" method="POST">
+                              <div class="col-md-6" style="padding: 3px;">
+                              <input name="title" class="form-control" required  placeholder="Wish name"/>
+                              </div>
+                              <div class="col-md-6" style="padding:3px;">
+                                <select class="form-control" name="category" required >
+                                 <option value="">--Category--</option>
+                                 <option value="Book">Book</option>
+                                 <option value="Electronics">Electronics</option>
+                                 <option value="Others">Others</option>
+                        
+                                </select>
+                              </div>
+
+                              <textarea name="description" class="form-control" placeholder="Describe your wish here..." rows="3" style="max-width: 100%; max-height: 90px;" required></textarea>
+                              
+                              <button type="submit" class="btn btn-primary btn-sm pull-right" style="margin-top: 2px; margin-right: 10px;">Post</button>
+                           </form>
                             <br>
                             <hr>
+
+                            <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
                             <!-- wish list in this div -->
-                            <div class="wishes" style="overflow-y:scroll; height: 260px;">
-                                <!-- one wish item -->
-                                    <div class="wish_item">
-                                        <span class="text-muted pull-right">
-                                            <small class="text-muted">category</small>
-                                        </span>
-                                        <strong class="text-success">wish name </strong>
-                                        <p>
-                                            descrption of wish <br>
-                                            <a  class="text-success" href="#" style="align: center"> Recommendations </a>
-                                            <span class="pull-right">
-                                            Posted by: 
-                                            <a href="#" style="align: center"> username </a>
-                                            </span>
-                                        </p>
-                                        <hr>
+                              <div id="scrollbox3" style="min-height: 250px; max-height: 500px; width: 106%;">
+
+                                <%for(var i=0;i<response.wishes.length;i++) {%>
+                                    <!-- assume an object wish  -->
+                                      <%response.wish=response.wishes[i];%>
+                                      <%include partials/wish_item%>
+
+                                    <%}%>
+                                    <%if(response.wishes.length===0){%>
+                                    <div align="center">
+                                    <strong>
+                                      Nothing here :(
+                                      </strong>
                                     </div>
+                                    <% }%>
+                                  
+                                      
+                              </div>
                             </div>
                             <span class="text-danger"><small>Be sure to check wishes. You may have something to fulfill these wishes. You can post your ad <a href="/api/advertisement/publish">here.</a></small></span>
                         </div>
       </div>
-      
+
   <!-- end wish box -->
 
 </div>
 <!-- main content block -->
-<div class="col-md-9 col-md-offset-3">
+<div class="col-md-9">
 <% include partials/activity_notifier%>
 
   <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
@@ -74,7 +100,7 @@
         <h1>Vend</h1>
         <p>A web portal where you can post an ad to sell/share your things.<br> You can also post wishes for the things you need and check our recommendations for you.</p>
       </div>
-    </div> 
+    </div>
     <!-- /container -->
 
     <div class="row" style="margin-top: 15px;">
@@ -90,7 +116,7 @@
               </h4>
             </div>
 
-            
+
             <div class="row" style="padding: 10px;">
             <!-- for each  advertisement -->
           <%for(var i=0;i<response.latest.length;i++) {%>
@@ -139,7 +165,7 @@
 
             <%for(var i=0;i<response.recent.length;i++) {%>
 
-              
+
           	<%response.advertisement=response.recent[i];%>
               <%include partials/advertisement%>
 
@@ -187,7 +213,7 @@
 
             <%for(var i=0;i<response.recommended.length;i++) {%>
 
-              
+
           	<%response.advertisement=response.recommended[i];%>
               <%include partials/advertisement%>
 
@@ -226,7 +252,7 @@
   </div>
 </div>
 <!-- end main content block -->
-  
+
 <!-- /conatainer after nav -->
 </div>
 <!-- below two /div for main and wrap -->
@@ -237,4 +263,3 @@
 <%include partials/footer%>
 </body>
 </html>
-			

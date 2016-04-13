@@ -1,0 +1,23 @@
+<!-- one wish item -->
+<div class="wish_item">
+  <span class="text-muted pull-right">
+    <small class="text-muted">
+    <%=response.wish.category%>
+    </small>
+  </span>
+  <strong class="text-success">
+   <%=response.wish.title%>
+  </strong>
+  <p>
+  <%=response.wish.description%> 
+  <br>
+  <a  class="text-success" href='/api/view/wish?id=<%=response.wish._id%>' style="align: center">
+   Recommendations 
+   </a>
+  <span class="pull-right">
+  Posted by:
+  <a href="/api/view/user?id=<%=response.wish.user_id%>" style="align: center"><%=response.wish.user_name%> </a>
+  </span>
+  </p>
+  <hr>
+</div>

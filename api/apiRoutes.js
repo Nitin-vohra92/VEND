@@ -122,4 +122,8 @@ router.route('/view/user').post(auth.loggedIn,view.user);
 //for search page And add sorting option
 router.route('/view/search').get(auth.loggedIn,auth.validateGetRequest,view.search);
 
+//for search page And add sorting option
+router.route('/view/wish').get(auth.loggedIn,auth.validateGetRequest,view.wish);
+
+
 module.exports=router;
