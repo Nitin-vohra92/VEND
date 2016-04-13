@@ -104,7 +104,8 @@ exports.findBooksByIds=function(ids,callback){
 	});
 }
 exports.search=function(query,callback){
-	Book.find({$or:[{title: { $regex: query, $options: "i" }},{author: { $regex:query, $options: "i" }}]},{_id:1},{sort: {'_id': -1}},function(err,books){
+	query=helper.changeToRegexArray(query);
+	Book.find({$or:[{title: {$in:query}},{author: {$in:query}}]},{_id:1},{sort: {'_id': -1}},function(err,books){
 		callback(books);
 	});
 }

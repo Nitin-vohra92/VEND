@@ -19,6 +19,7 @@ var advertisementFunctions=require('./advertisement');
 
 
 var timestamp=require('./timestamp');
+var helper=require('./helper');
 var CONF_FILE=require('../../conf.json');
 
 
@@ -478,7 +479,8 @@ exports.sendToError=function(req,res,error){
 
 
 exports.searchUser=function(query,callback){
-	Account.find({$or:[{name: { $regex: query, $options: "i" }},{type:{ $regex: query, $options: "i" }}]},function(err,users){
+	var query=helper.changeToRegexArray(query);
+	Account.find({$or:[{name: { $in: query}},{type:{ $in: query}}]},function(err,users){
 		callback(users);
 	});
 }
@@ -809,11 +811,13 @@ exports.addToRecommendation=function(user_id,search_tag,ad_id,callback){
 		}
 		//2. what he searches
 		else{//based on search tag
-			////////////////////////////////////
-			//will cahnge if search tags is array
-			if(!search_tags.contains(search_tag)){
-				search_tags.unshift(search_tag);
-				recommendation.search_tags=search_tags;
+			/////////////////////////////////////
+			for(var i=0;i<search_tag.length;i++){
+				//will cahnge if search tags is array
+				if(!search_tags.contains(search_tag[i])){
+					search_tags.unshift(search_tag[i]);
+					recommendation.search_tags=search_tags;
+				}
 			}
 			recommendation.save();
 		}

@@ -521,6 +521,7 @@ exports.search=function(req,res){
 	console.log('In search');
 	var response={};
 	var query=req.query.q;
+	query=query.split(" ");
 	var user_id=req.session.user_id;
 	response.user_info=req.session;
 	var sort=req.query.sort;

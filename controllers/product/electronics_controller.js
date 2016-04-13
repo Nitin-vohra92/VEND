@@ -101,7 +101,8 @@ exports.findElectronicsByIds=function(ids,callback){
 }
 
 exports.search=function(query,callback){
-	Electronics.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},{sort: {'_id': -1}},function(err,electronics){		
+	query=helper.changeToRegexArray(query);
+	Electronics.find({$or:[{name: {$in:query}},{brand: {$in:query}},{sub_category: {$in:query}}]},{_id:1},{sort: {'_id': -1}},function(err,electronics){		
 		callback(electronics);
 	});
 }

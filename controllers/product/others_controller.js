@@ -105,7 +105,8 @@ exports.findOthersByIds=function(ids,callback){
 }
 
 exports.search=function(query,callback){
-	Others.find({$or:[{name: { $regex: query, $options: "i" }},{brand: { $regex: query, $options: "i" }},{sub_category: { $regex: query, $options: "i" }}]},{_id:1},{sort: {'_id': -1}},function(err,others){
+	query=helper.changeToRegexArray(query);
+	Others.find({$or:[{name: {$in:query}},{brand: {$in:query}},{sub_category: {$in:query}}]},{_id:1},{sort: {'_id': -1}},function(err,others){
 		callback(others);
 	});
 }
