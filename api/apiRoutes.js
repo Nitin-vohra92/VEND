@@ -36,6 +36,9 @@ router.route('/user/logout').get(auth.logout);
 //posting a wish
 router.route('/user/wish').post(auth.loggedIn,user.wish);
 
+//posting a wish
+router.route('/user/wish/delete').post(auth.loggedIn,user.deleteWish);
+
 //publishing an advertisement
 router.route('/advertisement/publish').get(auth.loggedIn,view.publish);
 
@@ -84,6 +87,8 @@ router.route('/view/user/notifications').get(auth.loggedIn,view.notifications);
 //your ads page
 router.route('/view/user/advertisements').get(auth.loggedIn,view.myAdvertisements);
 
+//your ads page
+router.route('/view/user/wishes').get(auth.loggedIn,view.myWishes);
 
 //for pinging the seller
 router.route('/user/ping').post(auth.loggedIn,user.ping);

@@ -22,7 +22,7 @@ var timestamp=require('./timestamp');
 var helper=require('./helper');
 var CONF_FILE=require('../../conf.json');
 
-
+var _this=this;
 
 
 function mergeArrays(array1, array2) {
@@ -607,15 +607,15 @@ exports.addConfirmedRequestActivity=function(user_info,ping,callback){
 }
 
 exports.addWishActivity=function(user_info,wish,callback){
-	var activity='Posted a wish for '+wish.title+
-	'. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
+	var activity='Posted a wish for <span class="text-success"><strong>'+wish.title+
+	'</strong></span>. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
 	addActivity(user_info,activity);
 	callback();
 }
 
 exports.addViewedWishActivity=function(user_info,wish,callback){
-	var activity='Viewed a wish '+wish.title+
-	'. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
+	var activity='Viewed a wish entitled: <span class="text-success"><strong>'+wish.title+
+	'</strong></span>. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
 	addActivity(user_info,activity);
 	callback();	
 }
@@ -734,6 +734,38 @@ exports.addRejectionNotification=function(user_info,ping,callback){
 		}
 		callback();
 	});	
+}
+
+
+exports.addWishNotification=function(category,product,ad_id){
+	switch(category){
+		case 'Book':
+			var tags=product.title.split(" ");
+			tags=mergeArrays(tags,product.author.split(" "));
+			tags.push(product.semester);
+			_this.matchWishAndSendNotification(category,tags,ad_id);
+			break;
+		case 'Electronics':
+		case 'Other':
+			var tags=product.name.split(" ");
+			tags=mergeArrays(tags,product.sub_category.split(" "));
+			tags=mergeArrays(tags,product.brand.split(" "));
+			_this.matchWishAndSendNotification(category,tags,ad_id);
+			break;
+	}
+}
+
+exports.matchWishAndSendNotification=function(category,tags,ad_id){
+	tags=helper.changeToRegexArray(tags);
+	Wish.find({category:category,$or:[{title:{$in:tags}},{description:{$in:tags}}]},function(err,wishes){
+		if(err)
+			console.log(err);
+		for(var i=0;i<wishes.length;i++){
+			var notification_desc='New advertisement matching your wish has been posted. Check it '+
+			'<a href="/api/view/advertisement?id='+ad_id+'">here</a>.';
+			addNotification(wishes[i].user_id,notification_desc);
+		}
+	});
 }
 
 exports.addActivityNotification=function(user_id,notification,callback){
@@ -913,6 +945,7 @@ exports.saveWish=function(user_info,input,callback){
 	wish.user_id=user_info.user_id;
 	wish.user_name=user_info.name;
 	wish.user_type=user_info.user_type;
+	wish.createdAt=timestamp.getTime();
 	wish.save(function(){
 		callback(wish);
 	});
@@ -920,6 +953,8 @@ exports.saveWish=function(user_info,input,callback){
 
 exports.getWish=function(wish_id,callback){
 	Wish.findOne({_id:wish_id},function(err,wish){
+		if(err)
+			callback(err);
 		callback(wish);
 	});
 }
@@ -927,5 +962,26 @@ exports.getWish=function(wish_id,callback){
 exports.getWishes=function(callback){
 	Wish.find({},null,{sort:{_id:-1}},function(err,wishes){
 		callback(wishes);
+	});
+}
+
+exports.getUserWishes=function(user_id,callback){
+	Wish.find({user_id:user_id},null,{sort:{_id:-1}},function(err,wishes){
+		callback(wishes);
+	});
+}
+
+exports.deleteWish=function(user_info,wish_id,req,res,callback){
+	var user_id=user_info.user_id;
+	Wish.findOne({user_id:user_id,_id:wish_id},function(err,wish){
+		if(wish===null){
+			var error='Invalid Request! Wish not found.';			
+			_this.sendToError(req,res,error);
+		}
+		else{
+			Wish.remove({_id:wish_id},function(){
+				callback();
+			});
+		}
 	});
 }

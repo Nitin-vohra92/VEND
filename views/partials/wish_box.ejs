@@ -1,0 +1,28 @@
+ <div id=<%=response.wish._id%> class="col-md-10 col-md-offset-1">
+          <div class="panel panel-info">
+              <div id=<%=i%> class="panel-heading" style="padding: 5px; min-height: 50px;">
+                <div id=<%=response.wish._id%> class="ad_options pull-right" style="margin-top:  3px; margin-right:8px;">
+                  <a id="deletePopUpButton" class="btn btn-danger" data-toggle="modal" 
+                    data-target="#deletePopUp">Delete Wish</a>      
+                </div>
+                  <h4>
+                  <strong>
+                  <%=response.wish.title%> 
+                  </strong> 
+                  </h4>
+              </div>
+              <div class="panel-body" style="padding: 3px 15px 3px;">
+                <span class="pull-right">
+                <%=response.wish.createdAt%>
+                </span>
+                <%=response.wish.description%>
+              </div>
+              <div class="panel-footer" align="center" style="padding: 5px;">
+                <h4>
+                  <strong>
+                  </strong>
+                </h4>
+              </div>
+              
+          </div>
+        </div>

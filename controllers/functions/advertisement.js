@@ -166,7 +166,7 @@ exports.validatePublishData=function(req){
 	return error;
 }
 
-exports.saveAdvertisement=function(req,product_id,thumb_path){
+exports.saveAdvertisement=function(req,product_id,thumb_path,callback){
 	var input=req.body;
 	var advertisement=new Advertisement(input);
 	advertisement.product_id=product_id;
@@ -186,7 +186,7 @@ exports.saveAdvertisement=function(req,product_id,thumb_path){
 		break;
 	} 
 	advertisement.save();
-	return advertisement;
+	callback(advertisement);
 }
 
 exports.editAdvertisement=function(req,callback){
@@ -238,7 +238,7 @@ exports.editAdvertisement=function(req,callback){
 
 
 
-exports.deleteAdvertisement=function(user_info,ad_id,res,callback){
+exports.deleteAdvertisement=function(user_info,ad_id,req,res,callback){
 	var user_id=user_info.user_id;
 	Advertisement.findOne({user_id:user_id,_id:ad_id},function(err,advertisement){
 		if(advertisement===null){

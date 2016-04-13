@@ -1,0 +1,34 @@
+<div id="deletePopUp" class="modal fade" role="dialog" >
+  <div class="modal-dialog modal-vertical-centered">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-primary">
+        <strong>
+        Confirm
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <p>
+        <span class="text-warning">
+        <strong>Warning:</strong>
+         This will delete your wish from Vend. You will no more be notified for advertisments matching your wish. Make sure you want to do so.
+         </span>
+         </p>
+      </div>
+      <div class="modal-footer">
+        
+        <form id="wishDeleteForm" class="pull-right" action="/api/user/wish/delete" method="POST" >
+        <input type="hidden" name="wish_id" value="" />
+        <button type="submit" class="btn btn-danger" >Delete Wish</button>
+        </form>
+        <button type="button" class="btn btn-primary pull-right" style="margin-right:8px;" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

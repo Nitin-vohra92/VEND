@@ -17,12 +17,10 @@ var Account=require('../models/Account');
 var RecentlyViewed=require('../models/RecentlyViewed');
 var Wish=require('../models/Wish');	
 var Advertisement=require('../models/Advertisement');
-var Comment=require('../models/Comment');	
-var Rating=require('../models/Rating');
-var Notification=require('../models/Notification');
 
+var Notification=require('../models/Notification');
 var Activity=require('../models/Activity');
-var Bid=require('../models/Bid');
+
 
 var userFunctions=require('./functions/user');
 var advertisementFunctions=require('./functions/advertisement');
@@ -222,17 +220,6 @@ exports.closedAdvertisement=function(req,res){
 	});
 
 }
-//for viewing more wishes
-exports.wishes=function(req,res){
-	var response=[];
-	response.push({user_info:req.session});
-
-	Wish.find({}, null, { sort: {'createdAt': -1}}).exec(function(err, wishes){
-  		response.push({wishes:wishes});
-  		res.render('',{response:response});
-
-  	});
-}
 
 //for user activities
 exports.activities=function(req,res){
@@ -240,14 +227,14 @@ exports.activities=function(req,res){
 	response.user_info=req.session;
 	var user_id=req.session.user_id;
 	Activity.find({user_id:user_id}, null, { sort: {'_id': -1}}).exec(function(err, activities) {
-	  				response.activities=activities;
-	  				userFunctions.getNotificationCount(user_id,function(count){
-	  					response.notification_count=count;
-		  				///check for any notification
-		  				res.render('activities',{response:response});
-		  				//res.json(response);
-	  				});
-  				});
+	  	response.activities=activities;
+	  	userFunctions.getNotificationCount(user_id,function(count){
+	  		response.notification_count=count;
+					///check for any notification
+					res.render('activities',{response:response});
+					//res.json(response);
+	  	});
+  	});
 }
 
 //for user notification
@@ -290,6 +277,23 @@ exports.myAdvertisements=function(req,res){
 				
 			});
 		});	
+	});
+}
+
+exports.myWishes=function(req,res){
+	var response={};
+	var user_info=req.session;
+	response.user_info=user_info;
+	userFunctions.getUserWishes(user_info.user_id,function(wishes){
+		response.wishes=wishes;
+		userFunctions.getNotificationCount(user_info.user_id,function(count){
+			response.notification_count=count;
+			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
+				response.activity_notification=notification;
+				// res.json({response:response});
+				res.render('my_wishes',{response:response});
+			});
+		});
 	});
 }
 
@@ -498,22 +502,31 @@ exports.wish=function(req,res){
 		if(!sort)
 			sort=null;
 	userFunctions.getWish(wish_id,function(wish){
-		response.wish=wish;
-		advertisementFunctions.getWishRecommendations(wish,sort,function(advertisements){
-			response.advertisements=advertisements;
-			response.sort_name=advertisementFunctions.getSortName(sort);
-			response.sort=sort;
-			if(sort===null){
-				response.sort='publish_time';
-				userFunctions.addViewedWishActivity(user_info,wish,function(){});
-			}
-			userFunctions.getNotificationCount(user_info.user_id,function(count){
-				response.notification_count=count;
-				// res.json({response:response});
-				res.render('wish',{response:response});
-			});
-		});		
+		if(wish===null||wish._id===undefined){
+			var error="The wish was not found.Following may be the reasons:<br>"+
+			"1. The wish might have been deleted by the publisher.<br>"+
+			'2. URL not valid. Please check the URL and try again.';
+			userFunctions.sendToError(req,res,error);
+		}
+		else{
+			response.wish=wish;
+			advertisementFunctions.getWishRecommendations(wish,sort,function(advertisements){
+				response.advertisements=advertisements;
+				response.sort_name=advertisementFunctions.getSortName(sort);
+				response.sort=sort;
+				if(sort===null){
+					response.sort='publish_time';
+					userFunctions.addViewedWishActivity(user_info,wish,function(){});
+				}
+				userFunctions.getNotificationCount(user_info.user_id,function(count){
+					response.notification_count=count;
+					// res.json({response:response});
+					res.render('wish',{response:response});
+				});
+			});	
+		}	
 	});
+
 }
 //for search page
 exports.search=function(req,res){

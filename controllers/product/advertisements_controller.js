@@ -1,12 +1,8 @@
-var ProductCategory=require('../../models/identifiers/ProductCategory');
-
 var Advertisement=require('../../models/Advertisement');
 var Book=require('./books_controller');
 var Electronics=require('./electronics_controller');
 var Other=require('./others_controller');
 
-
-var Notification=require('../../models/Notification');
 
 var userFunctions=require('../functions/user');
 var advertisementFunctions=require('../functions/advertisement');
@@ -25,19 +21,23 @@ exports.publish=function(req,res){
 		else{
 			var user_info=req.session;
 			var productCategory=input.category;
-			var afterProductSaved=function(product_id,thumb_path){
-				var advertisement=advertisementFunctions.saveAdvertisement(req,product_id,thumb_path);
-				//add to activity
-				userFunctions.addPublishActivity(req.session,advertisement,function(){
-					//also add activity notification
-					var notification='Successfully published the advertisement.'+
-					"Check <a href='/api/view/user/advertisements' class='text-info'>Your Ads</a> for more options.";
-					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-						
-						//redirect to home
-						res.redirect('/');
+			var afterProductSaved=function(product){
+				var product_id=product._id;
+				var thumb_path=product.images[0].path;
+				advertisementFunctions.saveAdvertisement(req,product_id,thumb_path,function(advertisement){
+					//add to activity
+					userFunctions.addPublishActivity(req.session,advertisement,function(){
+						//also add activity notification
+						var notification='Successfully published the advertisement.'+
+						"Check <a href='/api/view/user/advertisements' class='text-info'>Your Ads</a> for more options.";
+						userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+							userFunctions.addWishNotification(productCategory,product,advertisement._id);
+							//redirect to home
+							res.redirect('/');
+						});
 					});
-				});	
+				});
+					
 			};
 			//first find category
 
@@ -73,7 +73,7 @@ exports.delete=function(req,res){
 	var input=req.body;
 	var ad_id=input.ad_id;
 	var user_info=req.session;
-	advertisementFunctions.deleteAdvertisement(user_info,ad_id,res,function(){
+	advertisementFunctions.deleteAdvertisement(user_info,ad_id,req,res,function(){
 		var notification='Successfully deleted the advertisement.';
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 			res.redirect("/api/view/user/advertisements");

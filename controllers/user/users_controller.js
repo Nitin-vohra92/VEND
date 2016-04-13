@@ -202,6 +202,19 @@ exports.wish=function(req,res){
 		//make page for wish recommendation
 }
 
+
+exports.deleteWish=function(req,res){
+	var input=req.body;
+	var user_info=req.session;
+	var wish_id=input.wish_id;
+	userFunctions.deleteWish(user_info,wish_id,req,res,function(){
+		var notification='Successfully deleted your wish.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect('/api/view/user/wishes');
+		});
+	});
+}
+
 exports.ping=function(req,res){
 	var input=req.body;
 	var user_info=req.session;

@@ -23,9 +23,8 @@ var wishModel=new Schema({
 		type: String
 	},
 	createdAt:{
-		type: Date,
+		type: String,
 		default:Date.now()
 	}
 });
-wishModel.index({title:'text',description:'text'});
 module.exports=mongoose.model('Wish',wishModel);

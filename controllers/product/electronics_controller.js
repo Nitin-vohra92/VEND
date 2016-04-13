@@ -7,6 +7,7 @@ var UPLOAD_DIR = "\\uploads\\productimages\\electronics\\";
 
 var helper=require('../functions/helper');
 var timestamp=require('../functions/timestamp');
+var userFunctions=require('../functions/user');
 
 exports.publish=function(req,callback){
 	var input=req.body;
@@ -48,7 +49,7 @@ exports.publish=function(req,callback){
 
 	electronics.save();
 
- 	callback(electronics._id,electronics.images[0].path);
+ 	callback(electronics);
 	
 }
 

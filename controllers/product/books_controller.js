@@ -10,6 +10,7 @@ var UPLOAD_DIR = "\\uploads\\productimages\\books\\";
 
 var helper=require('../functions/helper');
 var timestamp=require('../functions/timestamp');
+var userFunctions=require('../functions/user');
 
 
 exports.publish=function(req,callback){
@@ -51,7 +52,8 @@ exports.publish=function(req,callback){
 
 		book.createdAt=timestamp.getTime();
 		book.save();
-		callback(book._id,book.images[0].path);
+		
+		callback(book);
 	
 }
 
@@ -117,7 +119,7 @@ exports.getRecommendedBooks=function(view_tags,callback){
 
 exports.searchRecommendedBooks=function(search_tags,callback){
 	search_tags=helper.changeToRegexArray(search_tags);
-	Book.find({$or:[{title:{$in:search_tags}},{author: {$in:search_tags}}]},{_id:1},function(err,books){
+	Book.find({$or:[{title:{$in:search_tags}},{author: {$in:search_tags}},{semester:{$in:search_tags}}]},{_id:1},function(err,books){
 		callback(books);
 	});
 }
