@@ -48,7 +48,7 @@ $(document).ready(function() {
                                  <option value="">--Category--</option>
                                  <option value="Book">Book</option>
                                  <option value="Electronics">Electronics</option>
-                                 <option value="Others">Others</option>
+                                 <option value="Other">Others</option>
                         
                                 </select>
                               </div>
@@ -92,7 +92,7 @@ $(document).ready(function() {
 <div class="col-md-9">
 <% include partials/activity_notifier%>
 
-  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
+  <div >
 
 
     <div class="jumbotron">
@@ -163,20 +163,20 @@ $(document).ready(function() {
             <div class="row" style="padding: 10px;">
 
 
-            <%for(var i=0;i<response.recent.length;i++) {%>
+                <%for(var i=0;i<response.recent.length;i++) {%>
 
 
-          	<%response.advertisement=response.recent[i];%>
-              <%include partials/advertisement%>
+                	<%response.advertisement=response.recent[i];%>
+                  <%include partials/advertisement%>
 
-          <%}%>
-          <%if(response.recent.length===0){%>
-          <div align="center">
-          <strong>
-            Nothing here :(
-            </strong>
-          </div>
-          <% }%>
+                <%}%>
+                <%if(response.recent.length===0){%>
+                  <div align="center">
+                  <strong>
+                    Nothing here :(
+                    </strong>
+                  </div>
+                <%}%>
             </div>
 
             <div class="panel-footer" align="center" style="padding: 5px;">

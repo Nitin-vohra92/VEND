@@ -1,0 +1,127 @@
+
+<div class="col-md-5">
+<div class="panel panel-info"  style="height: 100%;">
+              <div class="panel-heading" align="center">
+                <h1>
+                <strong class="text-info">
+                User Details
+                </strong>
+                </h1>
+              </div>
+              <div class="panel-body" style="padding: 10px;">
+                <div align="center">
+                  <h5>
+                  <span class="text-info">
+                  <strong>
+                  User Type:
+                  </strong>
+                  </span>
+                  <span class="text-success">
+                  <%=response.account.type%>
+                  </span>
+                  </h5>
+                </div>
+              
+                <div class="well text-info">
+                  <% if(response.account.type==='Student'){%>
+	                  <strong>
+	                  Name:
+	                  </strong>
+	                  <%=response.user.firstname+' '+response.user.lastname%><br>
+	                  <strong>
+	                  Department :
+	                  </strong>
+                  	  <%=response.user.department%><br>
+					  <strong>
+	                  Degree Type :
+	                  </strong>
+                  	  <%=response.user.degree%><br>
+                  	  <strong>
+	                  Department :
+	                  </strong>
+                  	  <%=response.user.department%><br>
+                  	  <strong>
+	                  Email :
+	                  </strong>
+                  	  <%=response.user.email%><br>
+                  	  <strong>
+	                  Contact:
+	                  </strong>
+                  	  <%=response.user.contact%><br>
+                  <%}%>
+
+                  <% if(response.account.type==='Teacher'){%>
+	                  <strong>
+	                  Name:
+	                  </strong>
+	                  <%=response.user.firstname+' '+response.user.lastname%><br>
+	                  <strong>
+	                  Department :
+	                  </strong>
+                  	  <%=response.user.department%><br>
+					  <strong>
+	                  Designation :
+	                  </strong>
+                  	  <%=response.user.degree%><br>
+                  	  <strong>
+	                  Department :
+	                  </strong>
+                  	  <%=response.user.department%><br>
+                  	  <strong>
+	                  Email :
+	                  </strong>
+                  	  <%=response.user.email%><br>
+                  	  <strong>
+	                  Contact:
+	                  </strong>
+                  	  <%=response.user.contact%><br>
+                  <%}%>
+
+                  <% if(response.account.type==='Other'){%>
+	                  <strong>
+	                  Name:
+	                  </strong>
+	                  <%=response.user.firstname+' '+response.user.lastname%><br>
+	                  <strong>
+	                  Email :
+	                  </strong>
+                  	  <%=response.user.email%><br>
+                  	  <strong>
+	                  Contact:
+	                  </strong>
+                  	  <%=response.user.contact%><br>
+                  <%}%>
+
+                </div>
+                <hr>   
+                  
+                  <%if(!response.self) {%>
+                  <div class="col-md-6 col-md-offset-3" align="center" >
+                    <a id="messagePopUpButton" class="btn btn-primary" data-toggle="modal" 
+                    data-target="#messagesPopUp<%=response.account._id%>" style="margin-right:8px;">
+                    Drop a Message
+                    </a>
+                    <hr style="margin-top: 5px; margin-bottom: 5px;">
+                  </div>
+                  <span class="text-muted pull-left"><small>
+                  Note: You can view the messages sent to user in 
+                  <a href="/api/view/user/messages">
+                  Messages
+                  </a>
+                  </small></span>
+                  <%}%>
+                  <%if(response.self) {%>
+                  <div class="col-md-6 col-md-offset-3" align="center" >
+                    <a id="editButton" class="btn btn-primary btn-block" href="/api/user/edit">Edit your Info</a>
+                    <hr style="margin-top: 5px; margin-bottom: 5px;">
+                  </div>
+                  <span class="text-muted pull-left"><small>
+                  Note: This is what other user see when they view you.
+                  </a>
+                  </small></span>
+                  <%}%>
+               </div>
+
+</div>
+
+<%include message_popup%>

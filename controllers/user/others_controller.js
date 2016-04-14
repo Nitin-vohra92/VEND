@@ -9,8 +9,7 @@ var Wish=require('../../models/Wish');
 var Notification=require('../../models/Notification');
 
 var userFunctions=require("../functions/user");
-
-
+var helper=require('../functions/helper');
 //for profile picture
 var fs=require('fs');
 var path = require('path');
@@ -29,12 +28,9 @@ exports.register=function(req,res,input,image_path){
  		var ext=path.extname(oldPath);
  		var savedPath="/uploads/profilepictures/others/"+other._id+ext;
         var newPath = APP_DIR +'/public'+ savedPath;
-               
-        var source = fs.createReadStream(oldPath);
-		var dest = fs.createWriteStream(newPath);
-		source.pipe(dest);
 		other.profile_pic=savedPath; 
-		fs.unlink(oldPath);
+		helper.resizeAndMoveImage(oldPath,newPath);
+
  	//picture done
 
 
@@ -49,8 +45,8 @@ exports.register=function(req,res,input,image_path){
 	res.redirect('/');
 }
 
-exports.find=function(callback,account){
-	Other.findOne({_id:account.user_id},function(err,other){
+exports.find=function(id,callback){
+	Other.findOne({_id:id},function(err,other){
 		if(err)
 			console.log(err);
 		else

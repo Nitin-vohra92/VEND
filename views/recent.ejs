@@ -28,8 +28,8 @@
 
 <!-- main content block -->
 <div class="col-md-12">
-  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
-
+  <!-- <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;"> -->
+  <div>
     <!-- /container -->
 
     <div class="row" style="margin-top: 15px;">
@@ -65,9 +65,11 @@
 
             <div class="panel-footer" align="center" style="padding: 5px;">
               <h4>
+              <%if(response.recent.length!==0){%>
                 <strong>
                   That's all in Recents.
                 </strong>
+                <%}%>
               </h4>
             </div>
           </div>

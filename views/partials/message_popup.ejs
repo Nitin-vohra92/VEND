@@ -1,0 +1,35 @@
+<script type="text/javascript">
+        function sendMessage() {
+          document.getElementById("messageForm").submit();          }
+</script>
+
+<div id="messagesPopUp<%=response.account._id%>" class="modal fade" role="dialog" >
+  <div class="modal-dialog modal-vertical-centered">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-info">
+        <strong>
+        To: <%=response.account.name%>
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <span class="text-warning">
+        <strong>Message:</strong>
+         <form id="messageForm" action="/api/user/message" method="POST" >
+          <input type="hidden" name="user_id" value="<%=response.account._id%>" />
+          <textarea name="message" class="form-control" placeholder="Write a message here..." style="margin-top: 1%; max-width: 100%; max-height:150px;" rows="3"></textarea>
+        </form>
+      </div>
+      <div class="modal-footer">     
+        <button type="button" class="btn btn-success pull-right" onClick="sendMessage()">Send Message</button>
+        <button type="button" class="btn btn-primary pull-right" style="margin-right:8px;" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -29,8 +29,12 @@
                   <strong>
                   Semester :
                   </strong>
+                  <%if(response.product.semester===0){%>
+                  None
+                  <%} else%>
+                  <%if(response.product.semester!==0){%>
                   <%=response.product.semester%>th<br>
-                  
+                  <%}%>
                   <%}%>
                   <% if(response.advertisement.category!=='Book'){%>
                   <strong>
@@ -53,7 +57,12 @@
                   <strong>
                   Price:
                   </strong>
+                  <%if(response.advertisement.price===0){%>
+                  None
+                  <%} else%>
+                  <%if(response.advertisement.price!==0){%>
                   Rs. <%=response.advertisement.price%><br>
+                  <%}%>
                   <strong>
                   Location of Product:
                   </strong>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Vend</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/custom_style.css">
+    <script src="/js/jquery.min.js"></script>
+
+  <script src="/js/bootstrap.min.js"></script>
+<script src="/js/imagezoom.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+      <% include partials/dropdown%>
+
+     
+});
+
+</script>
+</head>
+<body>
+
+<div id="wrap">
+<div id="main">
+<!--header-->
+<% include partials/header%>
+
+
+<!--content-->
+<div class="container" style="margin-top: 5%;">
+<% include partials/activity_notifier%>
+
+
+<!-- main content block -->
+<div class="col-md-12">
+
+  <div class="well"    style="background-color: #f5f5f5; border: 1px solid #e3e3e3;">
+
+    <!-- /container -->
+
+    <div class="row" style="margin-top: 15px;">
+
+          <%include partials/user_image%>
+
+          <!-- details panel -->
+          <%include partials/user_details_panel%>
+
+    </div>
+    <!-- end row ^^-->
+    <div class="row">
+      <div class="col-md-12" >                  
+          <div class="panel panel-info">
+                              <div class="panel-heading" align="center" >
+                                <h4>
+                                  <strong>
+                                  Advertisements by <%=response.user.firstname+' '+response.user.lastname%>
+                                  </strong>
+                                </h4>
+                              </div>
+                              <div class="panel-body" style="padding: 8px;">
+                             
+                                  <!-- ads in this div -->
+                                  <div class="row" style="padding: 10px;">
+
+
+                                    <%for(var i=0;i<response.advertisements.length;i++) {%>
+
+
+                                      <%response.advertisement=response.advertisements[i];%>
+                                      <%include partials/advertisement%>
+
+                                    <%}%>
+                                    <%if(response.advertisements.length===0){%>
+                                      <div align="center">
+                                      <strong>
+                                        Nothing here :(
+                                        </strong>
+                                      </div>
+                                    <%}%>
+                                  </div>
+                                
+
+                              </div>
+                              <div class="panel-footer" align="center" style="padding: 5px;">
+                                    <h4>
+                                  <%if(response.advertisements.length!==0){%>
+
+                                      <strong>
+                                      <a href="/api/view/advertisement/viewed">
+                                        That's all.
+                                        </a>
+                                      </strong>
+                                 <% }%>
+
+                                    </h4>
+                                </div>
+            </div>
+      
+  <!-- end ads box -->
+
+    </div>
+
+    <!-- add activities panel -->
+    <div class="col-md-10 col-md-offset-1" style="margin-top: 5%;">
+          <div class="panel panel-success">
+            <div class="panel-heading" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  Recent activities by <%=response.user.firstname+' '+response.user.lastname%>
+                </strong>
+              </h4>
+            </div>
+
+            
+            <div class="panel-body" style="padding: 4px 10px;">
+            <!-- for each  activity -->
+            <div class="activities">
+                  <%for(var i=0;i<response.activities.length;i++) {%>
+                  <!-- assume an object advertisement  -->
+                    <%response.activity=response.activities[i];%>
+                    <%include partials/activity%>
+
+                  <%}%>
+                  <%if(response.activities.length===0){%>
+                  <div align="center">
+                  <strong>
+                    Nothing here :(
+                    </strong>
+              </div>
+              <% }%>
+            </div>
+          
+            </div>
+
+            <div class="panel-footer" align="center" style="padding: 5px;">
+              <h4>
+                <strong>
+                  
+                </strong>
+              </h4>
+            </div>
+          </div>
+        </div>
+  </div>
+<!-- end row ^^ -->
+
+  </div>
+</div>
+<!-- end main content block -->
+  
+<!-- /conatainer after nav -->
+</div>
+<!-- below two /div for main and wrap -->
+
+
+</div>
+</div>
+<%include partials/footer%>
+</body>
+</html>
+			

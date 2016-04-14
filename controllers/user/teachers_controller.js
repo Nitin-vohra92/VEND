@@ -7,6 +7,7 @@ var Wish=require('../../models/Wish');
 var Notification=require('../../models/Notification');	
 
 var userFunctions=require("../functions/user");
+var helper=require('../functions/helper');
 
 
 //for profile picture
@@ -24,14 +25,9 @@ exports.register=function(req,res,input,image_path){
  		var ext=path.extname(oldPath);
  		var savedPath="/uploads/profilepictures/teachers/"+teacher._id+ext;
         var newPath = APP_DIR +'/public'+ savedPath;
-               
-        var source = fs.createReadStream(oldPath);
-		var dest = fs.createWriteStream(newPath);
-		source.pipe(dest);
-
 		teacher.profile_pic=savedPath;
-		console.log(teacher); 
-		fs.unlink(oldPath);
+		helper.resizeAndMoveImage(oldPath,newPath);
+		
  	//picture done
 
 
@@ -47,15 +43,14 @@ exports.register=function(req,res,input,image_path){
 	res.redirect('/');
 	
 }
-exports.find=function(callback,account){
-	Teacher.findOne({_id:account.user_id},function(err,teacher){
+exports.find=function(account,callback){
+	Teacher.findOne({_id:id},function(err,teacher){
 		if(err)
 			console.log(err);
 		else{
 			callback(teacher);
-
 		}
-		});
+	});
 }
 
 

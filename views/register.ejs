@@ -18,6 +18,9 @@
                   document.getElementById("pass1").style.borderColor = "#ff0000";
                   document.getElementById("pass2").style.borderColor = "#ff0000";
               }
+              else{
+                document.getElementById("registerForm").submit();
+              }
           }
 </script>
 <script type="text/javascript">
@@ -204,7 +207,7 @@
                                           </div>
                                       </div>
 
-                                      <button type="submit" class="btn btn-primary btn-block"  onClick="confirmPassword()" style="margin-top: 10%;">Register</button>
+                                      <button type="button" class="btn btn-primary btn-block"  onClick="confirmPassword()" style="margin-top: 10%;">Register</button>
                                   </form>
                               </div>
                     </div>     

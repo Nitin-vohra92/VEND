@@ -122,7 +122,8 @@ router.route('/view/advertisement/viewed').get(auth.loggedIn,auth.validateGetReq
 router.route('/view/advertisement/recommended').get(auth.loggedIn,auth.validateGetRequest,view.recommended);
 
 //for viewing any user
-router.route('/view/user').post(auth.loggedIn,view.user);
+router.route('/view/user').get(auth.loggedIn,view.user);
+
 
 //for search page And add sorting option
 router.route('/view/search').get(auth.loggedIn,auth.validateGetRequest,view.search);

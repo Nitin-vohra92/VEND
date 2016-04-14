@@ -8,6 +8,10 @@ var TemporaryUser=require('../../models/users/TemporaryUser');
 var Activity=require('../../models/Activity');
 var Account=require('../../models/Account');
 
+var Teacher=require('../user/teachers_controller');
+var Student=require('../user/students_controller');
+var Other=require('../user/others_controller');
+
 var ActivityNotification=require('../../models/ActivityNotification');
 var Notification=require('../../models/Notification');
 var Ping=require('../../models/Ping');
@@ -419,8 +423,10 @@ exports.saveAccount=function(user,username,password,type){
 }
 
 
+
+
 exports.setSession=function(req,account){
-	req.session.user_id=account.user_id;
+	req.session.user_id=account._id;
 	req.session.user_type=account.type;
 	req.session.profile_pic=account.profile_pic;
 	req.session.username=account.username;
@@ -486,8 +492,34 @@ exports.searchUser=function(query,callback){
 }
 
 exports.getAccount=function(id,callback){
-	Account.findOne({user_id:id},function(err,account){
+	Account.findOne({_id:id},function(err,account){
 		callback(account);
+	});
+}
+
+exports.getUser=function(user_id,callback){
+	Account.findOne({_id:user_id},function(err,account){
+		if(err||account===null)
+			callback(null,err);
+		else{
+			switch(account.type){
+				case 'Student':
+					Student.find(account.user_id,function(user){
+						callback(account,user);
+					});
+					break;
+				case 'Teacher':
+					Teacher.find(account.user_id,function(user){
+						callback(account,user);
+					});
+					break;
+				case 'Other':
+					Other.find(account.user_id,function(user){
+						callback(account,user);
+					});
+					break;
+			}
+		}
 	});
 }
 
@@ -496,7 +528,18 @@ exports.sendToAd=function(res,ad_id){
 }
 
 
-
+exports.getActivities=function(user_id,limit,callback){
+	if(limit===null){
+		Activity.find({user_id:user_id}, null, { sort: {'_id': -1}}).exec(function(err, activities) {
+			callback(activities);
+		});
+	}
+	else{
+		Activity.find({user_id:user_id}, null, { sort: {'_id': -1},limit:limit}).exec(function(err, activities) {
+			callback(activities);
+		});
+	}
+}
 
 ////related to adding activity
 exports.addPublishActivity=function(user_info,advertisement,callback){
@@ -620,6 +663,14 @@ exports.addViewedWishActivity=function(user_info,wish,callback){
 	callback();	
 }
 
+exports.addViewedUserActivity=function(user_info,view_user_id,callback){
+	_this.getAccount(view_user_id,function(account){
+		var activity='Viewed profile of <a href="/api/view/user?id='+
+		account._id+'" class="text-info">'+account.name+'</a>.';
+		addActivity(user_info,activity);
+		callback();
+	});
+}
 
 
 ////Related to notification
@@ -715,7 +766,7 @@ exports.addConfirmationNotification=function(user_info,ping,callback){
 	var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
 		'</a> confirmed your request to '+ping.ad_kind+
 		' the product. For details of advertisement visit the <a href="'+ad_link+'" class="text-info"> Ad page</a>.'+
-		'<br>Contact publisher <a href="'+user_link+'" class="text-info">here.</a>';
+		'<br>Get publisher details <a href="'+user_link+'" class="text-info">here</a>.';
 	addNotification(ping.user_id,notification_desc);
 	callback();
 }

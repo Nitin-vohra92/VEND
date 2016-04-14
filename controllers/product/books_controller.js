@@ -125,7 +125,11 @@ exports.searchRecommendedBooks=function(search_tags,callback){
 }
 
 exports.deleteProduct=function(product_id,callback){
-	Book.remove({_id:product_id},function(){
-		callback();
+	Book.findOne({_id:product_id},function(err,product){
+		var images=product.images;
+		helper.deleteImages(images);
+		Book.remove({_id:product_id},function(){
+			callback();
+		});
 	});
 }

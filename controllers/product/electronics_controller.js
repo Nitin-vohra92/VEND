@@ -121,7 +121,11 @@ exports.searchRecommendedElectronics=function(search_tags,callback){
 }
 
 exports.deleteProduct=function(product_id,callback){
-	Electronics.remove({_id:product_id},function(){
-		callback();
+	Electronics.findOne({_id:product_id},function(err,product){
+		var images=product.images;
+		helper.deleteImages(images);
+		Electronics.remove({_id:product_id},function(){
+			callback();
+		});
 	});
 }

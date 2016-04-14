@@ -26,9 +26,6 @@ var studentModel=new Schema({
 	degree:{
 		type: String
 	},
-	semester:{
-		type: Number
-	},
 	department:{
 		type: String
 	},

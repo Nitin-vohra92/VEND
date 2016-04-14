@@ -126,7 +126,11 @@ exports.searchRecommendedOthers=function(search_tags,callback){
 }
 
 exports.deleteProduct=function(product_id,callback){
-	Others.remove({_id:product_id},function(){
-		callback();
+	Others.findOne({_id:product_id},function(err,product){
+		var images=product.images;
+		helper.deleteImages(images);
+		Others.remove({_id:product_id},function(){
+			callback();
+		});
 	});
 }

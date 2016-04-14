@@ -13,6 +13,14 @@ exports.resizeAndMoveImage=function (oldpath,newpath) {
 			fs.unlink(oldpath);		
 		});
 	});
+	/*var easyimage=require('easyimage');
+	easyimage.rescrop({
+     src:oldpath, dst:newpath,
+     width:500, height:400,
+     gravity: 'Center'
+  	}).then(function(){
+  		fs.unlink(oldpath);
+  	});*/
 }
 
 exports.changeToRegexArray=function(tags){

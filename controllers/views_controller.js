@@ -226,7 +226,7 @@ exports.activities=function(req,res){
 	var response={};
 	response.user_info=req.session;
 	var user_id=req.session.user_id;
-	Activity.find({user_id:user_id}, null, { sort: {'_id': -1}}).exec(function(err, activities) {
+	userFunctions.getActivities(user_id,null,function(activities){
 	  	response.activities=activities;
 	  	userFunctions.getNotificationCount(user_id,function(count){
 	  		response.notification_count=count;
@@ -243,6 +243,7 @@ exports.notifications=function(req,res){
 	var user_id=req.session.user_id;
 	var response={};
 	response.user_info=req.session;
+	//move to user functions if needed
 	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'_id': -1}}).exec(function(err,unread_notifications) {
   				response.unread_notifications=unread_notifications;
   				
@@ -465,30 +466,46 @@ exports.recommended=function(req,res){
 
 //for user view
 exports.user=function(req,res){
-		var input=req.body;
-		var response=[];
-		response.push({user_info:req.session});
-		 var responseSetter=function(result){
-					response.push({user:result});
-					//activities
-					Activity.find({user_id:input.user_id}, null, {limit: 10, sort: {'createdAt': -1}}).exec(function(err, activities) {
-		  				response.push({activities:activities});
-		  				res.render('',{response:response});
-	  				});
-
-		 };
-							// //after finding type of user search for his details in respective tables
-		 					switch(input.type){
-		 						case 'Teacher':
-		 							Teacher.find(responseSetter,input);
-		 							break;
-		 						case 'Student':
-		 							Student.find(responseSetter,input);
-		 							break;
-		 						case 'Other':
-									Other.find(responseSetter,input);
-									break;	
-		 					}
+		var response={};
+		var user_info=req.session;
+		response.user_info=user_info;
+		var view_user_id=req.query.id;
+		if(view_user_id==user_info.user_id)
+			response.self=1;
+		else
+			response.self=0;
+		//get user details
+		//get user advertisements
+		//get user activities (limit to 10)
+		//do the regular things like add activity,check for notification
+		userFunctions.getUser(view_user_id,function(account,user){
+			if(account===null||user===null){
+				var error="The user was not found.Following may be the reasons:<br>"+
+				"Invalid User Id .Please check again.";
+				userFunctions.sendToError(req,res,error);
+			}
+			else{
+				response.user=user;
+				response.account=account;
+				advertisementFunctions.getAdvertisementByUser(view_user_id,function(advertisements){
+					response.advertisements=advertisements;
+					userFunctions.getActivities(view_user_id,10,function(activities){
+						response.activities=activities;
+						userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
+							response.activity_notification=notification;
+							if(notification===undefined&&(response.self===0)){
+								userFunctions.addViewedUserActivity(user_info,view_user_id,function(){});
+							}
+							userFunctions.getNotificationCount(user_info.user_id,function(count){
+								response.notification_count=count;
+								// res.json({response:response});
+								res.render('user',{response:response});
+							});
+						});
+					});
+				});
+			}
+		});
 }
 
 
@@ -497,7 +514,7 @@ exports.wish=function(req,res){
 	var user_info=req.session;
 	var response={};
 	response.user_info=user_info;
-	response.wish_id=wish_id;
+	response.wish_id=wish_id; 
 	var sort=req.query.sort;
 		if(!sort)
 			sort=null;
@@ -511,6 +528,7 @@ exports.wish=function(req,res){
 		else{
 			response.wish=wish;
 			advertisementFunctions.getWishRecommendations(wish,sort,function(advertisements){
+
 				response.advertisements=advertisements;
 				response.sort_name=advertisementFunctions.getSortName(sort);
 				response.sort=sort;
