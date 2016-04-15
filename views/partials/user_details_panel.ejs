@@ -37,10 +37,6 @@
 	                  </strong>
                   	  <%=response.user.degree%><br>
                   	  <strong>
-	                  Department :
-	                  </strong>
-                  	  <%=response.user.department%><br>
-                  	  <strong>
 	                  Email :
 	                  </strong>
                   	  <%=response.user.email%><br>
@@ -63,10 +59,6 @@
 	                  Designation :
 	                  </strong>
                   	  <%=response.user.degree%><br>
-                  	  <strong>
-	                  Department :
-	                  </strong>
-                  	  <%=response.user.department%><br>
                   	  <strong>
 	                  Email :
 	                  </strong>
@@ -96,27 +88,31 @@
                 <hr>   
                   
                   <%if(!response.self) {%>
-                  <div class="col-md-6 col-md-offset-3" align="center" >
-                    <a id="messagePopUpButton" class="btn btn-primary" data-toggle="modal" 
-                    data-target="#messagesPopUp<%=response.account._id%>" style="margin-right:8px;">
+                  <div class="col-md-10 col-md-offset-1" >
+                    <a id="messagePopUpButton" class="col-md-5 btn btn-primary" data-toggle="modal" 
+                    data-target="#messagePopUp<%=response.account._id%>" style="margin-right:8px;">
                     Drop a Message
+                    </a>
+                    <a id="subscribePopUpButton" class="col-md-5 btn btn-success pull-right" data-toggle="modal" 
+                    data-target="#subscribePopUp<%=response.account._id%>" style="margin-right:8px;">
+                    Subscribe
                     </a>
                     <hr style="margin-top: 5px; margin-bottom: 5px;">
                   </div>
                   <span class="text-muted pull-left"><small>
                   Note: You can view the messages sent to user in 
-                  <a href="/api/view/user/messages">
+                  <a href="/messages">
                   Messages
                   </a>
                   </small></span>
                   <%}%>
                   <%if(response.self) {%>
                   <div class="col-md-6 col-md-offset-3" align="center" >
-                    <a id="editButton" class="btn btn-primary btn-block" href="/api/user/edit">Edit your Info</a>
+                    <a id="editButton" class="btn btn-primary btn-block" href="/user/edit">Edit your Info</a>
                     <hr style="margin-top: 5px; margin-bottom: 5px;">
                   </div>
                   <span class="text-muted pull-left"><small>
-                  Note: This is what other user see when they view you.
+                  Note: This is what other user see when they view your profile.
                   </a>
                   </small></span>
                   <%}%>

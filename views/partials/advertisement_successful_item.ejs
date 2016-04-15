@@ -13,12 +13,12 @@
         	<%=response.successful_advertisement.createdAt%>
         	</span>
             Confirmed to 
-            <a href='/api/view/user?id=<%=response.successful_advertisement.to_user_id%>'>
+            <a href='/user?id=<%=response.successful_advertisement.to_user_id%>'>
             <%=response.successful_advertisement.to_user_name%>.
             </a>
             <br>
             You can check details of Advertisement 
-            <a href='/api/view/advertisement/closed?id=<%=response.successful_advertisement._id%>'>
+            <a href='/advertisement/closed?id=<%=response.successful_advertisement._id%>'>
              here.
             </a>
         </div>

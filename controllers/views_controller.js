@@ -25,6 +25,28 @@ var Activity=require('../models/Activity');
 var userFunctions=require('./functions/user');
 var advertisementFunctions=require('./functions/advertisement');
 
+//login page
+exports.login=function(req,res){
+	var response={};
+	res.render('login',{response:response});
+}
+
+//register page
+exports.register=function(req,res){
+	var response={};
+	res.render('register',{response:response});
+}
+
+exports.confirm=function(req,res){
+	var response={};
+	var message="Please check your email for the token. It may take upto 5 minutes for the mail to reach you.";
+	response.message=message;
+	res.render('confirm',{response:response});	
+}
+exports.forgot=function(req,res){
+	var response={};
+	res.render('forgot',{response:response});
+}
 //for home view
 exports.home=function(req,res){
 	var response={};
@@ -87,12 +109,11 @@ exports.publish=function(req,res){
 		});
 }
 
-exports.edit=function(req,res){
+exports.editAdvertisement=function(req,res){
 	var response={};
 	var input=req.body;
 	var user_info=req.session;
 	response.user_info=user_info;
-	console.log('Delete for '+input.ad_id);
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		if(advertisement.user_id!==user_info.user_id||advertisement===null){
 			var error='Invalid request recieved. The advertisement was not published from this account. Advertisement might have been deleted. Please check again.'
@@ -298,6 +319,21 @@ exports.myWishes=function(req,res){
 	});
 }
 
+exports.messages=function(req,res){
+	var response={};
+	var user_info=req.session;
+	response.user_info=user_info;
+	userFunctions.getMessages(user_info.user_id,function(messages){
+		response.messages=messages;
+		userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
+			response.activity_notification=notification;
+			userFunctions.getNotificationCount(user_info.user_id,function(count){
+				response.notification_count=count;
+				res.json({response:response});
+			});
+		});
+	});
+}
 //for products view
 exports.products=function(req,res){
 	
@@ -418,7 +454,7 @@ exports.latest=function(req,res){
 }
 
 //for view more recently viewed
-exports.viewed=function(req,res){
+exports.recent=function(req,res){
 		var response={};
 		response.user_info=req.session;
 		var user_id=req.session.user_id;
@@ -546,6 +582,8 @@ exports.wish=function(req,res){
 	});
 
 }
+
+
 //for search page
 exports.search=function(req,res){
 	var input=req.body;
@@ -615,4 +653,5 @@ exports.search=function(req,res){
 	}
 
 }
+
 

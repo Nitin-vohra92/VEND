@@ -17,7 +17,7 @@ var APP_DIR = path.dirname(require.main.filename);
 
 //after confirm page this register is done
 
-exports.register=function(req,res,input,image_path){
+exports.register=function(req,res,input,image_path,callback){
 
 
 	var other=new Other(input);
@@ -42,7 +42,7 @@ exports.register=function(req,res,input,image_path){
 	delete req.session.temp_id;
 	userFunctions.setSession(req,account);
 
-	res.redirect('/');
+	callback();
 }
 
 exports.find=function(id,callback){

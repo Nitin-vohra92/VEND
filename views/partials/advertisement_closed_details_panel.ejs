@@ -99,7 +99,7 @@
                   Published By:
                   </strong>
                   </span><br>
-                  <a href=<%='/api/view/user?id='+response.advertisement.user_id%>>
+                  <a href=<%='/user?id='+response.advertisement.user_id%>>
                   <span class="text-warning">
                   <%=response.advertisement.user_name%>
                   </span>
@@ -114,7 +114,7 @@
                   <br><br><br><hr style="margin-bottom: 5px;">
                   <p style="text-align: justify;">
                   <span class="text-muted pull-left"><small>
-                    Note: This advertisement is closed. The seller confirmed the request made by <a href='/api/view/user?id=<%=response.advertisement.to_user_id%>'>
+                    Note: This advertisement is closed. The seller confirmed the request made by <a href='/user?id=<%=response.advertisement.to_user_id%>'>
                     <%=response.advertisement.to_user_name%></a> to <%=response.advertisement.kind%> this product for above price.                    
                   </small></span>
                   </p>

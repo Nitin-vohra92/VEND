@@ -79,12 +79,12 @@
       </div>
       <p align="center">
         <span class="text-default" align="center">
-         To see comments,bids on the ad <a class="text-primary" href='/api/view/advertisement?id=<%=response.current_advertisement._id%>'>Go to Ads Page.</a>
+         To see comments,bids on the ad <a class="text-primary" href='/advertisement?id=<%=response.current_advertisement._id%>'>Go to Ads Page.</a>
          </span>
          </p>
       <div class="modal-footer">
       <button type="button" class="btn btn-primary pull-right"  data-dismiss="modal">Close</button>
-        <form id="adEditForm" class="pull-right" action="/api/view/advertisement/edit" method="POST" >
+        <form id="adEditForm" class="pull-right" action="/advertisement/edit" method="POST" >
         <input type="hidden" name="ad_id" value="<%=response.current_advertisement._id%>" />
         <button type="submit" class="btn btn-success pull-right" style="margin-right:8px;">Edit Details</button>
         </form>

@@ -17,18 +17,18 @@
 
                     <li class="dropdown" >
 
-                    <a href="/api/view/products" id="advertisement_dropdown">Advertisements</a>
+                    <a href="/advertisements" id="advertisement_dropdown">Advertisements</a>
                     <ul class="dropdown-menu">
-                      <li><a href="/api/view/books">Books</a></li>
+                      <li><a href="/books">Books</a></li>
                       <li class="divider"></li>
-                      <li><a href="/api/view/electronics">Electronics</a></li>
+                      <li><a href="/electronics">Electronics</a></li>
                       <li class="divider"></li>
-                      <li><a href="/api/view/others">Others</a></li>
+                      <li><a href="/others">Others</a></li>
                     </ul>
                     </li>
 
-                    <li><a href="/api/advertisement/publish">Publish an Ad</a></li>
-                    <li><a href="/api/view/user/notifications">
+                    <li><a href="/publish">Publish an Ad</a></li>
+                    <li><a href="/notifications">
                     Notifications
                     <%if(response.notification_count>0){%>
                       <span class="badge"><small><%=response.notification_count%></small></span>
@@ -36,7 +36,7 @@
                     </a></li>
     </ul>
     <div class="col-sm-4 col-md-4">
-        <form class="navbar-form" role="search" method="GET" action="/api/view/search">
+        <form class="navbar-form" role="search" method="GET" action="/search">
                 <div class="input-group col-sm-12 col-md-12">
                 <input class="form-control" type="text" name="q" value="" required placeholder="Enter search query here...">
                 <div class="input-group-btn" style="width:60px;">
@@ -58,13 +58,15 @@
                   <button class="btn btn-info btn-block dropdown-toggle" type="button" data-toggle="dropdown" style="margin-top: 8px;" text-align="left" ><%=response.user_info.username%>
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <li><a href="/api/view/user/activities">Your Activities</a></li>
+                    <li><a href="/user?id=<%=response.user_info.user_id%>">Your Profile</a></li>
                     <li class="divider"></li>
-                    <li><a href="/api/view/user/advertisements">Your Ads</a></li>
+                    <li><a href="/activities">Your Activities</a></li>
                     <li class="divider"></li>
-                    <li><a href="/api/view/user/wishes">Your Wishes</a></li>
+                    <li><a href="/user/advertisements">Your Ads</a></li>
                     <li class="divider"></li>
-                    <li><a href="#">Messages</a></li>
+                    <li><a href="/wishes">Your Wishes</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/messages">Messages</a></li>
                     <li class="divider"></li>
                     <li><a href="#">Settings</a></li>
                     <li class="divider"></li>

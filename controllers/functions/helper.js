@@ -69,6 +69,7 @@ exports.convertWishToTags=function(wish){
 			case 'you':
 			case 'You':
 			case 'any':
+			case 'need':
 				break;
 			default:
 				tags.push(desc_tags[i]);
@@ -76,4 +77,30 @@ exports.convertWishToTags=function(wish){
 		}
 	}
 	return tags;
+}
+
+exports.getMessageUniqueUser=function(messages,view_user_id){
+	var lookup = {};
+	var result = [];
+	var user_id,user_name;
+
+	for (var i = 0; i<messages.length;i++) {
+		var message = messages[i];
+		if(message.from_user_id===view_user_id){
+			user_id=message.to_user_id;
+			user_name=message.to_user_name;
+		}
+		else{
+			user_id=message.from_user_id;
+			user_name=message.from_user_name;
+		}
+	  // var user_id = (message.from_user_id===user_id)?messages.to_user_id:messages.from_user_id;
+	  // var user_name=(message.from_user_id===user_id)?messages.to_user_name:messages.from_user_name;
+
+	  if (!(user_id in lookup)) {
+	    lookup[user_id] = 1;
+	    result.push({user_id:user_id,name:user_name});
+	  }
+	}
+	return result;
 }

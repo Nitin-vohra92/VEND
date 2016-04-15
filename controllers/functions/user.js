@@ -16,6 +16,8 @@ var ActivityNotification=require('../../models/ActivityNotification');
 var Notification=require('../../models/Notification');
 var Ping=require('../../models/Ping');
 var Wish=require('../../models/Wish');
+var Message=require('../../models/Message');
+
 
 var RecentlyViewed=require('../../models/RecentlyViewed');
 var Recommendation=require('../../models/Recommendation');
@@ -27,6 +29,7 @@ var helper=require('./helper');
 var CONF_FILE=require('../../conf.json');
 
 var _this=this;
+var ROUTES=require('../../routes/constants');
 
 
 function mergeArrays(array1, array2) {
@@ -48,6 +51,14 @@ function mergeArrays(array1, array2) {
     return array3;
 };
 
+function findIndexByKeyValue(obj, key, value){
+    for (var i = 0; i < obj.length; i++) {
+        if (obj[i][key] == value) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 Array.prototype.contains = function(v) {
     for(var i = 0; i < this.length; i++) {
@@ -445,7 +456,7 @@ exports.sendPasswordMail=function(email,firstname,username,password){
 					"Your account credentials are:\n"+
 					"Username: "+username+"\n"+
 					"Password: "+password+"\n";
-	// sendMail(mail_to,mail_subject,mail_body);
+	sendMail(mail_to,mail_subject,mail_body);
 	return;
 
 }
@@ -524,7 +535,7 @@ exports.getUser=function(user_id,callback){
 }
 
 exports.sendToAd=function(res,ad_id){
-	res.redirect('/api/view/advertisement?id='+ad_id);
+	res.redirect(ROUTES.ADVERTISEMENT+'?id='+ad_id);
 }
 
 
@@ -546,7 +557,7 @@ exports.addPublishActivity=function(user_info,advertisement,callback){
 	var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 
 	var activity_entity_name=advertisement.name;
-	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+	var activity_entity_link=ROUTES.ADVERTISEMENT+'?id='+advertisement._id;
 	var activity="Published an advertisement: "+
 	'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
@@ -561,7 +572,7 @@ exports.addRatingActivity=function(user_info,input,callback){
 	
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var activity_entity_name=advertisement.name;
-		var activity_entity_link='/api/view/advertisement?id='+input.ad_id;
+		var activity_entity_link=ROUTES.ADVERTISEMENT+'?id='+input.ad_id;
 		var activity="Rated the advertisement "+
 		'<a href="'+activity_entity_link+'" class="text-info">'+activity_entity_name+"</a> "+input.rating+" stars.";
 		addActivity(user_info,activity);
@@ -574,7 +585,7 @@ exports.addViewedActivity=function(user_info,advertisement,callback){
 	var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 
 	var activity_entity_name=advertisement.name;
-	var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+	var activity_entity_link=ROUTES.ADVERTISEMENT+'?id='+advertisement._id;
 	var activity='Viewed the advertisement '+
 			'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
@@ -590,7 +601,7 @@ exports.addBiddingActivity=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 		var activity_entity_name=advertisement.name;
-		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+		var activity_entity_link=ROUTES.ADVERTISEMENT+'?id='+advertisement._id;
 		var activity="Bidded Rs. "+input.amount+" on the advertisement "+
 			'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
@@ -607,7 +618,7 @@ exports.addCommentActivity=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 		var activity_entity_name=advertisement.name;
-		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+		var activity_entity_link=ROUTES.ADVERTISEMENT+'?id='+advertisement._id;
 		var activity="Commented on the advertisement "+
 			'<a href="'+activity_entity_link+'" class="text-info">'+
 			activity_entity_name+"</a> under "+'<a href="'+ad_category_link+
@@ -624,9 +635,9 @@ exports.addPingActivity=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var ad_category_link=advertisementFunctions.getAdCategoryLink(advertisement);
 		var activity_entity_name=advertisement.name;
-		var activity_entity_link='/api/view/advertisement?id='+advertisement._id;
+		var activity_entity_link=ROUTES.ADVERTISEMENT+'?id='+advertisement._id;
 		var ad_publisher_name=advertisement.user_name;
-		var ad_publisher_link='/api/view/user?id='+advertisement.user_id;
+		var ad_publisher_link=ROUTES.USER+'?id='+advertisement.user_id;
 		
 		var activity="Pinged "+
 			'<a href="'+ad_publisher_link+'" class="text-info">'+
@@ -641,32 +652,36 @@ exports.addPingActivity=function(user_info,input,callback){
 }
 
 exports.addConfirmedRequestActivity=function(user_info,ping,callback){
-	var activity="Confirmed "+ping.ad_type+" request by "+'<a href="/api/view/user?id='+
-	ping.user_id+'" class="text-info">'+ping.user_name+"</a> for advertisement "+
-	'<a href="/api/view/advertisement/closed?id='+ping.ad_id+'" class="text-info">'+
+	var user_link=ROUTES.USER+'?id='+ping.user_id;
+	var ad_link=ROUTES.CLOSED_ADVERTISEMENT+'?id='+ping.ad_id;
+	var activity="Confirmed "+ping.ad_type+" request by "+'<a href="'+user_link+'" class="text-info">'+ping.user_name+"</a> for advertisement "+
+	'<a href="'+ad_link+'" class="text-info">'+
 	ping.ad_name+"</a>.";
 	addActivity(user_info,activity);
 	callback();
 }
 
 exports.addWishActivity=function(user_info,wish,callback){
+	var wish_link=ROUTES.WISH+'?id='+wish._id;
 	var activity='Posted a wish for <span class="text-success"><strong>'+wish.title+
-	'</strong></span>. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
+	'</strong></span>. Check recommendations <a href="'+wish_link+'">here</a>.';
 	addActivity(user_info,activity);
 	callback();
 }
 
 exports.addViewedWishActivity=function(user_info,wish,callback){
+	var wish_link=ROUTES.WISH+'?id='+wish._id;
 	var activity='Viewed a wish entitled: <span class="text-success"><strong>'+wish.title+
-	'</strong></span>. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
+	'</strong></span>. Check recommendations <a href="'+wish_link+'">here</a>.';
 	addActivity(user_info,activity);
 	callback();	
 }
 
 exports.addViewedUserActivity=function(user_info,view_user_id,callback){
 	_this.getAccount(view_user_id,function(account){
-		var activity='Viewed profile of <a href="/api/view/user?id='+
-		account._id+'" class="text-info">'+account.name+'</a>.';
+		var user_link=ROUTES.USER+'?id='+account._id;
+		var activity='Viewed profile of <a href="'+
+		user_link+'" class="text-info">'+account.name+'</a>.';
 		addActivity(user_info,activity);
 		callback();
 	});
@@ -687,9 +702,9 @@ exports.addRatingNotification=function(user_info,input,callback){
 		var user_id=advertisement.user_id;
 		
 		var notification_ad_name=advertisement.name;
-		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_ad_link=ROUTES.ADVERTISEMENT+'?id='+input.ad_id;
 		var notification_user_name=user_info.name;
-		var notification_user_link='/api/view/user?id='+user_info.user_id;
+		var notification_user_link=ROUTES.USER+'?id='+user_info.user_id;
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
 						notification_user_name+'</a> rated '+input.rating+' stars on your advertisement '+
 						'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
@@ -706,9 +721,9 @@ exports.addBiddingNotification=function(user_info,input,callback){
 		var user_id=advertisement.user_id;
 		
 		var notification_ad_name=advertisement.name;
-		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_ad_link=ROUTES.ADVERTISEMENT+'?id='+input.ad_id;
 		var notification_user_name=user_info.name;
-		var notification_user_link='/api/view/user?id='+user_info.user_id;
+		var notification_user_link=ROUTES.USER+'?id='+user_info.user_id;
 
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
 			notification_user_name+'</a> bidded Rs. '+input.amount+' on your advertisement '+
@@ -725,9 +740,9 @@ exports.addCommentNotification=function(user_info,input,callback){
 		var user_id=advertisement.user_id;
 		
 		var notification_ad_name=advertisement.name;
-		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_ad_link=ROUTES.ADVERTISEMENT+'?id='+input.ad_id;
 		var notification_user_name=user_info.name;
-		var notification_user_link='/api/view/user?id='+user_info.user_id;
+		var notification_user_link=ROUTES.USER+'?id='+user_info.user_id;
 
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
 			notification_user_name+'</a> commented on your advertisement '+
@@ -744,9 +759,9 @@ exports.addPingNotification=function(user_info,input,callback){
 		var user_id=advertisement.user_id;
 		
 		var notification_ad_name=advertisement.name;
-		var notification_ad_link='/api/view/advertisement?id='+input.ad_id;
+		var notification_ad_link=ROUTES.ADVERTISEMENT+'?id='+input.ad_id;
 		var notification_user_name=user_info.name;
-		var notification_user_link='/api/view/user?id='+user_info.user_id;
+		var notification_user_link=ROUTES.USER+'?id='+user_info.user_id;
 
 		var notification_desc='<a href="'+notification_user_link+'" class="text-info">'+
 			notification_user_name+'</a> pinged you for your advertisement '+
@@ -759,9 +774,9 @@ exports.addPingNotification=function(user_info,input,callback){
 }
 
 exports.addConfirmationNotification=function(user_info,ping,callback){
-	var user_link='/api/view/user?id='+user_info.user_id;
+	var user_link=ROUTES.USER+'?id='+user_info.user_id;
 	var user_name=user_info.name;
-	var ad_link='/api/view/advertisement/closed?id='+ping.ad_id;
+	var ad_link=ROUTES.CLOSED_ADVERTISEMENT+'?id='+ping.ad_id;
 	var ad_name=ping.ad_name;
 	var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
 		'</a> confirmed your request to '+ping.ad_kind+
@@ -772,9 +787,9 @@ exports.addConfirmationNotification=function(user_info,ping,callback){
 }
 
 exports.addRejectionNotification=function(user_info,ping,callback){
-	var user_link='/api/view/user?id='+user_info.user_id;
+	var user_link=ROUTES.USER+'?id='+user_info.user_id;
 	var user_name=user_info.name;
-	var ad_link='/api/view/advertisement/closed?id='+ping.ad_id;
+	var ad_link=ROUTES.CLOSED_ADVERTISEMENT+'?id='+ping.ad_id;
 	var ad_name=ping.ad_name;
 	Ping.find({ad_id:ping.ad_id,user_id:{$nin:[ping.user_id]}},function(err,pings){
 		for(var i=0;i<pings.length;i++){
@@ -807,16 +822,27 @@ exports.addWishNotification=function(category,product,ad_id){
 }
 
 exports.matchWishAndSendNotification=function(category,tags,ad_id){
+	var ad_link=ROUTES.ADVERTISEMENT+'?id='+ping.ad_id;
 	tags=helper.changeToRegexArray(tags);
 	Wish.find({category:category,$or:[{title:{$in:tags}},{description:{$in:tags}}]},function(err,wishes){
 		if(err)
 			console.log(err);
 		for(var i=0;i<wishes.length;i++){
 			var notification_desc='New advertisement matching your wish has been posted. Check it '+
-			'<a href="/api/view/advertisement?id='+ad_id+'">here</a>.';
+			'<a href="'+ad_link+'">here</a>.';
 			addNotification(wishes[i].user_id,notification_desc);
 		}
 	});
+}
+
+
+exports.addMessageNotification=function(user_info,input,callback){
+	var user_link=ROUTES.USER+'?id='+user_info.user_id;
+	var user_name=user_info.name;
+	var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
+			'</a> sent you a message. Please check <a href="'+ROUTES.MESSAGES+'">Your Messages</a>';
+	addNotification(input.user_id,notification_desc);
+	callback();
 }
 
 exports.addActivityNotification=function(user_id,notification,callback){
@@ -1034,5 +1060,45 @@ exports.deleteWish=function(user_info,wish_id,req,res,callback){
 				callback();
 			});
 		}
+	});
+}
+
+exports.addMessage=function(user_info,input,callback){
+	var from_user_id=user_info.user_id;
+	var from_user_name=user_info.name;
+	var message_body=input.message;
+	var to_user_id=input.user_id;
+	var to_user_name=input.user_name;
+
+	var message=new Message();
+	message.from_user_id=from_user_id;
+	message.from_user_name=from_user_name;
+	message.message=message_body;
+	message.to_user_id=to_user_id;
+	message.to_user_name=to_user_name;
+	message.createdAt=timestamp.getTime();
+	message.save();
+	callback();
+
+}
+
+exports.getMessages=function(user_id,callback){
+	
+	Message.find({$or:[{to_user_id:user_id},{from_user_id:user_id}]},null,{sort:{_id:-1}},function(err,messages){
+		var result=helper.getMessageUniqueUser(messages,user_id);
+		for(var i=0;i<messages.length;i++){
+			var message=messages[i];
+			if(message.from_user_id===user_id){
+				var index=findIndexByKeyValue(result,'user_id',message.to_user_id);
+				result[index].messages=[];
+				result[index].messages.push(message);
+			}
+			else{
+				var index=findIndexByKeyValue(result,'user_id',message.from_user_id);
+				result[index].messages=[];
+				result[index].messages.push(message);
+			}
+		}
+		callback(result);
 	});
 }

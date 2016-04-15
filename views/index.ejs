@@ -81,7 +81,7 @@ $(document).ready(function() {
                                       
                               </div>
                             </div>
-                            <span class="text-danger"><small>Be sure to check wishes. You may have something to fulfill these wishes. You can post your ad <a href="/api/advertisement/publish">here.</a></small></span>
+                            <span class="text-danger"><small>Be sure to check wishes. You may have something to fulfill these wishes. You can post your ad <a href="/publish">here.</a></small></span>
                         </div>
       </div>
 
@@ -138,7 +138,7 @@ $(document).ready(function() {
               <h4>
             <%if(response.latest.length!==0){%>
                 <strong>
-                <a href="/api/view/advertisement/latest">
+                <a href="/latest">
                   View more Latest Advertisements
                   </a>
                 </strong>
@@ -184,7 +184,7 @@ $(document).ready(function() {
             <%if(response.recent.length!==0){%>
 
                 <strong>
-                <a href="/api/view/advertisement/viewed">
+                <a href="/recent">
                   View more Recently Viewed
                   </a>
                 </strong>
@@ -232,7 +232,7 @@ $(document).ready(function() {
             <%if(response.recommended.length!==0){%>
 
                 <strong>
-                <a href="/api/view/advertisement/recommended">
+                <a href="/recommended">
                   View more Recommendations
                   </a>
                 </strong>

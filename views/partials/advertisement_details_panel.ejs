@@ -103,7 +103,7 @@
                   Published By:
                   </strong>
                   </span><br>
-                  <a href=<%='/api/view/user?id='+response.advertisement.user_id%>>
+                  <a href=<%='/user?id='+response.advertisement.user_id%>>
                   <span class="text-warning">
                   <%=response.advertisement.user_name%>
                   </span>
@@ -120,7 +120,7 @@
                   <div class="col-md-6 col-md-offset-3" align="center" >
                     <form action='/api/user/ping' method="POST">
                     <input type="hidden" name="ad_id" value=<%=response.advertisement._id%> />
-                    <button type="submit" id="pingButton" class="btn btn-primary btn-block" href="/api/user/ping">Ping the Publisher</button>
+                    <button type="submit" id="pingButton" class="btn btn-primary btn-block">Ping the Publisher</button>
                     <hr style="margin-top: 5px; margin-bottom: 5px;">
                     </form>
                   </div>

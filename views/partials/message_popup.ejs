@@ -3,7 +3,7 @@
           document.getElementById("messageForm").submit();          }
 </script>
 
-<div id="messagesPopUp<%=response.account._id%>" class="modal fade" role="dialog" >
+<div id="messagePopUp<%=response.account._id%>" class="modal fade" role="dialog" >
   <div class="modal-dialog modal-vertical-centered">
 
     <!-- Modal content-->
@@ -22,6 +22,7 @@
         <strong>Message:</strong>
          <form id="messageForm" action="/api/user/message" method="POST" >
           <input type="hidden" name="user_id" value="<%=response.account._id%>" />
+          <input type="hidden" name="user_name" value="<%=response.account.name%>" />
           <textarea name="message" class="form-control" placeholder="Write a message here..." style="margin-top: 1%; max-width: 100%; max-height:150px;" rows="3"></textarea>
         </form>
       </div>

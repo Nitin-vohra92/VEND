@@ -16,7 +16,7 @@ var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 
 //after confirm page this register is done
-exports.register=function(req,res,input,image_path){
+exports.register=function(req,res,input,image_path,callback){
 	var teacher=new Teacher(input);
 	teacher.department=input.teacher_department;
 	//profile picture
@@ -40,7 +40,7 @@ exports.register=function(req,res,input,image_path){
 	
 
 	userFunctions.setSession(req,account);
-	res.redirect('/');
+	callback();
 	
 }
 exports.find=function(account,callback){

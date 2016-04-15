@@ -12,7 +12,7 @@
   <%=response.wish.description%> 
   <br>
 <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
-  <a  class="text-success" href='/api/view/wish?id=<%=response.wish._id%>' style="align: center">
+  <a  class="text-success" href='/wish?id=<%=response.wish._id%>' style="align: center">
    See Recommendations 
    </a>
    <br>
@@ -20,7 +20,7 @@
   <strong class="text-muted">
   Posted by:
   </strong>
-  <a href="/api/view/user?id=<%=response.wish.user_id%>" style="align: center"><%=response.wish.user_name%> </a>
+  <a href="/user?id=<%=response.wish.user_id%>" style="align: center"><%=response.wish.user_name%> </a>
   </span>
   </p>
   <hr>

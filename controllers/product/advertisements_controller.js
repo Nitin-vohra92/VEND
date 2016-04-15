@@ -7,6 +7,7 @@ var Other=require('./others_controller');
 var userFunctions=require('../functions/user');
 var advertisementFunctions=require('../functions/advertisement');
 
+var ROUTES=require('../../routes/constants');
 
 exports.publish=function(req,res){
 	
@@ -33,7 +34,7 @@ exports.publish=function(req,res){
 						userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 							userFunctions.addWishNotification(productCategory,product,advertisement._id);
 							//redirect to home
-							res.redirect('/');
+							res.redirect(ROUTES.HOME);
 						});
 					});
 				});
@@ -63,7 +64,7 @@ exports.edit=function(req,res){
 	advertisementFunctions.editAdvertisement(req,function(){
 		var notification="Successfully updated Advertisement details.";
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-			res.redirect('/api/view/user/advertisements');
+			res.redirect(ROUTES.YOUR_ADS);
 		});
 	});
 }
@@ -76,7 +77,7 @@ exports.delete=function(req,res){
 	advertisementFunctions.deleteAdvertisement(user_info,ad_id,req,res,function(){
 		var notification='Successfully deleted the advertisement.';
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-			res.redirect("/api/view/user/advertisements");
+			res.redirect(ROUTES.YOUR_ADS);
 		});			
 	});
 }
@@ -86,7 +87,7 @@ exports.comment=function(req,res){
 	
 		var input=req.body;
 		if(input.ad_id===''||input.comment==='')
-			res.redirect('/');
+			res.redirect(ROUTES.HOME);
 		else{
 			var user_info=req.session;
 			var ad_id=input.ad_id;
@@ -112,7 +113,7 @@ exports.rate=function(req,res){
 	
 		var input=req.body;
 		if(input.ad_id===''||input.rating==='')
-			res.redirect('/');
+			res.redirect(ROUTES.HOME);
 		else{
 			var user_info=req.session;
 			var ad_id=input.ad_id;
@@ -139,7 +140,7 @@ exports.bid=function(req,res){
 	
 		var input=req.body;
 		if(input.ad_id===''||input.bid==='')
-			res.redirect('/');
+			res.redirect(ROUTES.HOME);
 		else{
 			var user_info=req.session;
 			var ad_id=input.ad_id;
@@ -185,7 +186,7 @@ exports.confirmPing=function(req,res){
 									//add activity notification
 									var notification="Successfully confirmed the request.";
 									userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-										res.redirect('/api/view/user/advertisements');
+										res.redirect(ROUTES.YOUR_ADS);
 									});
 								});
 							});

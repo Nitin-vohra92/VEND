@@ -1,69 +1,88 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
-var response={};
 
 var auth=require('../controllers/auth');
+var view=require('../controllers/views_controller');
 
-router.route('/')
-	.get(function(req, res) {
-			res.redirect('/api/view/home');		
-});
+var ROUTES=require('./constants');
+
+router.route(ROUTES.HOME).get(view.home);
 
 //login page	
-router.route('/login')
-	.get(function(req, res) {
-		response={};
-		if(req.session.user_id===undefined)
-			res.render('login',{response:response});
-		else
-			res.redirect('/api/view/home');
-});
+router.route(ROUTES.LOGIN).get(view.login);
 
 
 //registering a user
-router.route('/register')
-	.get(function(req, res) {
-		response={};
-
-		res.render('register',{response:response});
-});
+router.route(ROUTES.REGISTER).get(view.register);
 
 //forgot password
-router.route('/forgot')
-	.get(function(req, res) {
-		response={};
+router.route(ROUTES.FORGOT).get(view.forgot);
 
-		res.render('forgot',{response:response});
-});
+//for viewing any user
+router.route(ROUTES.USER).get(auth.loggedIn,view.user);
 
-//editing user info
-router.route('/edit')
-	.get(function(req, res) {
-		res.json({msg:"User can change his info here"});
-        res.end();
-});
 
+//for search page And add sorting option
+router.route(ROUTES.SEARCH).get(auth.loggedIn,auth.validateGetRequest,view.search);
+
+//for wish page
+router.route(ROUTES.WISH).get(auth.loggedIn,auth.validateGetRequest,view.wish);
+
+//for user activities/history
+router.route(ROUTES.ACTIVITIES).get(auth.loggedIn,view.activities);
+
+//for user notifications
+router.route(ROUTES.NOTIFICATIONS).get(auth.loggedIn,view.notifications);
+
+//your ads page
+router.route(ROUTES.YOUR_ADS).get(auth.loggedIn,view.myAdvertisements);
+
+//your wishes page
+router.route(ROUTES.WISHES).get(auth.loggedIn,view.myWishes);
+
+//your messages page
+router.route(ROUTES.MESSAGES).get(auth.loggedIn,view.messages);
+
+////////////////////////////////////////////////////////////////
+////////////////////////ADVERTISEMENTS//////////////////////////
+////////////////////////////////////////////////////////////////
 //publish an advertisement page	
-router.route('/publish')
-	.get(auth.loggedIn,function(req, res) {
-		response={};
-		response.user_info=req.session;
-		res.render('publish',{response:response});
-});
+router.route(ROUTES.PUBLISH).get(auth.loggedIn,view.publish);
 
-//viewing an advertisement page
-router.route('/view')
-	.get(function(req, res) {
-		res.json({msg:"Advertisement will be published here"});
-        res.end();
-});
+//for view all ads
+router.route(ROUTES.ADVERTISEMENTS).get(auth.loggedIn,auth.validateGetRequest,view.products);
 
-//edit details of a product
-router.route('/edit')
-	.post(function(req, res) {
-		res.json({msg:"USer can change Advertisement detail here!!"});
-        res.end();
-});
+
+//for view books
+router.route(ROUTES.BOOKS).get(auth.loggedIn,auth.validateGetRequest,view.books);
+
+//for view electronics
+router.route(ROUTES.ELECTRONICS).get(auth.loggedIn,auth.validateGetRequest,view.electronics);
+
+//for view other
+router.route(ROUTES.OTHERS).get(auth.loggedIn,auth.validateGetRequest,view.others);
+
+//for view more latest
+router.route(ROUTES.LATEST).get(auth.loggedIn,auth.validateGetRequest,view.latest);
+
+//for view more recently viewed
+router.route(ROUTES.RECENTLY_VIEWED).get(auth.loggedIn,auth.validateGetRequest,view.recent);
+
+//for view more recommendation
+router.route(ROUTES.RECOMMENDED).get(auth.loggedIn,auth.validateGetRequest,view.recommended);
+
+
+//will contain comment and rating
+
+router.route(ROUTES.ADVERTISEMENT).get(auth.loggedIn,auth.validateGetRequest,view.advertisement);
+
+//edit advertisement
+router.route(ROUTES.EDIT_ADVERTISEMENT).get(auth.loggedIn,view.editAdvertisement);
+
+//will show closed advertisements and to whom it was sold
+router.route(ROUTES.CLOSED_ADVERTISEMENT).get(auth.loggedIn,auth.validateGetRequest,view.closedAdvertisement);
+
+
 
 module.exports = router;

@@ -8,16 +8,14 @@ var TemporaryUser=require('../../models/users/TemporaryUser');
 
 var helper=require('../functions/helper');
 
-
+var ROUTES=require('../../routes/constants');
 
 exports.register=function(req,res){
 
 	var response={};
 	//uncheck later after testing is done
 	if(req.session.temp_id!==undefined){
-		var message="Please check your email for the token. It may take upto 5 minutes for the mail to reach you.";
-		response.message=message;
-		res.render('confirm',{response:response});		
+		res.redirect(ROUTES.CONFIRM);		
 	}
 	else{
 		var input=req.body;
@@ -33,7 +31,7 @@ exports.register=function(req,res){
 			Account.findOne({username:input.username},function(err,account){
 				console.log(account);
 			 	if(account!==null){
-					error="Please choose a differnt username!! Entered username already exists."
+					error="Please choose a different username!! Entered username already exists."
 					response.error=error;
 					res.render('register',{response:response});
 				}
@@ -46,10 +44,7 @@ exports.register=function(req,res){
 								console.log(err);
 					});
 					userFunctions.sendConfirmationMail(temp_id);
-					var message="Please check your email for the token. It may take upto 5 minutes for the mail to reach you.";
-					response.message=message;
-					res.render('confirm',{response:response});
-
+					res.redirect(ROUTES.CONFIRM);		
 				}
 			});
 		}
@@ -78,13 +73,19 @@ exports.confirm=function(req,res){
 					userFunctions.deleteTemporaryUser(temp_id);
 					switch(user_data.type){
 					case 'Teacher':
-						Teacher.register(req,res,user_data,image_path);
+						Teacher.register(req,res,user_data,image_path,function(){
+							res.redirect(ROUTES.HOME);
+						});
 						break;
 					case 'Student':
-						Student.register(req,res,user_data,image_path);
+						Student.register(req,res,user_data,image_path,function(){
+							res.redirect(ROUTES.HOME);
+						});
 						break;
 					case 'Other':
-						Other.register(req,res,user_data,image_path);
+						Other.register(req,res,user_data,image_path,function(){
+							res.redirect(ROUTES.HOME);
+						});
 						break;		
 			 			}
 
@@ -135,7 +136,6 @@ exports.forgot=function(req,res){
 	var username=input.username;
 	var email=input.email;
 	Account.findOne({username:username},function(err,account){
-				console.log(account);
 			 	if(account===null){
 					error="Username doesn't exist!! Please check again."
 					response.error=error;
@@ -146,7 +146,7 @@ exports.forgot=function(req,res){
 					var sendEmail=function(user){
 						if(user.email===email){
 							userFunctions.sendPasswordMail(user.email,user.firstname,account.username,account.password);
-							var message="Password sent!! Please check your email and don't forget to change your password later.";
+							var message="Password sent. Check your email.";
 							response.message=message;
 							res.render('login',{response:response});							
 						}
@@ -160,13 +160,13 @@ exports.forgot=function(req,res){
 					}
 					switch(account.type){
 	 						case 'Teacher':
-	 							Teacher.find(sendEmail,account);
+	 							Teacher.find(account.user_id,sendEmail);
 	 							break;
 	 						case 'Student':
-	 							Student.find(sendEmail,account);
+	 							Student.find(account.user_id,sendEmail);
 	 							break;
 	 						case 'Other':
-								Other.find(sendEmail,account);
+								Other.find(account.user_id,sendEmail);
 								break;	
 	 					}	
 
@@ -183,7 +183,7 @@ exports.wish=function(req,res){
 		if(error){
 			var notification='Could not post a wish.'+error;
 			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-				res.redirect('/');
+				res.redirect(ROUTES.HOME);
 			});
 		}
 		else{
@@ -194,7 +194,7 @@ exports.wish=function(req,res){
 					//add activity notifier
 					var notification='Successfully posted a wish. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
 					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-						res.redirect('/');
+						res.redirect(ROUTES.HOME);
 					});
 				});
 			});
@@ -210,7 +210,7 @@ exports.deleteWish=function(req,res){
 	userFunctions.deleteWish(user_info,wish_id,req,res,function(){
 		var notification='Successfully deleted your wish.';
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-			res.redirect('/api/view/user/wishes');
+			res.redirect(ROUTES.WISHES);
 		});
 	});
 }
@@ -227,6 +227,19 @@ exports.ping=function(req,res){
 				userFunctions.addPingNotification(user_info,input,function(){
 					userFunctions.sendToAd(res,input.ad_id);
 				});
+			});
+		});
+	});
+}
+
+exports.message=function(req,res){
+	var input=req.body;
+	var user_info=req.session;
+	userFunctions.addMessage(user_info,input,function(){
+		var notification='Successfully messaged the user.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			userFunctions.addMessageNotification(user_info,input,function(){	
+				res.redirect(ROUTES.USER+'?id='+input.user_id);
 			});
 		});
 	});
