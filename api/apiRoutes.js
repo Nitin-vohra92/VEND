@@ -69,5 +69,7 @@ router.route('/user/ping/confirm').post(auth.loggedIn,advertisement.confirmPing)
 //for messaging user
 router.route('/user/message').post(auth.loggedIn,user.message);
 
+router.route('/user/reply').post(auth.loggedIn,user.reply);
+
 
 module.exports=router;

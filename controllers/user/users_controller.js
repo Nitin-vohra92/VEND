@@ -192,7 +192,7 @@ exports.wish=function(req,res){
 				//add activity
 				userFunctions.addWishActivity(user_info,wish,function(){
 					//add activity notifier
-					var notification='Successfully posted a wish. Check recommendations <a href="/api/view/wish?id='+wish._id+'">here</a>.';
+					var notification='Successfully posted a wish. Check recommendations <a href="'+ROUTES.WISH+'?id='+wish._id+'">here</a>.';
 					userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 						res.redirect(ROUTES.HOME);
 					});
@@ -241,6 +241,16 @@ exports.message=function(req,res){
 			userFunctions.addMessageNotification(user_info,input,function(){	
 				res.redirect(ROUTES.USER+'?id='+input.user_id);
 			});
+		});
+	});
+}
+
+exports.reply=function(req,res){
+	var input=req.body;
+	var user_info=req.session;
+	userFunctions.addMessage(user_info,input,function(){
+		userFunctions.addMessageNotification(user_info,input,function(){	
+			res.redirect(ROUTES.MESSAGES);
 		});
 	});
 }

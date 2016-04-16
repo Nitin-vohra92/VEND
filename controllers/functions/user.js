@@ -1086,16 +1086,17 @@ exports.getMessages=function(user_id,callback){
 	
 	Message.find({$or:[{to_user_id:user_id},{from_user_id:user_id}]},null,{sort:{_id:-1}},function(err,messages){
 		var result=helper.getMessageUniqueUser(messages,user_id);
+		for(var i=0;i<result.length;i++){
+			result[i].messages=[];
+		}
 		for(var i=0;i<messages.length;i++){
 			var message=messages[i];
 			if(message.from_user_id===user_id){
 				var index=findIndexByKeyValue(result,'user_id',message.to_user_id);
-				result[index].messages=[];
 				result[index].messages.push(message);
 			}
 			else{
 				var index=findIndexByKeyValue(result,'user_id',message.from_user_id);
-				result[index].messages=[];
 				result[index].messages.push(message);
 			}
 		}

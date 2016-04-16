@@ -329,7 +329,8 @@ exports.messages=function(req,res){
 			response.activity_notification=notification;
 			userFunctions.getNotificationCount(user_info.user_id,function(count){
 				response.notification_count=count;
-				res.json({response:response});
+				// res.json({response:response});
+				res.render('messages',{response:response});
 			});
 		});
 	});

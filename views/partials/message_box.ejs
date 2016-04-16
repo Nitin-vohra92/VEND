@@ -1,0 +1,31 @@
+ <div id=<%=response.messages_user.user_id%> class="col-md-10 col-md-offset-1">
+          <div class="panel panel-success">
+              <div  class="panel-heading" style="padding: 5px; min-height: 50px;">
+                <div id=<%=response.messages_user.user_id%> class=" pull-right" style="margin-top:  3px; margin-right:8px;">
+                  <a id="replyPopUpButton" class="btn btn-success" data-toggle="modal" 
+                    data-target="#replyPopUp<%=response.messages_user.user_id%>" style="margin-right:8px;">Reply</a>     
+                </div>
+                  <h4>
+                  <strong>
+                  <a class="text-success" href="/user?id=<%=response.messages_user.user_id%>">
+                    <%=response.messages_user.name%> 
+                  </a>
+                  </strong> 
+                  </h4>
+              </div>
+              <div class="panel-body" style="padding: 3px 15px 3px;">
+                <%for(var i=0;i<response.messages_user.messages.length;i++){%>
+                  <% response.message=response.messages_user.messages[i];%>
+                  <%include message_item%>
+                <%}%>
+              </div>
+              <div class="panel-footer" align="center" style="padding: 5px;">
+                <h4>
+                  <strong>
+                  </strong>
+                </h4>
+              </div>
+              
+          </div>
+        </div>
+<%include reply_popup%>
