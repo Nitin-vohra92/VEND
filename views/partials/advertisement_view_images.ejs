@@ -3,7 +3,7 @@
                   <ul class="slides">
                     <%for(var i=0;i<response.product.images.length;i++){%>
                     <li data-thumb='<%=response.product.images[i].path%>'>
-                        <div class="thumb-image"> <img src="<%=response.product.images[i].path%>" data-imagezoom="true" class="img-responsive"> </div>
+                        <div class="thumb-image"> <img src="<%=response.product.images[i].path%>" alt="Image" data-imagezoom="true" class="img-responsive"> </div>
                     </li>
                     <%}%>
                   </ul>

@@ -1103,3 +1103,9 @@ exports.getMessages=function(user_id,callback){
 		callback(result);
 	});
 }
+
+exports.getConfirmations=function(user_id,callback){
+	advertisementFunctions.getConfirmedAdvertisementsForUser(user_id,function(advertisements){
+		callback(advertisements);
+	});
+}

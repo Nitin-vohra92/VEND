@@ -1,0 +1,30 @@
+ <div id=<%=response.advertisement._id%> class="col-md-10 col-md-offset-1">
+          <div class="panel panel-info">
+              <div id=<%=i%> class="panel-heading" style="padding: 5px; min-height: 50px;">
+                <div id=<%=response.advertisement._id%> class="ad_options pull-right" style="margin-top:  3px; margin-right:8px;">
+                  <a id="detailsButton" href="/advertisement/closed?id=<%=response.advertisement._id%>" class="btn btn-danger" >Details</a>      
+                </div>
+                  <h4>
+                  <strong>
+                  <%=response.advertisement.name%> 
+                  </strong> 
+                  </h4>
+              </div>
+              <div class="panel-body" style="padding: 10px 15px 10px;">
+                <span class="pull-right">
+                <%=response.advertisement.createdAt%>
+                </span>
+                <a href="/user?id=<%=response.advertisement.user_id%>">
+                <%=response.advertisement.user_name%>
+                </a>
+                confirmed your request to <%=response.advertisement.kind%> at Rs. <%=response.advertisement.price%>.
+              </div>
+              <div class="panel-footer" align="center" style="padding: 5px;">
+                <h4>
+                  <strong>
+                  </strong>
+                </h4>
+              </div>
+              
+          </div>
+        </div>

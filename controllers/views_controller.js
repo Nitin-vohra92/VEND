@@ -335,6 +335,23 @@ exports.messages=function(req,res){
 		});
 	});
 }
+
+exports.confirmations=function(req,res){
+	var response={};
+	var user_info=req.session;
+	response.user_info=user_info;
+	userFunctions.getConfirmations(user_info.user_id,function(advertisements){
+		response.advertisements=advertisements;
+		userFunctions.getNotificationCount(user_info.user_id,function(count){
+			response.notification_count=count;
+			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
+				response.activity_notification=notification;
+				// res.json({response:response});
+				res.render('confirmations',{response:response});
+			});
+		});
+	});
+}
 //for products view
 exports.products=function(req,res){
 	

@@ -58,6 +58,10 @@ var closedAdvertisementModel=new Schema({
 		type: String,
 		default:'No Description by Publisher'
 	},
+	payment_status:{
+		type: String,
+		default:'Not Paid yet'
+	},
 	createdAt:{
 		type: String,
 		default:Date.now()

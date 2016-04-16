@@ -1059,6 +1059,12 @@ exports.getSuccessFulAdvertisements=function(user_id,callback){
 	});
 }
 
+exports.getConfirmedAdvertisementsForUser=function(user_id,callback){
+	ClosedAdvertisement.find({to_user_id:user_id},null,{ sort: {'updatedAt':-1}},function(err,advertisements){
+		callback(advertisements);
+	});
+}
+
 exports.getWishRecommendations=function(wish,sort,callback){
 	var tags=helper.convertWishToTags(wish);
 	var category=wish.category;

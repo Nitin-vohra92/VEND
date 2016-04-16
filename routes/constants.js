@@ -35,6 +35,7 @@ exports.WISHES='/wishes';
 exports.ACTIVITIES='/activities';
 exports.NOTIFICATIONS='/notifications';
 exports.MESSAGES='/messages';
+exports.CONFIRMATIONS='/confirmations';
 
 
 

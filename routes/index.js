@@ -44,6 +44,10 @@ router.route(ROUTES.WISHES).get(auth.loggedIn,view.myWishes);
 //your messages page
 router.route(ROUTES.MESSAGES).get(auth.loggedIn,view.messages);
 
+//ad confirmations
+router.route(ROUTES.CONFIRMATIONS).get(auth.loggedIn,view.confirmations);
+
+
 ////////////////////////////////////////////////////////////////
 ////////////////////////ADVERTISEMENTS//////////////////////////
 ////////////////////////////////////////////////////////////////
