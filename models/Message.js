@@ -17,6 +17,10 @@ var messageModel=new Schema({
 	message:{
 		type: String
 	},
+	read:{
+		type: String,
+		default:0
+	},
 	createdAt:{
 		type: String,
 		default:Date.now()

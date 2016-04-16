@@ -36,6 +36,7 @@ exports.ACTIVITIES='/activities';
 exports.NOTIFICATIONS='/notifications';
 exports.MESSAGES='/messages';
 exports.CONFIRMATIONS='/confirmations';
+exports.SUBSCRIPTIONS='/subscriptions';
 
 
 

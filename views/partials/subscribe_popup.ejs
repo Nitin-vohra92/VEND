@@ -1,0 +1,43 @@
+<div id="subscribePopUp" class="modal fade" role="dialog" >
+  <div class="modal-dialog modal-vertical-centered">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-primary">
+        <strong>
+        Confirm
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <span class="text-warning">
+
+        <strong>Note:</strong>
+        <p text-align="justify">  
+         Subscribing will notify you whenever 
+         <span class="text-info">
+         <%=response.account.name%>
+         </span> publishes any new advertisement on Vend. Make sure you want the same. You can unsubscibe either from user profile page or by going to 
+         <span>
+         Subscriptions
+         </span> option.
+         </p>
+         </span>
+      </div>
+      <div class="modal-footer">
+        
+        <form id="subscribeForm" class="pull-right" action="/api/user/subscribe" method="POST" >
+        <input type="hidden" name="user_id" value="<%=response.account._id%>" />
+        <input type="hidden" name="user_name" value="<%=response.account.name%>" />
+
+        <button type="submit" class="btn btn-success" >Subscribe</button>
+        </form>
+        <button type="button" class="btn btn-primary pull-right" style="margin-right:8px;" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

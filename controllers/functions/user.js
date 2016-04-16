@@ -17,7 +17,7 @@ var Notification=require('../../models/Notification');
 var Ping=require('../../models/Ping');
 var Wish=require('../../models/Wish');
 var Message=require('../../models/Message');
-
+var Subscription=require('../../models/Subscription');
 
 var RecentlyViewed=require('../../models/RecentlyViewed');
 var Recommendation=require('../../models/Recommendation');
@@ -687,6 +687,15 @@ exports.addViewedUserActivity=function(user_info,view_user_id,callback){
 	});
 }
 
+exports.addSubscriptionActivity=function(user_info,input,callback){
+	var user_link=ROUTES.USER+'?id='+input.user_id;
+	var activity='Subscribed to <a href="'+
+	user_link+'" class="text-info">'+input.user_name+'</a>.';
+	addActivity(user_info,activity);
+	callback();
+}
+
+
 
 ////Related to notification
 exports.getNotificationCount=function(user_id,callback){
@@ -803,32 +812,33 @@ exports.addRejectionNotification=function(user_info,ping,callback){
 }
 
 
-exports.addWishNotification=function(category,product,ad_id){
+exports.addWishNotification=function(publisher_user_id,category,product,ad_id){
 	switch(category){
 		case 'Book':
 			var tags=product.title.split(" ");
 			tags=mergeArrays(tags,product.author.split(" "));
 			tags.push(product.semester);
-			_this.matchWishAndSendNotification(category,tags,ad_id);
+			_this.matchWishAndSendNotification(publisher_user_id,category,tags,ad_id);
 			break;
 		case 'Electronics':
 		case 'Other':
 			var tags=product.name.split(" ");
 			tags=mergeArrays(tags,product.sub_category.split(" "));
 			tags=mergeArrays(tags,product.brand.split(" "));
-			_this.matchWishAndSendNotification(category,tags,ad_id);
+			_this.matchWishAndSendNotification(publisher_user_id,category,tags,ad_id);
 			break;
 	}
 }
 
-exports.matchWishAndSendNotification=function(category,tags,ad_id){
-	var ad_link=ROUTES.ADVERTISEMENT+'?id='+ping.ad_id;
+exports.matchWishAndSendNotification=function(publisher_user_id,category,tags,ad_id){
+	var ad_link=ROUTES.ADVERTISEMENT+'?id='+ad_id;
 	tags=helper.changeToRegexArray(tags);
-	Wish.find({category:category,$or:[{title:{$in:tags}},{description:{$in:tags}}]},function(err,wishes){
+	Wish.find({category:category,user_id:{$nin:[publisher_user_id]},$or:[{title:{$in:tags}},{description:{$in:tags}}]},function(err,wishes){
 		if(err)
 			console.log(err);
 		for(var i=0;i<wishes.length;i++){
-			var notification_desc='New advertisement matching your wish has been posted. Check it '+
+			var notification_desc='New advertisement matching your wish for '+
+			'<a href="'+ROUTES.WISH+'?id='+wishes[i]._id+'">'+wishes[i].title+'</a> has been posted. Check it '+
 			'<a href="'+ad_link+'">here</a>.';
 			addNotification(wishes[i].user_id,notification_desc);
 		}
@@ -836,15 +846,29 @@ exports.matchWishAndSendNotification=function(category,tags,ad_id){
 }
 
 
-exports.addMessageNotification=function(user_info,input,callback){
+exports.addSubscriptionNotification=function(user_info,input,callback){
 	var user_link=ROUTES.USER+'?id='+user_info.user_id;
 	var user_name=user_info.name;
 	var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
-			'</a> sent you a message. Please check <a href="'+ROUTES.MESSAGES+'">Your Messages</a>';
+			'</a> subscribed you.';
 	addNotification(input.user_id,notification_desc);
 	callback();
 }
 
+exports.addSubscriberNotification=function(advertisement){
+	var subscribed_user_id=advertisement.user_id;
+	var notification_desc='<a href="'+ROUTES.USER+'?id='+advertisement.user_id+'">'+
+		advertisement.user_name+'</a> posted a new advertisement :'+
+		'<a href="'+ROUTES.ADVERTISEMENT+'?id='+advertisement._id+'">'+
+		advertisement.name+'</a>.<br> Change settings <a href="/subsriptions">here</a>.';
+	Subscription.find({subscribed_user_id:subscribed_user_id},function(err,subscriptions){
+
+		for(var i=0;i<subscriptions.length;i++){
+			addNotification(subscriptions[i].subscriber_user_id,notification_desc);
+		}
+	});
+	return;
+}
 exports.addActivityNotification=function(user_id,notification,callback){
 	var activityNotification=new ActivityNotification();
 	activityNotification.user_id=user_id;
@@ -1100,8 +1124,17 @@ exports.getMessages=function(user_id,callback){
 				result[index].messages.push(message);
 			}
 		}
-		callback(result);
+		Message.update({$and:[{read:0},{to_user_id:user_id}]}, { read: 1 },{multi: true}, function(err){
+  			callback(result);
+  		});
+		
 	});
+}
+
+exports.getUnreadMessageCount=function(user_id,callback){
+	Message.find({$and:[{read:0},{$or:[{to_user_id:user_id}]} ]}, function(err,messages){
+  			callback(messages.length);
+  		});
 }
 
 exports.getConfirmations=function(user_id,callback){
@@ -1109,3 +1142,45 @@ exports.getConfirmations=function(user_id,callback){
 		callback(advertisements);
 	});
 }
+
+exports.addSubscription=function(user_info,input,callback){
+	var subscription=new Subscription();
+	subscription.subscriber_user_id=user_info.user_id;
+	subscription.subscriber_user_name=user_info.name;
+	subscription.subscribed_user_id=input.user_id;
+	subscription.subscribed_user_name=input.user_name;
+	subscription.createdAt=timestamp.getTime();
+	subscription.save(function(){
+		callback();
+	});
+}
+
+exports.deleteSubscription=function(user_info,input,req,res,callback){
+	Subscription.findOne({subscriber_user_id:user_info.user_id,subscribed_user_id:input.user_id},function(err,subscription){
+		if(err||subscription===null){
+			var error="Invalid Request Recieved";
+			_this.sendToError(req,res,error)
+		}
+		else{
+			Subscription.remove({subscriber_user_id:user_info.user_id,subscribed_user_id:input.user_id},function(){
+				callback();
+			});
+		}
+	});
+}
+
+exports.getSubscriptionStatus=function(user_info,user_id,callback){
+	Subscription.findOne({subscriber_user_id:user_info.user_id,subscribed_user_id:user_id},function(err,subscription){
+		if(subscription===null)
+			callback('no');
+		else
+			callback('yes');
+	});
+}
+
+exports.getSubscriptions=function(user_id,callback){
+	Subscription.find({subscriber_user_id:user_id},function(err,subscriptions){
+		callback(subscriptions);
+	});
+}
+

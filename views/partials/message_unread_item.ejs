@@ -1,5 +1,5 @@
 
-<div class="message_item" style="padding-right:8px; margin-top:1px; min-height:50px;">
+<div class="message_unread_item" style="padding-right:8px; background: rgba(238, 238, 238, 0.86); margin-top:1px; min-height:50px;">
 
     <span class="text-muted pull-right" style="padding-top:6px;">   
     <%=response.message.createdAt%>
@@ -16,7 +16,7 @@
     </span>
     <br>
     <div style="padding:6px 8px 0px; max-width:100%;" >
-    <p class="text-default" style="text-align: justify;">
+    <p class="text-default" style="text-align: justify; margin-bottom: 1px;">
     <%-response.message.message%>
     </p>
     </div>

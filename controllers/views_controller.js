@@ -67,7 +67,10 @@ exports.home=function(req,res){
 							userFunctions.getWishes(function(wishes){
 								response.wishes=wishes;
 								//res.json({response:response});
-								res.render('index',{response:response});
+								userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+									response.message_count=message_count;
+									res.render('index',{response:response});
+								});
 							});
 							
 						});
@@ -105,7 +108,11 @@ exports.publish=function(req,res){
 		var user_id=req.session.user_id;
 		userFunctions.getNotificationCount(user_id,function(count){
 			response.notification_count=count;
-			res.render('publish',{response:response});
+			userFunctions.getUnreadMessageCount(user_id,function(message_count){
+				response.message_count=message_count;
+				res.render('publish',{response:response});
+			});
+			
 		});
 }
 
@@ -122,7 +129,11 @@ exports.editAdvertisement=function(req,res){
 		response.advertisement=advertisement;
 		advertisementFunctions.getProduct(advertisement.category,advertisement.product_id,function(product){
 			response.product=product;
-			res.render('advertisement_edit',{response:response});
+			userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+				response.message_count=message_count;
+				res.render('advertisement_edit',{response:response});
+			});
+			
 		});
 	});
 }
@@ -195,11 +206,14 @@ exports.advertisement=function(req,res){
 															advertisementFunctions.addToRecentlyViewed(advertisement,function(){});
 															userFunctions.addToRecommendation(user_id,null,ad_id,function(){});
 														}
+														userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+															response.message_count=message_count;
+															//////////////////////////////////////////////////////////////////
+															//if time please add more items like from same seller,similar items
+															//////////////////////////////////////////////////////////////////
+															res.render('advertisement',{response:response});
 
-														//////////////////////////////////////////////////////////////////
-														//if time please add more items like from same seller,similar items
-														//////////////////////////////////////////////////////////////////
-														res.render('advertisement',{response:response});
+														});				
 													});
 												});
 												
@@ -234,7 +248,10 @@ exports.closedAdvertisement=function(req,res){
 				response.product=product;
 				userFunctions.getNotificationCount(user_id,function(count){
 					response.notification_count=count;
-					res.render('advertisement_closed',{response:response});
+					userFunctions.getUnreadMessageCount(user_id,function(message_count){
+						response.message_count=message_count;
+						res.render('advertisement_closed',{response:response});
+					});
 				});
 			});
 		}
@@ -249,11 +266,13 @@ exports.activities=function(req,res){
 	var user_id=req.session.user_id;
 	userFunctions.getActivities(user_id,null,function(activities){
 	  	response.activities=activities;
+		//check for any notification
 	  	userFunctions.getNotificationCount(user_id,function(count){
 	  		response.notification_count=count;
-					///check for any notification
-					res.render('activities',{response:response});
-					//res.json(response);
+			userFunctions.getUnreadMessageCount(user_id,function(message_count){
+				response.message_count=message_count;
+				res.render('activities',{response:response});
+			});
 	  	});
   	});
 }
@@ -272,8 +291,10 @@ exports.notifications=function(req,res){
   				response.read_notifications=read_notifications;
   				
   				Notification.update({$and:[{read:0},{user_id:req.session.user_id} ]}, { read: 1 },{multi: true}, function(err){
-  					//res.json(response);
-  					res.render('notifications',{response:response});
+  					userFunctions.getUnreadMessageCount(user_id,function(message_count){
+						response.message_count=message_count;
+  						res.render('notifications',{response:response});
+					});
 				});
 			});
 		});
@@ -293,8 +314,11 @@ exports.myAdvertisements=function(req,res){
 				response.notification_count=count;
 				userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity){
 					response.activity_notification=activity;
-					// res.json({response:response});
-					res.render('my_advertisements',{response:response});
+					userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+						response.message_count=message_count;
+						// res.json({response:response});
+						res.render('my_advertisements',{response:response});
+					});
 				});
 				
 			});
@@ -312,8 +336,11 @@ exports.myWishes=function(req,res){
 			response.notification_count=count;
 			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
 				response.activity_notification=notification;
-				// res.json({response:response});
-				res.render('my_wishes',{response:response});
+				userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+					response.message_count=message_count;
+					// res.json({response:response});
+					res.render('my_wishes',{response:response});
+				});
 			});
 		});
 	});
@@ -346,12 +373,36 @@ exports.confirmations=function(req,res){
 			response.notification_count=count;
 			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
 				response.activity_notification=notification;
-				// res.json({response:response});
-				res.render('confirmations',{response:response});
+				userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+					response.message_count=message_count;
+					// res.json({response:response});
+					res.render('confirmations',{response:response});
+				});
 			});
 		});
 	});
 }
+
+exports.subscriptions=function(req,res){
+	var response={};
+	var user_info=req.session;
+	response.user_info=user_info;
+	userFunctions.getSubscriptions(user_info.user_id,function(subscriptions){
+		response.subscriptions=subscriptions;
+		userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
+			response.activity_notification=notification;
+			userFunctions.getNotificationCount(user_info.user_id,function(count){
+				response.notification_count=count;
+				userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+					response.message_count=message_count;
+					// res.json({response:response});
+					res.render('subscriptions',{response:response});
+				});
+			});
+		});
+	})
+}
+
 //for products view
 exports.products=function(req,res){
 	
@@ -373,8 +424,11 @@ exports.products=function(req,res){
 								response.sort=sort;
 								if(sort===null)
 									response.sort='publish_time';
-								//res.json(response);
-								res.render('products',{response:response});
+								userFunctions.getUnreadMessageCount(user_id,function(message_count){
+									response.message_count=message_count;
+									//res.json(response);
+									res.render('products',{response:response});
+								});
 						});
 					});
 				});
@@ -400,8 +454,11 @@ exports.books=function(req,res){
 				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
-	  			//res.json(response);
-	  			res.render('books',{response:response});
+				userFunctions.getUnreadMessageCount(user_id,function(message_count){
+					response.message_count=message_count;
+		  			//res.json(response);
+		  			res.render('books',{response:response});
+				});
 	  		});
 		});
 }
@@ -422,8 +479,11 @@ exports.electronics=function(req,res){
 				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
-	  			//res.json(response);
-	  			res.render('electronics',{response:response});
+				userFunctions.getUnreadMessageCount(user_id,function(message_count){
+					response.message_count=message_count;
+		  			//res.json(response);
+		  			res.render('electronics',{response:response});
+				});
 	  		});
 		});
 }
@@ -444,8 +504,11 @@ exports.others=function(req,res){
 				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
-	  			//res.json(response);
-	  			res.render('others',{response:response});
+				userFunctions.getUnreadMessageCount(user_id,function(message_count){
+					response.message_count=message_count;
+		  			//res.json(response);
+		  			res.render('others',{response:response});
+				});
 	  		});
 		});
 }
@@ -466,7 +529,10 @@ exports.latest=function(req,res){
 				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
-				res.render('latest',{response:response});
+				userFunctions.getUnreadMessageCount(user_id,function(message_count){
+					response.message_count=message_count;
+					res.render('latest',{response:response});
+				});
 			});
 		});
 }
@@ -488,7 +554,10 @@ exports.recent=function(req,res){
 				response.sort='publish_time';
 			userFunctions.getNotificationCount(user_id,function(count){
 				response.notification_count=count;
-				res.render('recent',{response:response});
+				userFunctions.getUnreadMessageCount(user_id,function(message_count){
+					response.message_count=message_count;
+					res.render('recent',{response:response});
+				});
 			});
 		});
 }
@@ -512,7 +581,10 @@ exports.recommended=function(req,res){
 				response.sort=sort;
 				if(sort===null)
 					response.sort='publish_time';
-				res.render('recommended',{response:response});
+				userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+					response.message_count=message_count;
+					res.render('recommended',{response:response});
+				});
 			});
 		});
 }
@@ -552,8 +624,15 @@ exports.user=function(req,res){
 							}
 							userFunctions.getNotificationCount(user_info.user_id,function(count){
 								response.notification_count=count;
-								// res.json({response:response});
-								res.render('user',{response:response});
+								//add for subscription status
+								userFunctions.getSubscriptionStatus(user_info,view_user_id,function(status){
+									response.subscription_status=status;
+									userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+										response.message_count=message_count;
+										// res.json({response:response});
+										res.render('user',{response:response});
+									});	
+								});
 							});
 						});
 					});
@@ -592,8 +671,11 @@ exports.wish=function(req,res){
 				}
 				userFunctions.getNotificationCount(user_info.user_id,function(count){
 					response.notification_count=count;
-					// res.json({response:response});
-					res.render('wish',{response:response});
+					userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+						response.message_count=message_count;
+						// res.json({response:response});
+						res.render('wish',{response:response});
+					});
 				});
 			});	
 		}	
@@ -660,7 +742,10 @@ exports.search=function(req,res){
 									response.sort=sort;
 									if(sort===null)
 										response.sort='publish_time';
-									res.render('search',{response:response});
+									userFunctions.getUnreadMessageCount(user_id,function(message_count){
+										response.message_count=message_count;
+										res.render('search',{response:response});
+									});
 								});
 							});
 						});

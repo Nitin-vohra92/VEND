@@ -28,6 +28,11 @@
                     </li>
 
                     <li><a href="/publish">Publish an Ad</a></li>
+                    <li><a href="/messages">Inbox
+                    <%if(response.message_count>0){%>
+                      <span class="badge"><small><%=response.message_count%></small></span>
+                    <%}%>
+                    </a></li>
                     <li><a href="/notifications">
                     Notifications
                     <%if(response.notification_count>0){%>
@@ -64,11 +69,11 @@
                     <li class="divider"></li>
                     <li><a href="/user/advertisements">Your Ads</a></li>
                     <li class="divider"></li>
-                    <li><a href="/confirmations">Confirmations</a></li>
-                    <li class="divider"></li>
                     <li><a href="/wishes">Your Wishes</a></li>
                     <li class="divider"></li>
-                    <li><a href="/messages">Messages</a></li>
+                    <li><a href="/confirmations">Confirmations</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/subscriptions">Subscriptions</a></li>
                     <li class="divider"></li>
                     <li><a href="#">Settings</a></li>
                     <li class="divider"></li>

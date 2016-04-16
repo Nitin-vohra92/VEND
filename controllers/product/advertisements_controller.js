@@ -32,7 +32,8 @@ exports.publish=function(req,res){
 						var notification='Successfully published the advertisement.'+
 						"Check <a href='/api/view/user/advertisements'>Your Ads</a> for more options.";
 						userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-							userFunctions.addWishNotification(productCategory,product,advertisement._id);
+							userFunctions.addWishNotification(user_info.user_id,productCategory,product,advertisement._id);
+							userFunctions.addSubscriberNotification(advertisement);
 							//redirect to home
 							res.redirect(ROUTES.HOME);
 						});

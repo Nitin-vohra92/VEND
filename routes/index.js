@@ -47,6 +47,9 @@ router.route(ROUTES.MESSAGES).get(auth.loggedIn,view.messages);
 //ad confirmations
 router.route(ROUTES.CONFIRMATIONS).get(auth.loggedIn,view.confirmations);
 
+//user subscriptions
+router.route(ROUTES.SUBSCRIPTIONS).get(auth.loggedIn,view.subscriptions);
+
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////ADVERTISEMENTS//////////////////////////
@@ -82,7 +85,7 @@ router.route(ROUTES.RECOMMENDED).get(auth.loggedIn,auth.validateGetRequest,view.
 router.route(ROUTES.ADVERTISEMENT).get(auth.loggedIn,auth.validateGetRequest,view.advertisement);
 
 //edit advertisement
-router.route(ROUTES.EDIT_ADVERTISEMENT).get(auth.loggedIn,view.editAdvertisement);
+router.route(ROUTES.EDIT_ADVERTISEMENT).post(auth.loggedIn,view.editAdvertisement);
 
 //will show closed advertisements and to whom it was sold
 router.route(ROUTES.CLOSED_ADVERTISEMENT).get(auth.loggedIn,auth.validateGetRequest,view.closedAdvertisement);

@@ -236,11 +236,10 @@ exports.message=function(req,res){
 	var input=req.body;
 	var user_info=req.session;
 	userFunctions.addMessage(user_info,input,function(){
-		var notification='Successfully messaged the user.';
-		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
-			userFunctions.addMessageNotification(user_info,input,function(){	
-				res.redirect(ROUTES.USER+'?id='+input.user_id);
-			});
+		var notification='Successfully messaged the user. Check <a href="'+
+		ROUTES.MESSAGES+'">Inbox</a>.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){	
+			res.redirect(ROUTES.USER+'?id='+input.user_id);
 		});
 	});
 }
@@ -248,9 +247,55 @@ exports.message=function(req,res){
 exports.reply=function(req,res){
 	var input=req.body;
 	var user_info=req.session;
-	userFunctions.addMessage(user_info,input,function(){
-		userFunctions.addMessageNotification(user_info,input,function(){	
-			res.redirect(ROUTES.MESSAGES);
+	userFunctions.addMessage(user_info,input,function(){	
+		res.redirect(ROUTES.MESSAGES);
+	});
+}
+
+exports.subscribe=function(req,res){
+	var user_info=req.session;
+	var input=req.body;
+	//add to subscription
+	userFunctions.addSubscription(user_info,input,function(){
+		//add to activity
+		userFunctions.addSubscriptionActivity(user_info,input,function(){
+			//add notification
+			userFunctions.addSubscriptionNotification(user_info,input,function(){
+				var notification='Succesfully subscribed '+input.user_name+'.';
+				userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+					res.redirect(ROUTES.USER+'?id='+input.user_id);
+				});
+			});
 		});
 	});
+}
+
+//below two methods are same . used on different pages because we want to send different content
+exports.unsubscribe_profile=function(req,res){
+	var user_info=req.session;
+	var input=req.body;
+
+	//delete subscription
+	userFunctions.deleteSubscription(user_info,input,req,res,function(){
+		//add activity notification
+		var notification='Succesfully unsubscribed '+input.user_name+'.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.USER+'?id='+input.user_id);
+		});
+	});
+}
+
+exports.unsubscribe=function(req,res){
+	var user_info=req.session;
+	var input=req.body;
+
+	//delete subscription
+	userFunctions.deleteSubscription(user_info,input,req,res,function(){
+		//add activity notification
+		var notification='Succesfully unsubscribed <a href="'+ROUTES.USER+'?id='+input.user_id+'">'+input.user_name+'</a>.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.SUBSCRIPTIONS);
+		});
+	});
+
 }

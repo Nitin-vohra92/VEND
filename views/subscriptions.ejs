@@ -11,7 +11,6 @@
 <script type="text/javascript">
 	  $(document).ready(function() {
   <% include partials/dropdown%>
-  
 
 });
 </script>
@@ -42,7 +41,7 @@
         <p align="center">
           <span class="text-info">
             <strong>
-              Request Confirmations           
+              Your Subscriptions           
             </strong>
           </span>
         </p>
@@ -51,15 +50,15 @@
         </div>
         <!-- for each advertisement-->
         <!-- will later contain option to pay-->
-        <%for(var i=0;i<response.advertisements.length;i++){%>
-          <% response.advertisement=response.advertisements[i];%>
-          <%include partials/confirmation_box%>
+        <%for(var i=0;i<response.subscriptions.length;i++){%>
+          <% response.subscription=response.subscriptions[i];%>
+          <%include partials/subscription_box%>
         <%}%>
 
-        <%if(response.advertisements.length===0){%>
+        <%if(response.subscriptions.length===0){%>
             <div align="center">
           <strong>
-             You have no confirmations for your requests right now.
+             You have no subscriptions right now.
             </strong>
           </div>
           

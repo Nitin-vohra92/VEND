@@ -71,5 +71,13 @@ router.route('/user/message').post(auth.loggedIn,user.message);
 
 router.route('/user/reply').post(auth.loggedIn,user.reply);
 
+//subscribing a user
+router.route('/user/subscribe').post(auth.loggedIn,user.subscribe);
+
+//unsubscribe from subscriptions
+router.route('/user/unsubscribe').post(auth.loggedIn,user.unsubscribe);
+
+//unsubscribe from profile page
+router.route('/user/unsubscribe_profile').post(auth.loggedIn,user.unsubscribe_profile);
 
 module.exports=router;

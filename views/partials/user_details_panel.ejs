@@ -93,10 +93,18 @@
                     data-target="#messagePopUp<%=response.account._id%>" style="margin-right:8px;">
                     Drop a Message
                     </a>
+                    <%if(response.subscription_status==='no'){%>
                     <a id="subscribePopUpButton" class="col-md-5 btn btn-success pull-right" data-toggle="modal" 
-                    data-target="#subscribePopUp<%=response.account._id%>" style="margin-right:8px;">
+                    data-target="#subscribePopUp" style="margin-right:8px;">
                     Subscribe
                     </a>
+                    <%}%>
+                    <%if(response.subscription_status==='yes'){%>
+                    <a id="unsubscribePopUpButton" class="col-md-5 btn btn-success pull-right" data-toggle="modal" 
+                    data-target="#unsubscribePopUp" style="margin-right:8px;">
+                    Unsubscribe
+                    </a>
+                    <%}%>
                   </div>
                     <br>
                   <br>
@@ -124,3 +132,9 @@
 </div>
 
 <%include message_popup%>
+<%if(response.subscription_status==='no'){%>
+<%include subscribe_popup%>
+<%}%>
+<%if(response.subscription_status==='yes'){%>
+<%include unsubscribe_profile_popup%>
+<%}%>
