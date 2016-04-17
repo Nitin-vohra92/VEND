@@ -13,7 +13,7 @@
                   </strong> 
                   </h4>
               </div>
-              <div class="panel-body" style="padding: 3px 8px 3px; overflow-y:scroll; height: 250px;">
+              <div class="panel-body" style="padding: 3px 8px 3px; overflow-y:scroll; max-height: 250px;">
                 <%for(var i=0;i<response.messages_user.messages.length;i++){%>
                   <% response.message=response.messages_user.messages[i];%>
                   <%if(response.message.read==='0'&&response.message.from_user_id!==response.user_info.user_id){%>

@@ -893,6 +893,7 @@ exports.addPing=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
 		var ping=new Ping(user_info);
 		ping.ping_user_id=advertisement.user_id;
+		ping.ping_user_name=advertisement.user_name;
 		ping.user_name=user_info.name;
 		ping.ad_id=input.ad_id;
 		ping.ad_name=advertisement.name;
@@ -1140,6 +1141,12 @@ exports.getUnreadMessageCount=function(user_id,callback){
 exports.getConfirmations=function(user_id,callback){
 	advertisementFunctions.getConfirmedAdvertisementsForUser(user_id,function(advertisements){
 		callback(advertisements);
+	});
+}
+
+exports.getPendingConfirmations=function(user_id,callback){
+	Ping.find({user_id:user_id},function(err,pings){
+		callback(pings);
 	});
 }
 

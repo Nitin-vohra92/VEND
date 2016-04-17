@@ -369,14 +369,17 @@ exports.confirmations=function(req,res){
 	response.user_info=user_info;
 	userFunctions.getConfirmations(user_info.user_id,function(advertisements){
 		response.advertisements=advertisements;
-		userFunctions.getNotificationCount(user_info.user_id,function(count){
-			response.notification_count=count;
-			userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
-				response.activity_notification=notification;
-				userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
-					response.message_count=message_count;
-					// res.json({response:response});
-					res.render('confirmations',{response:response});
+		userFunctions.getPendingConfirmations(user_info.user_id,function(pending_advertisements){
+			response.pending_advertisements=pending_advertisements;
+			userFunctions.getNotificationCount(user_info.user_id,function(count){
+				response.notification_count=count;
+				userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(notification){
+					response.activity_notification=notification;
+					userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
+						response.message_count=message_count;
+						// res.json({response:response});
+						res.render('confirmations',{response:response});
+					});
 				});
 			});
 		});

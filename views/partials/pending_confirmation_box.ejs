@@ -1,0 +1,30 @@
+ <div id=<%=response.pending_advertisement.ad_id%> class="col-md-10 col-md-offset-1">
+          <div class="panel panel-info">
+              <div id=<%=i%> class="panel-heading" style="padding: 5px; min-height: 50px;">
+                <div id=<%=response.pending_advertisement.ad_id%> class="ad_options pull-right" style="margin-top:  3px; margin-right:8px;">
+                  <a id="detailsButton" href="/advertisement?id=<%=response.pending_advertisement.ad_id%>" class="btn btn-danger" >Details</a>      
+                </div>
+                  <h4>
+                  <strong>
+                  <%=response.pending_advertisement.ad_name%> 
+                  </strong> 
+                  </h4>
+              </div>
+              <div class="panel-body" style="padding: 10px 15px 10px;">
+                <span class="text-muted pull-right">
+                <%=response.pending_advertisement.createdAt%>
+                </span>
+                <a href="/user?id=<%=response.pending_advertisement.ping_user_id%>">
+                <%=response.pending_advertisement.ping_user_name%>
+                </a>
+                 has not yet confirmed your request to <%=response.pending_advertisement.ad_kind%>.
+              </div>
+              <div class="panel-footer" align="center" style="padding: 5px;">
+                <h4>
+                  <strong>
+                  </strong>
+                </h4>
+              </div>
+              
+          </div>
+        </div>

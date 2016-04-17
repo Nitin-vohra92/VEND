@@ -37,17 +37,17 @@
     <div class="row" style="margin-top: 15px;">
 
         <div class="col-md-12">
-        <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
-        <h3>
-        <p align="center">
-          <span class="text-info">
-            <strong>
-              Request Confirmations           
-            </strong>
-          </span>
-        </p>
-        </h3>
-        <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+          <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+          <h3>
+          <p align="center">
+            <span class="text-info">
+              <strong>
+                Request Confirmations           
+              </strong>
+            </span>
+          </p>
+          </h3>
+          <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
         </div>
         <!-- for each advertisement-->
         <!-- will later contain option to pay-->
@@ -58,15 +58,47 @@
 
         <%if(response.advertisements.length===0){%>
             <div align="center">
-          <strong>
-             You have no confirmations for your requests right now.
-            </strong>
-          </div>
+              <strong>
+               You have no confirmations for your requests right now.
+              </strong>
+            </div>
           
           <%}%>
+
+      </div>
+<!-- for pending requests -->
+    <div class="row" style="margin-top: 15px;">
+
+        <div class="col-md-12">
+          <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
+          <h3>
+          <p align="center">
+            <span class="text-info">
+              <strong>
+                Pending Confirmations           
+              </strong>
+            </span>
+          </p>
+          </h3>
+          <hr style="padding:0px; margin-top: 1px; margin-bottom: 1px;">
         </div>
+        <!-- for each advertisement-->
+        <!-- will later contain option to pay-->
+        <%for(var i=0;i<response.pending_advertisements.length;i++){%>
+          <% response.pending_advertisement=response.pending_advertisements[i];%>
+          <%include partials/pending_confirmation_box%>
+        <%}%>
 
+        <%if(response.pending_advertisements.length===0){%>
+            <div align="center">
+              <strong>
+               You have no pending confirmations for your requests right now.
+              </strong>
+            </div>
+          
+          <%}%>
 
+      </div>
   </div>
 </div>
 <!-- end main content block -->
