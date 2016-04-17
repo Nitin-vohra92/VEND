@@ -63,10 +63,6 @@
                   <button class="btn btn-info btn-block dropdown-toggle" type="button" data-toggle="dropdown" style="margin-top: 8px;" text-align="left" ><%=response.user_info.username%>
                   <span class="caret"></span></button>
                   <ul class="dropdown-menu">
-                    <li><a href="/user?id=<%=response.user_info.user_id%>">Your Profile</a></li>
-                    <li class="divider"></li>
-                    <li><a href="/activities">Your Activities</a></li>
-                    <li class="divider"></li>
                     <li><a href="/user/advertisements">Your Ads</a></li>
                     <li class="divider"></li>
                     <li><a href="/wishes">Your Wishes</a></li>
@@ -75,7 +71,9 @@
                     <li class="divider"></li>
                     <li><a href="/subscriptions">Subscriptions</a></li>
                     <li class="divider"></li>
-                    <li><a href="#">Settings</a></li>
+                    <li><a href="/activities">Your Activities</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/settings">Settings</a></li>
                     <li class="divider"></li>
                     <li><a href="/api/user/logout">Logout</a></li>
                   </ul>

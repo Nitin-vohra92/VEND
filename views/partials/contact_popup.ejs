@@ -1,0 +1,38 @@
+<script type="text/javascript">
+        function changeContact() {
+          document.getElementById("contactForm").submit();          }
+</script>
+
+<div id="contactPopUp" class="modal fade" role="dialog" >
+  <div class="modal-dialog modal-vertical-centered">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-info">
+        <strong>
+        Change Phone Number
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <span class="text-warning">
+        <strong>Note:</strong>
+        </span>
+        <span class="text-info">
+        Changing Phone number will update it and all mobile notifications will now be sent to this new Number. Please make sure that you have access to this new number.
+        </span>
+         <form id="contactForm" action="/api/user/contact" method="POST" >
+          <input type="tel" class="form-control" name="contact" required placeholder="Enter new phone number here" />
+        </form>
+      </div>
+      <div class="modal-footer">     
+        <button type="button" class="btn btn-success pull-right" onClick="changeContact()">Change</button>
+        <button type="button" class="btn btn-primary pull-right" style="margin-right:8px;" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

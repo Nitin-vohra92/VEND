@@ -1,3 +1,5 @@
+var validator=require('validator');
+
 var Student=require('../../models/users/Student');
 var Account=require('../../models/Account');
 
@@ -11,7 +13,6 @@ var userFunctions=require("../functions/user");
 var helper=require('../functions/helper');
 
 //for profile picture
-var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
 
@@ -26,7 +27,6 @@ exports.register=function(req,res,input,image_path,callback){
  		var ext=path.extname(oldPath);
  		var savedPath="/uploads/profilepictures/students/"+student._id+ext;
         var newPath = APP_DIR +'/public'+ savedPath;
-		student.profile_pic=savedPath;
 		helper.resizeAndMoveImage(oldPath,newPath);
 		 
  	//picture done
@@ -35,7 +35,7 @@ exports.register=function(req,res,input,image_path,callback){
 
 	student.save();
 	
-	var account=userFunctions.saveAccount(student,input.username,input.password,input.type);
+	var account=userFunctions.saveAccount(student,savedPath,input.username,input.password,input.type);
 
 	delete req.session.temp_id;
 	
@@ -55,3 +55,38 @@ exports.find=function(id,callback){
 }
 
 
+exports.changeEmail=function(id,email,callback){
+	Student.findOne({_id:id},function(err,user){
+		if(err||user===null){
+			callback(1);
+		}
+		else{
+			if(validator.isEmail(email)){
+	 			user.email=email;
+		 		user.save(function(){
+		 			callback(0);
+		 		});
+		 	}
+		 	else
+		 		callback(1);
+		}
+	});
+}
+
+exports.changeContact=function(id,contact,callback){
+	Student.findOne({_id:id},function(err,user){
+		if(err||user===null){
+			callback(1);
+		}
+		else{
+			if(validator.isMobilePhone(contact,'en-IN')){
+	 			user.contact=contact;
+		 		user.save(function(){
+		 			callback(0);
+		 		});
+		 	}
+		 	else
+		 		callback(1);
+		}
+	});
+}

@@ -1,8 +1,6 @@
 var Account=require('../models/Account');
 
-
 //controllers
-
 
 var Teacher=require('./user/teachers_controller');
 var Student=require('./user/students_controller');
@@ -271,7 +269,10 @@ exports.activities=function(req,res){
 	  		response.notification_count=count;
 			userFunctions.getUnreadMessageCount(user_id,function(message_count){
 				response.message_count=message_count;
-				res.render('activities',{response:response});
+				userFunctions.getAndDeleteActivityNotification(user_id,function(activity_notification){
+					response.activity_notification=activity_notification;
+					res.render('activities',{response:response});
+				});
 			});
 	  	});
   	});
@@ -290,10 +291,13 @@ exports.notifications=function(req,res){
   				Notification.find({$and:[{read:1},{user_id:user_id}]}, null, {sort: {'_id': -1}}).exec(function(err,read_notifications) {
   				response.read_notifications=read_notifications;
   				
-  				Notification.update({$and:[{read:0},{user_id:req.session.user_id} ]}, { read: 1 },{multi: true}, function(err){
+  				Notification.update({$and:[{read:0},{user_id:user_id} ]}, { read: 1 },{multi: true}, function(err){
   					userFunctions.getUnreadMessageCount(user_id,function(message_count){
 						response.message_count=message_count;
-  						res.render('notifications',{response:response});
+						userFunctions.getAndDeleteActivityNotification(user_id,function(activity_notification){
+							response.activity_notification=activity_notification;
+  							res.render('notifications',{response:response});
+						});
 					});
 				});
 			});
@@ -404,6 +408,28 @@ exports.subscriptions=function(req,res){
 			});
 		});
 	})
+}
+
+
+exports.settings=function(req,res){
+	var response={};
+	var user_info=req.session;
+	response.user_info=user_info;
+	userFunctions.getUser(user_info.user_id,function(account,user){
+		response.account=account;
+		response.user=user;
+		userFunctions.getAndDeleteActivityNotification(user_info.user_id,function(activity_notification){
+			response.activity_notification=activity_notification;
+			userFunctions.getSettings(user_info.user_id,function(settings){
+				response.settings=settings;
+				res.render('settings',{response:response});
+			});
+		});
+	});
+	//view profile
+	//edit profile(change mail and phone number,,add confirm)
+	//change password
+
 }
 
 //for products view
@@ -632,8 +658,11 @@ exports.user=function(req,res){
 									response.subscription_status=status;
 									userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
 										response.message_count=message_count;
-										// res.json({response:response});
-										res.render('user',{response:response});
+										userFunctions.getSubscriberCount(view_user_id,function(subscriber_count){
+											response.subscriber_count=subscriber_count;
+											// res.json({response:response});
+											res.render('user',{response:response});
+										});
 									});	
 								});
 							});
@@ -759,5 +788,7 @@ exports.search=function(req,res){
 	}
 
 }
+
+
 
 

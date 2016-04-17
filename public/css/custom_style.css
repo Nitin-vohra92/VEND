@@ -122,3 +122,40 @@ color:#fff;
 .track3.dragging .handle3 {
     width: 10px;
 }
+
+.user-row {
+    margin-bottom: 14px;
+}
+
+.user-row:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-user {
+    margin: 13px 0;
+    padding: 5px;
+    height: 100%;
+}
+
+.dropdown-user:hover {
+    cursor: pointer;
+}
+
+.table-user-information > tbody > tr {
+    border-top: 1px solid rgb(221, 221, 221);
+}
+
+.table-user-information > tbody > tr>td:first-child {
+    border-top: 0;
+    font-weight: bold;
+    color: #1B7FB1;
+}
+
+
+.table-user-information > tbody > tr > td {
+    border-top: 0;
+    padding: 8px 8px 4px;
+}
+.toppad{
+  margin-top:20px;
+}

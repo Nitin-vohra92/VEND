@@ -50,6 +50,9 @@ router.route(ROUTES.CONFIRMATIONS).get(auth.loggedIn,view.confirmations);
 //user subscriptions
 router.route(ROUTES.SUBSCRIPTIONS).get(auth.loggedIn,view.subscriptions);
 
+//user settings
+router.route(ROUTES.SETTINGS).get(auth.loggedIn,view.settings);
+
 
 ////////////////////////////////////////////////////////////////
 ////////////////////////ADVERTISEMENTS//////////////////////////

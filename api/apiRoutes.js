@@ -36,6 +36,23 @@ router.route('/user/wish').post(auth.loggedIn,user.wish);
 //posting a wish
 router.route('/user/wish/delete').post(auth.loggedIn,user.deleteWish);
 
+//deleting activities
+router.route('/activities/delete').post(auth.loggedIn,user.deleteActivities);
+
+//deleting notifications
+router.route('/notifications/delete').post(auth.loggedIn,user.deleteNotifications);
+
+//changing profile
+router.route('/user/profile').post(auth.loggedIn,user.profile);
+
+//changing email
+router.route('/user/email').post(auth.loggedIn,user.email);
+
+//changing mobile
+router.route('/user/contact').post(auth.loggedIn,user.contact);
+
+//changing mobile
+router.route('/user/settings').post(auth.loggedIn,user.settings);
 
 //publishing an advertisement
 router.route('/advertisement/publish').post(auth.loggedIn,advertisement.publish);

@@ -1,0 +1,17 @@
+
+<img class="img-circle img-responsive" alt="Profile Pic" src="<%=response.account.profile_pic%>"/>
+<div class="panel panel-success" style="margin-top:6px;">
+<div class="panel-heading">
+Change Picture
+</div>
+<div class="panel-body" style="padding:4px;">
+<form class="text-center" action="/api/user/profile" method="post" enctype="multipart/form-data">
+        <input  class="filestyle" data-icon="true" data-buttonName="btn-primary" data-size="sm" data-buttonText="Choose Image" name="profile_pic" type="file" accept="image/*" required>
+		<hr style="padding:0px; margin-top: 3px; margin-bottom: 3px;">
+        <button type="submit" class="btn btn-sm btn-success btn-block">
+        <i class="glyphicon glyphicon glyphicon-picture"></i>
+        Change
+        </button>
+</form>
+</div>
+</div>

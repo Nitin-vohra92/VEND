@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var session=require('express-session');
 var bodyParser = require('body-parser');
 var mongoose=require('mongoose');
-  mongoose.set('debug', true);
+  // mongoose.set('debug', true);
 
 var multipart = require('connect-multiparty');
 

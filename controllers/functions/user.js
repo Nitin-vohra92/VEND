@@ -7,6 +7,7 @@ var TemporaryUser=require('../../models/users/TemporaryUser');
 
 var Activity=require('../../models/Activity');
 var Account=require('../../models/Account');
+var Setting=require('../../models/Setting');
 
 var Teacher=require('../user/teachers_controller');
 var Student=require('../user/students_controller');
@@ -30,6 +31,7 @@ var CONF_FILE=require('../../conf.json');
 
 var _this=this;
 var ROUTES=require('../../routes/constants');
+var VEND_WEBSITE='https://vend-nith.herokuapp.com/';
 
 
 function mergeArrays(array1, array2) {
@@ -97,7 +99,7 @@ function sendMail(mail_to,mail_subject,mail_body){
 	//mail notification
     console.log("Sending mail");	
 	var mailOptions = {
-    from: '"VEND SERVICE"'+'<'+CONF_FILE.EMAIL.USERNAME+'>', // sender address 
+    from: '"VEND "'+'<'+CONF_FILE.EMAIL.USERNAME+'>', // sender address 
     to: mail_to, // list of receivers 
     subject:mail_subject, // Subject line 
     text: mail_body // body 
@@ -419,20 +421,131 @@ exports.sendConfirmationMail=function(input){
 	});
 }
 
-exports.saveAccount=function(user,username,password,type){
+exports.saveAccount=function(user,profile_pic,username,password,type){
 	var account=new Account();
 	account.username=username;
 	account.password=password;
 	account.name=user.firstname+' '+user.lastname;
 	account.user_id=user._id;
-	account.profile_pic=user.profile_pic;
+	account.profile_pic=profile_pic;
 	account.type=type;
 	account.createdAt=timestamp.getTime();
-	account.save();
+	account.save(function(err,account){
+		_this.saveSettings(account._id,function(){});
+	});
 	return account;
 
 }
 
+exports.saveSettings=function(user_id,callback){
+	var setting=new Setting();
+	setting.user_id=user_id;
+	setting.save();
+}
+
+exports.changeProfile=function(user_id,profile_pic,callback){
+	var path = require('path');
+	var APP_DIR = path.dirname(require.main.filename);
+	var fs=require('fs');
+	_this.getUser(user_id,function(account,user){
+		// fs.unlink(APP_DIR +'/public'+account.profile_pic);
+		var oldPath=profile_pic;
+	 	var ext=path.extname(oldPath);
+	 	var DIR_USER;
+	 	switch(account.type){
+	 		case 'Student':
+	 			DIR_USER='students';
+	 			break;
+	 		case 'Teacher':
+	 			DIR_USER='teachers';
+	 			break;
+	 		case 'Other':
+	 			DIR_USER='others';
+	 			break;
+	 	}
+	 	var savedPath="/uploads/profilepictures/"+DIR_USER+"/"+user._id+ext;
+	    var newPath = APP_DIR +'/public'+ savedPath;
+		helper.resizeAndMoveImage(oldPath,newPath);
+		Account.findOne({_id:user_id},function(err,result){
+			result.profile_pic=savedPath;
+			result.save(function(){
+				callback();
+			});
+		});
+	});
+}
+exports.changeEmail=function(user_id,email,callback){
+ 	Account.findOne({_id:user_id},function(err,account){
+ 		switch(account.type){
+ 			case 'Student':
+ 				Student.changeEmail(account.user_id,email,function(error){
+ 					callback(error);
+ 				});
+ 				break;
+ 			case 'Teacher':
+ 				Teacher.changeEmail(account.user_id,email,function(error){
+ 					callback(error);
+ 				});
+ 				break;
+ 			case 'Other':
+ 				Other.changeEmail(account.user_id,email,function(error){
+ 					callback(error);
+ 				});
+ 				break;
+ 		}
+ 	});
+ }
+
+exports.changeContact=function(user_id,contact,callback){
+ 	Account.findOne({_id:user_id},function(err,account){
+ 		switch(account.type){
+ 			case 'Student':
+ 				Student.changeContact(account.user_id,contact,function(error){
+ 					callback(error);
+ 				});
+ 				break;
+ 			case 'Teacher':
+ 				Teacher.changeContact(account.user_id,contact,function(error){
+ 					callback(error);
+ 				});
+ 				break;
+ 			case 'Other':
+ 				Other.changeContact(account.user_id,contact,function(error){
+ 					callback(error);
+ 				});
+ 				break;
+ 		}
+ 	});
+ }
+
+exports.changeSettings=function(user_id,input,callback){
+	Setting.findOne({user_id:user_id},function(err,setting){
+		if(err){
+			callback(1);
+		}
+		else{
+			if(setting===null){
+				setting=new Setting();
+				setting.user_id=user_id;
+			}
+			setting.email=input.email;
+			setting.phone=input.phone;
+			setting.save(function(){
+				 callback(0);
+			});
+		}
+	});
+} 
+
+exports.getSettings=function(user_id,callback){
+	Setting.findOne({user_id:user_id},function(err,setting){
+		if(setting===null){
+			callback({email:'No',phone:'No'});
+		}
+		else
+		 callback(setting);
+	});
+} 
 
 
 
@@ -703,7 +816,24 @@ exports.getNotificationCount=function(user_id,callback){
 		callback(notifications.length);
 	});
 }	
+exports.sendNotification=function(user_id,mail_body,callback){
+	Setting.findOne({user_id:user_id},function(err,setting){
+		if(err||setting===null){
+			//do nothing
+		}
+		else{
+			if(setting.email==='Yes'){
 
+				_this.getUser(user_id,function(account,user){
+					var mail_to=user.email;
+					var mail_subject='Vend Notification';
+					sendMail(mail_to,mail_subject,mail_body);
+					callback();
+				});
+			}
+		}
+	});
+}
 
 exports.addRatingNotification=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
@@ -719,10 +849,15 @@ exports.addRatingNotification=function(user_info,input,callback){
 						'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
 
 		addNotification(user_id,notification_desc);
+
+		var mail_body=notification_user_name+' rated '+input.rating+' stars on your advertisement '+
+			notification_ad_name+'. \n Please check Vend for more Info.';
+		_this.sendNotification(user_id,mail_body,function(){});
 		callback();
 	});
 
 }
+
 
 exports.addBiddingNotification=function(user_info,input,callback){
 	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
@@ -739,6 +874,10 @@ exports.addBiddingNotification=function(user_info,input,callback){
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
 
 		addNotification(user_id,notification_desc);
+
+		var mail_body=notification_user_name+' bidded Rs. '+input.amount+' on your advertisement '+
+			notification_ad_name+'. \n Please check Vend for more Info.';
+		_this.sendNotification(user_id,mail_body,function(){});
 		callback();
 	});
 }
@@ -758,6 +897,10 @@ exports.addCommentNotification=function(user_info,input,callback){
 			'<a href="'+notification_ad_link+'" class="text-info">'+notification_ad_name+"</a>.";
 
 		addNotification(user_id,notification_desc);
+
+		var mail_body=notification_user_name+' commented on your advertisement '+
+			notification_ad_name+'. \n Please check Vend for more Info.';
+		_this.sendNotification(user_id,mail_body,function(){});
 		callback();
 	});
 }
@@ -778,6 +921,10 @@ exports.addPingNotification=function(user_info,input,callback){
 			"</a>.<br>Check <a href='/api/view/user/advertisements' class='text-success'>Your Ads</a> for more options.";
 
 		addNotification(user_id,notification_desc);
+
+		var mail_body=notification_user_name+' pinged you for your advertisement '+
+			notification_ad_name+'. \n Please check Vend for more Info.';
+		_this.sendNotification(user_id,mail_body,function(){});
 		callback();
 	});
 }
@@ -792,6 +939,10 @@ exports.addConfirmationNotification=function(user_info,ping,callback){
 		' the product. For details of advertisement visit the <a href="'+ad_link+'" class="text-info"> Ad page</a>.'+
 		'<br>Get publisher details <a href="'+user_link+'" class="text-info">here</a>.';
 	addNotification(ping.user_id,notification_desc);
+
+		var mail_body=user_name+' confirmed your request to '+ping.ad_kind+
+			' the product entitled '+ad_name+'. \n Please check Vend for more Info.';
+		_this.sendNotification(ping.user_id,mail_body,function(){});
 	callback();
 }
 
@@ -806,6 +957,10 @@ exports.addRejectionNotification=function(user_info,ping,callback){
 			'</a> rejected your request to '+ping.ad_kind+
 			' the product. For further details, visit the <a href="'+ad_link+'" class="text-info"> Ad page</a>.';
 			addNotification(pings[i].user_id,notification_desc);
+
+		var mail_body=user_name+' rejected your request to '+ping.ad_kind+
+			' the product entitled: '+ad_name+'. \n Please check Vend for more Info.';
+		_this.sendNotification(pings[i].user_id,mail_body,function(){});
 		}
 		callback();
 	});	
@@ -841,6 +996,10 @@ exports.matchWishAndSendNotification=function(publisher_user_id,category,tags,ad
 			'<a href="'+ROUTES.WISH+'?id='+wishes[i]._id+'">'+wishes[i].title+'</a> has been posted. Check it '+
 			'<a href="'+ad_link+'">here</a>.';
 			addNotification(wishes[i].user_id,notification_desc);
+
+			var mail_body='New advertisement matching your wish for '+wishes[i].title+
+				' has been posted. \n Please check Vend for more Info.';
+			_this.sendNotification(wishes[i].user_id,mail_body,function(){});
 		}
 	});
 }
@@ -852,6 +1011,9 @@ exports.addSubscriptionNotification=function(user_info,input,callback){
 	var notification_desc='<a href="'+user_link+'" class="text-info">'+user_name+
 			'</a> subscribed you.';
 	addNotification(input.user_id,notification_desc);
+	var mail_body=user_name+' subscribed you on Vend.'+
+		' \n Please check Vend for more Info.';
+	_this.sendNotification(input.user_id,mail_body,function(){});
 	callback();
 }
 
@@ -865,6 +1027,9 @@ exports.addSubscriberNotification=function(advertisement){
 
 		for(var i=0;i<subscriptions.length;i++){
 			addNotification(subscriptions[i].subscriber_user_id,notification_desc);
+			var mail_body=advertisement.user_name+' posted a new advertisement '+
+				advertisement.name+'. \n Please check Vend for more Info.';
+			_this.sendNotification(subscriptions[i].subscriber_user_id,mail_body,function(){});
 		}
 	});
 	return;
@@ -1103,6 +1268,8 @@ exports.addMessage=function(user_info,input,callback){
 	message.to_user_name=to_user_name;
 	message.createdAt=timestamp.getTime();
 	message.save();
+	var mail_body=message.from_user_name+' has sent you a message. \nPlease check Vend for more Info.';
+	_this.sendNotification(message.to_user_id,mail_body,function(){});
 	callback();
 
 }
@@ -1191,3 +1358,20 @@ exports.getSubscriptions=function(user_id,callback){
 	});
 }
 
+exports.getSubscriberCount=function(user_id,callback){
+	Subscription.find({subscribed_user_id:user_id},function(err,subsriptions){
+		callback(subsriptions.length);
+	});
+}
+
+
+exports.deleteActivities=function(user_id,callback){
+	Activity.remove({user_id:user_id},function(){
+		callback();
+	});
+}
+exports.deleteNotifications=function(user_id,callback){
+	Notification.remove({user_id:user_id},function(){
+		callback();
+	});
+}

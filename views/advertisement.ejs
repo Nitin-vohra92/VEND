@@ -70,33 +70,6 @@ $(document).ready(function() {
 
           <!-- details panel -->
           <%include partials/advertisement_details_panel%>
-            <% if(!response.self){%>
-            <div class="col-md-11 col-md-offset-1">
-              <div class="panel panel-info">
-                <div class="panel-heading">
-                <div align="center">
-                  <strong>
-                    Rate the Advertisement
-                  </strong>
-                  </div>
-                </div>
-                <div class="panel-body" >
-                <form id="rateForm" action="/api/advertisement/rate" method="POST">
-                  <input name="ad_id" type="hidden" value=<%=response.advertisement._id%>>
-                  <input name="rating" id="input-4" class="rating rating-loading" data-min="0" data-max="5" data-step=".5" data-size="xs" value='<%=response.rating_user%>'>
-                  </form>
-                <div>
-                <hr style="margin: 4px">
-                  <span class="test-muted">
-                  <small>
-                  If you rate more than once, only latest rating will be counted.
-                    </small>
-                  </span>
-                </div>
-                </div>
-              </div>
-            </div>
-            <%}%>
 
 
           </div>
@@ -147,10 +120,37 @@ $(document).ready(function() {
   <!-- end comment box -->
 
     </div>
-
+    <div class="col-md-4 col-md-offset-1" style="padding-left: 10px; padding-right: 80px;">
+      <% if(!response.self){%>
+            <div>
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                <div align="center">
+                  <strong>
+                    Rate the Advertisement
+                  </strong>
+                  </div>
+                </div>
+                <div class="panel-body" >
+                <form id="rateForm" action="/api/advertisement/rate" method="POST">
+                  <input name="ad_id" type="hidden" value=<%=response.advertisement._id%>>
+                  <input name="rating" id="input-4" class="rating rating-loading" data-min="0" data-max="5" data-step=".5" data-size="xs" value='<%=response.rating_user%>'>
+                  </form>
+                <div>
+                <hr style="margin: 4px">
+                  <span class="test-muted">
+                  <small>
+                  If you rate more than once, only latest rating will be counted.
+                    </small>
+                  </span>
+                </div>
+                </div>
+              </div>
+            </div>
+            <%}%>
     <!-- bid box only if bid is yes -->
     <% if(response.advertisement.bid==='YES'){%>
-    <div class="col-md-4 col-md-offset-1" style="padding-left: 10px; padding-right: 80px;">                  
+                      
           <div class="panel panel-info">
                               <div class="panel-heading" align="center" >
                                   Bids

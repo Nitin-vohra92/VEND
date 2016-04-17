@@ -1,134 +1,115 @@
-
-<div class="col-md-5">
-<div class="panel panel-info"  style="height: 100%;">
-              <div class="panel-heading" align="center">
-                <h1>
-                <strong class="text-info">
-                User Details
-                </strong>
-                </h1>
-              </div>
-              <div class="panel-body" style="padding: 10px;">
-                <div align="center">
-                  <h5>
-                  <span class="text-info">
-                  <strong>
-                  User Type:
-                  </strong>
-                  </span>
-                  <span class="text-success">
-                  <%=response.account.type%>
-                  </span>
-                  </h5>
-                </div>
-              
-                <div class="well text-info">
-                  <% if(response.account.type==='Student'){%>
-	                  <strong>
-	                  Name:
-	                  </strong>
-	                  <%=response.user.firstname+' '+response.user.lastname%><br>
-	                  <strong>
-	                  Department :
-	                  </strong>
-                  	  <%=response.user.department%><br>
-					  <strong>
-	                  Degree Type :
-	                  </strong>
-                  	  <%=response.user.degree%><br>
-                  	  <strong>
-	                  Email :
-	                  </strong>
-                  	  <%=response.user.email%><br>
-                  	  <strong>
-	                  Contact:
-	                  </strong>
-                  	  <%=response.user.contact%><br>
-                  <%}%>
-
-                  <% if(response.account.type==='Teacher'){%>
-	                  <strong>
-	                  Name:
-	                  </strong>
-	                  <%=response.user.firstname+' '+response.user.lastname%><br>
-	                  <strong>
-	                  Department :
-	                  </strong>
-                  	  <%=response.user.department%><br>
-					  <strong>
-	                  Designation :
-	                  </strong>
-                  	  <%=response.user.degree%><br>
-                  	  <strong>
-	                  Email :
-	                  </strong>
-                  	  <%=response.user.email%><br>
-                  	  <strong>
-	                  Contact:
-	                  </strong>
-                  	  <%=response.user.contact%><br>
-                  <%}%>
-
-                  <% if(response.account.type==='Other'){%>
-	                  <strong>
-	                  Name:
-	                  </strong>
-	                  <%=response.user.firstname+' '+response.user.lastname%><br>
-	                  <strong>
-	                  Email :
-	                  </strong>
-                  	  <%=response.user.email%><br>
-                  	  <strong>
-	                  Contact:
-	                  </strong>
-                  	  <%=response.user.contact%><br>
-                  <%}%>
-
-                </div>
-                <hr>   
-                  
-                  <%if(!response.self) {%>
-                  <div class="col-md-10 col-md-offset-1" >
-                    <a id="messagePopUpButton" class="col-md-5 btn btn-primary" data-toggle="modal" 
-                    data-target="#messagePopUp<%=response.account._id%>" style="margin-right:8px;">
-                    Drop a Message
-                    </a>
-                    <%if(response.subscription_status==='no'){%>
-                    <a id="subscribePopUpButton" class="col-md-5 btn btn-success pull-right" data-toggle="modal" 
-                    data-target="#subscribePopUp" style="margin-right:8px;">
-                    Subscribe
-                    </a>
-                    <%}%>
-                    <%if(response.subscription_status==='yes'){%>
-                    <a id="unsubscribePopUpButton" class="col-md-5 btn btn-success pull-right" data-toggle="modal" 
-                    data-target="#unsubscribePopUp" style="margin-right:8px;">
-                    Unsubscribe
-                    </a>
-                    <%}%>
+<div class="col-md-5">  
+    <div class="panel panel-info">
+                  <div class="panel-heading" align="center">
+                    <h1 class="panel-title">
+                    <strong>
+                    User Details
+                    </strong>
+                    </h1>
                   </div>
-                    <br>
-                  <br>
-                  <span class="text-muted"><small>
-                  <hr style="margin-top: 5px; margin-bottom: 5px;">
-                  
-                  Note: You can view the messages sent to user in 
-                  <a href="/messages">
-                  Messages
-                  </a>
-                  </small></span>
-                  <%}%>
-                  <%if(response.self) {%>
-                  <div class="col-md-6 col-md-offset-3" align="center" >
-                    <a id="editButton" class="btn btn-primary btn-block" href="/user/edit">Edit your Info</a>
-                    <hr style="margin-top: 5px; margin-bottom: 5px;">
-                  </div>
-                  <span class="text-muted pull-left"><small>
-                  Note: This is what other user see when they view your profile.
-                  </a>
-                  </small></span>
-                  <%}%>
-               </div>
+                  <div class="panel-body">
+                    <div class="row">                
+                      <div class="col-md-12"> 
+                        <table class="table table-user-information">
+                          <tbody>
+                            <tr>
+                              <td>Name:</td>
+                              <td><%=response.account.name%></td>
+                            </tr>
+                            <tr>
+                              <td>Type:</td>
+                              <td><%=response.account.type%></td>
+                            </tr>
+                            <%if(response.account.type==='Student'){%>
+                            
+                            <tr>
+                              <td>Department:</td>
+                              <td><%=response.user.department%></td>
+                            </tr>
+                            <tr>
+                              <td>Degree:</td>
+                              <td><%=response.user.degree%></td>
+                            </tr>
+                            <%}%>
+                            <%if(response.account.type==='Teacher'){%>
+                            <tr>
+                              <td>Department:</td>
+                              <td><%=response.user.department%></td>
+                            </tr>
+                            <tr>
+                              <td>Designation:</td>
+                              <td><%=response.user.designation%></td>
+                            </tr>
+                            
+                            <%}%>
+                            <tr>
+                              <td>Email:</td>
+                              <td><a href="mailto:<%=response.user.email%>"><%=response.user.email%></a>
+                              </td>
+                            </tr>
+                              <td>Phone Number:</td>
+                              <td><%=response.user.contact%>
+                              </td>
+                            </tr>
+                              <tr>
+                              <td>Subscribers:</td>
+                              <td><%=response.subscriber_count%>
+                              </td>        
+                            </tr>
+                          </tbody>
+                        </table>
+                         <hr style="margin-bottom: 5px;">
+                        <div align="center">
+                        <%if(!response.self) {%>
+                        <a id="messagePopUpButton" class=" btn btn-primary" data-toggle="modal" 
+                          data-target="#messagePopUp<%=response.account._id%>" style="margin-right:8px;">
+                          Drop a Message
+                          </a>
+                          <%if(response.subscription_status==='no'){%>
+                          <a id="subscribePopUpButton" class="btn btn-success" data-toggle="modal" 
+                          data-target="#subscribePopUp" style="margin-right:8px;">
+                          Subscribe
+                          </a>
+                          <%}%>
+                          <%if(response.subscription_status==='yes'){%>
+                          <a id="unsubscribePopUpButton" class="btn btn-danger " data-toggle="modal" 
+                          data-target="#unsubscribePopUp" style="margin-right:8px;">
+                          Unsubscribe
+                          </a>
+                          <%}%>
 
+                        <%}%>
+                        <%if(response.self) {%>
+                        <div class="col-md-6 col-md-offset-3" align="center" >
+                          <a id="settingsButton" class="btn btn-primary btn-block" href="/settings">Account Settings</a>
+                        </div>
+                        <%}%>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                 <div class="panel-footer">
+                    <%if(response.self) {%>
+                    <span class="text-muted" >
+                    <small>
+                      Note: This is what other user see when they view your profile.
+                    </small></span>
+                    <%}%>
+                    <%if(!response.self) {%>
+                    <span class="text-muted ">
+                    <small>
+                      Note: You can view the messages sent to user in 
+                    <a href="/messages">
+                    Messages
+                    </a>
+                    </small></span>
+                    <%}%>
+
+                  </div>
+            
+    </div>
 </div>
 
 <%include message_popup%>

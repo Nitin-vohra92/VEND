@@ -1,0 +1,65 @@
+<script type="text/javascript">
+        function changeSettings() {
+          document.getElementById("settingsForm").submit();          }
+</script>
+
+<div id="settingsPopUp" class="modal fade" role="dialog" >
+  <div class="modal-dialog" style="margin-top: 100px;">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" align="center">
+        <h4 class="modal-title">
+        <span class="text-info">
+        <strong>
+        Notification Settings
+        </strong>
+        </span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <span class="text-warning">
+        <strong>Note:</strong>
+        </span>
+        <span class="text-info">
+        These setting define how you are notified for any notification on Vend.
+        </span>
+         <hr style="margin-top:5px;  margin-bottom: 5px;">
+
+         <form class="well" style="margin-bottom:2px; padding:1px;" id="settingsForm" action="/api/user/settings" method="POST" >
+         <label for="email" class="panel-heading">
+         <span class="text-success">
+         Email Notifications:
+         </span>
+         </label>
+          <div class="pull-right" style="padding: 4px; width:350px; " >
+          <select class="form-control" name="email" >
+          <option value="<%=response.settings.email%>"><%=response.settings.email%></option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          </select>
+          </div>
+         <hr style="margin-top:5px; margin-bottom: 5px; border-color:#E6CCCC;">
+
+          <label for="phone" class="panel-heading">
+         <span class="text-success">
+         Mobile Notifications:
+         </span>
+         </label>
+          <div class="pull-right" style="padding: 4px; width:350px;">
+          <select class="form-control" name="phone" >
+          <option value="<%=response.settings.phone%>"><%=response.settings.phone%></option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">     
+        <button type="button" class="btn btn-success pull-right" onClick="changeSettings()">Save</button>
+        <button type="button" class="btn btn-primary pull-right" style="margin-right:8px;" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

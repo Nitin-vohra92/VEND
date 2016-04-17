@@ -1,0 +1,93 @@
+<div class="col-md-8 col-md-offset-2 toppad" style="margin-top:1%;">
+   
+   
+          <div class="panel panel-info">
+            <div class="panel-heading" align="center">
+              <h1 class="panel-title">
+              <strong>
+              <%=response.account.name%>
+              </strong>
+              </h1>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-4" align="center">
+                 <%include settings_user_image%> 
+                 </div>
+                
+                <div class="col-md-8"> 
+                  <table class="table table-user-information">
+                    <tbody>
+                      <%if(response.account.type==='Student'){%>
+                      <tr>
+                        <td>Department:</td>
+                        <td><%=response.user.department%></td>
+                      </tr>
+                      <tr>
+                        <td>Roll No:</td>
+                        <td><%=response.user.rollno%></td>
+                      </tr>
+                      <tr>
+                        <td>Degree Type:</td>
+                        <td><%=response.user.degree%></td>
+                      </tr>
+                      
+                      <%}%>
+                      <%if(response.account.type==='Teacher'){%>
+                      <tr>
+                        <td>Department:</td>
+                        <td><%=response.user.department%></td>
+                      </tr>
+                      <tr>
+                        <td>Designation:</td>
+                        <td><%=response.user.designation%></td>
+                      </tr>
+                      <%}%>
+                      <tr>
+                        <td>Email:</td>
+                        <td><a href="mailto:<%=response.user.email%>"><%=response.user.email%></a>
+                        <a id="emailPopUpButton" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#emailPopUp">Change</a>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Phone Number:</td>
+                        <td><%=response.user.contact%>
+                        <a id="contactPopUpButton" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#contactPopUp">Change</a>
+                        </td>        
+                      </tr> 
+                       <tr>
+                        <td>Notifications:</td>
+                        <td>
+                        <%if(response.settings.email==='No'&&response.settings.phone==='No'){%>
+                        Vend Only.
+                        <%}%>
+                        <%if(response.settings.email==='Yes'&&response.settings.phone==='No'){%>
+                        Email Only.
+                        <%}%>
+                        <%if(response.settings.email==='No'&&response.settings.phone==='Yes'){%>
+                        Phone Only.
+                        <%}%>
+                        <%if(response.settings.email==='Yes'&&response.settings.phone==='Yes'){%>
+                        Email and Phone Both.
+                        <%}%>
+                        <a id="settingsPopUpButton" class="btn btn-sm btn-success pull-right" data-toggle="modal" data-target="#settingsPopUp">Change</a>
+                        </td>        
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div align="center">
+                  <a href="/user?id=<%=response.account._id%>" class="btn btn-primary">View Full Profile</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+                 <div class="panel-footer">
+                        
+                  </div>
+            
+          </div>
+        </div>
+
+<%include email_popup%>
+<%include contact_popup%>
+<%include settings_popup%>

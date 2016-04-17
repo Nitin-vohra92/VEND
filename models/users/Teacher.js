@@ -15,10 +15,6 @@ var teacherModel=new Schema({
 		type: String,
 		trim: true
 	},
-	profile_pic:{
-		type: String,
-		default:'/images/image_placeholder.png'
-	},
 	designation:{
 		type: String
 	},

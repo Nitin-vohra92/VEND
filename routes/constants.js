@@ -1,6 +1,7 @@
 //check for errors and change routes if names contradict
 
-//related to advertisements
+/////////////////////////////////////////////
+///////////advertisements////////////////////
 /////////////////////////////////////////////
 //view get requests
 exports.PUBLISH='/publish';
@@ -15,13 +16,15 @@ exports.LATEST='/latest';
 exports.RECENTLY_VIEWED='/recent';
 exports.RECOMMENDED='/recommended';
 
-//post requests
-
+/////////////////////////////////////////////
 
 /////////////////////////////////////////////
 exports.SEARCH='/search';
 exports.WISH='/wish';
-//related to user
+/////////////////////////////////////////////
+
+/////////////////////////////////////////////
+///////////////////user//////////////////////
 /////////////////////////////////////////////
 //view get requests
 exports.HOME='/';
@@ -37,7 +40,7 @@ exports.NOTIFICATIONS='/notifications';
 exports.MESSAGES='/messages';
 exports.CONFIRMATIONS='/confirmations';
 exports.SUBSCRIPTIONS='/subscriptions';
-
+exports.SETTINGS='/settings';
 
 
 /////////////////////////////////////////////

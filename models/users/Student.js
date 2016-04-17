@@ -15,10 +15,6 @@ var studentModel=new Schema({
 		type: String,
 		trim: true
 	},
-	profile_pic:{
-		type: String,
-		default:'/images/image_placeholder.png'
-	},
 	rollno:{
 		type: String,
 		default:'Anonymous'

@@ -175,6 +175,70 @@ exports.forgot=function(req,res){
 }
 
 
+exports.profile=function(req,res){
+	var profile_pic=req.files.profile_pic;
+	var user_info=req.session;
+	if(profile_pic===undefined){
+		res.redirect(ROUTES.SETTINGS);
+	}
+	else{
+		userFunctions.changeProfile(user_info.user_id,profile_pic.path,function(){
+			var notification='Successfully updated your profile picture.';
+			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+				res.redirect(ROUTES.SETTINGS);
+			});
+		});
+	}
+}
+
+exports.email=function(req,res){
+	var user_info=req.session;
+	var email=req.body.email;
+	userFunctions.changeEmail(user_info.user_id,email,function(error){
+		var notification;
+		if(error)
+			notification='Could not update your email. Invalid input.';
+		else
+			notification='Successfully updated your email.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.SETTINGS);
+		});
+	});
+	
+}
+
+exports.contact=function(req,res){
+	var user_info=req.session;
+	var contact=req.body.contact;
+	userFunctions.changeContact(user_info.user_id,contact,function(error){
+		var notification;
+		if(error)
+			notification='Could not update your Phone Number. Invalid input.';
+		else
+			notification='Successfully updated your Phone Number.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.SETTINGS);
+		});
+	});
+	
+}
+
+exports.settings=function(req,res){
+	var user_info=req.session;
+	var input=req.body;
+	userFunctions.changeSettings(user_info.user_id,input,function(error){
+		var notification;
+		if(error)
+			notification='Could not update your Notification Settings. Invalid request.';
+		else
+			notification='Successfully updated your Notification Settings.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.SETTINGS);
+		});
+	});
+	
+}
+
 exports.wish=function(req,res){
 		var input=req.body;
 		var user_info=req.session;
@@ -211,6 +275,26 @@ exports.deleteWish=function(req,res){
 		var notification='Successfully deleted your wish.';
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 			res.redirect(ROUTES.WISHES);
+		});
+	});
+}
+
+exports.deleteActivities=function(req,res){
+	var user_info=req.session;
+	userFunctions.deleteActivities(user_info.user_id,function(){
+		var notification='Successfully deleted your Activities.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.ACTIVITIES);
+		});
+	});
+}
+
+exports.deleteNotifications=function(req,res){
+	var user_info=req.session;
+	userFunctions.deleteNotifications(user_info.user_id,function(){
+		var notification='Successfully deleted your Notifications.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+			res.redirect(ROUTES.NOTIFICATIONS);
 		});
 	});
 }

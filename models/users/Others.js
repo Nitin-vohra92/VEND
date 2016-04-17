@@ -16,10 +16,6 @@ var otherModel=new Schema({
 		type: String,
 		trim: true
 	},
-	profile_pic:{
-		type: String,
-		default:'/images/image_placeholder.png'
-	},
 	contact:{
 		type: String
 	},
