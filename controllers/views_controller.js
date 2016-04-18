@@ -721,8 +721,8 @@ exports.search=function(req,res){
 	var input=req.body;
 	console.log('In search');
 	var response={};
-	var query=req.query.q;
-	query=query.split(" ");
+	var q=req.query.q;
+	var query=q.split(" ");
 	var user_id=req.session.user_id;
 	response.user_info=req.session;
 	var sort=req.query.sort;
@@ -769,7 +769,7 @@ exports.search=function(req,res){
 									response.books=sorted_books;
 									response.electronics=sorted_electronics;
 									response.others=sorted_others;
-									response.query=query;
+									response.query=q;
 									response.sort_name=advertisementFunctions.getSortName(sort);
 									response.sort=sort;
 									if(sort===null)

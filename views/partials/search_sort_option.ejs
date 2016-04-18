@@ -1,5 +1,4 @@
-<%if(response.users.length!==0||response.books.length!==0||response.electronics.length!==0||response.others.length!==0){%>
-          
+   
           
   <div class="row">
 
@@ -7,7 +6,7 @@
     <div class="col-md-8 col-md-offset-2">
       <div class="alert alert-warning" style=" padding: 8px; height: 50px;">
       <form action='' method='GET'>
-        <input type="hidden" name="q" value='<%=response.query%>'>
+        <input type="hidden" name="q" value="<%=response.query%>"">
       	<div class="col-md-4">
 	      	<label for="sort" class="form-label" style="margin-top: 6px;"">
 	      	Sort the advertisements by:
@@ -35,5 +34,3 @@
        </div>
     </div>
   </div>
-
-  <%}%>

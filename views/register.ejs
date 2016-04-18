@@ -10,24 +10,35 @@
   <script src="/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
-        function confirmPassword() {
-              var pass1 = document.getElementById("Password").value;
-              var pass2 = document.getElementById("ConfirmPassword").value;
-              if (pass1 != pass2) {
-                  alert("Passwords do not match!! Password not confirmed.");
-                  document.getElementById("pass1").style.borderColor = "#ff0000";
-                  document.getElementById("pass2").style.borderColor = "#ff0000";
-              }
-              else{
-                document.getElementById("registerForm").submit();
-              }
-          }
-</script>
-<script type="text/javascript">
   $(document).ready(function() {
 
 <% include partials/dropdown%>
     
+    //for confirm password
+var password = document.getElementById("Password");
+var confirm_password = document.getElementById("ConfirmPassword");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+function validatePassLength(){
+  if(password.value.toString().length<8) {
+    password.setCustomValidity("Minimum 8 characters Required.");
+  } else {
+    password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+password.onkeyup=validatePassLength;
+confirm_password.onkeyup = validatePassword;
+
+
   	//initial setting
   	$('input[name="rollno"]').attr("required",true);
     $('select[name="department"]').attr("required",true);
@@ -207,7 +218,8 @@
                                           </div>
                                       </div>
 
-                                      <button type="button" class="btn btn-primary btn-block"  onClick="confirmPassword()" style="margin-top: 10%;">Register</button>
+                                      <button type="submit" class="btn btn-primary btn-block"   style="margin-top: 10%;">Register
+                                      </button>
                                   </form>
                               </div>
                     </div>     
