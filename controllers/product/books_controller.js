@@ -5,7 +5,7 @@ var Book=require('../../models/products/Book');
 var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
-var UPLOAD_DIR = "\\uploads\\productimages\\books\\";
+var UPLOAD_DIR = "/uploads/productimages/books/";
 
 
 var helper=require('../functions/helper');
@@ -27,7 +27,7 @@ exports.publish=function(req,callback){
 
  			var ext=path.extname(oldPath);
 			var savedPath = UPLOAD_DIR+book._id+i+ext;
-	 		var newPath=APP_DIR+'\\public'+savedPath;
+	 		var newPath=APP_DIR+'/public'+savedPath;
          	book.images.push({path:savedPath});        
 	
 			helper.resizeAndMoveImage(oldPath,newPath);     	

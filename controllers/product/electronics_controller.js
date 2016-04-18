@@ -3,7 +3,7 @@ var Electronics=require('../../models/products/Electronics');
 var fs=require('fs');
 var path = require('path');
 var APP_DIR = path.dirname(require.main.filename);
-var UPLOAD_DIR = "\\uploads\\productimages\\electronics\\";
+var UPLOAD_DIR = "/uploads/productimages/electronics/";
 
 var helper=require('../functions/helper');
 var timestamp=require('../functions/timestamp');
@@ -25,7 +25,7 @@ exports.publish=function(req,callback){
  			var ext=path.extname(oldPath);
 
  			var savedPath = UPLOAD_DIR+electronics._id+i+ext;
- 			var newPath=APP_DIR+'\\public'+savedPath;
+ 			var newPath=APP_DIR+'/public'+savedPath;
  			
     	    electronics.images.push({path:savedPath});
 			helper.resizeAndMoveImage(oldPath,newPath); 
