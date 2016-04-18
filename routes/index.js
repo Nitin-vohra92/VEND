@@ -16,8 +16,12 @@ router.route(ROUTES.LOGIN).get(view.login);
 //registering a user
 router.route(ROUTES.REGISTER).get(view.register);
 
+//confirm
+router.route(ROUTES.CONFIRM).get(view.confirm);
+
 //forgot password
 router.route(ROUTES.FORGOT).get(view.forgot);
+
 
 //for viewing any user
 router.route(ROUTES.USER).get(auth.loggedIn,view.user);
