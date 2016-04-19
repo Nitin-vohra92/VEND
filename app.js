@@ -15,9 +15,9 @@ var CONF_FILE=require('./conf.json');
 //database 
 //local
 // add this to git ignore conf.json
-var db=mongoose.connect('mongodb://127.0.0.1/VEND');
+// var db=mongoose.connect('mongodb://127.0.0.1/VEND');
 // online
-// var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGO_DB.ADDRESS);
+var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGO_DB.ADDRESS);
 
 /////////////////////////////////////////////////////////
 var MongoStore=require('connect-mongo')(session);
