@@ -26,12 +26,14 @@ var advertisementFunctions=require('./functions/advertisement');
 //login page
 exports.login=function(req,res){
 	var response={};
+	response.page='login';
 	res.render('login',{response:response});
 }
 
 //register page
 exports.register=function(req,res){
 	var response={};
+	response.page='register';
 	res.render('register',{response:response});
 }
 
@@ -48,6 +50,7 @@ exports.forgot=function(req,res){
 //for home view
 exports.home=function(req,res){
 	var response={};
+	response.page='home';
 	//if any user is logged in
 	if(req.session.user_id){
 		response.user_info=req.session;
@@ -102,6 +105,7 @@ exports.home=function(req,res){
 
 exports.publish=function(req,res){
 		var response={};
+		response.page='publish';
 		response.user_info=req.session;
 		var user_id=req.session.user_id;
 		userFunctions.getNotificationCount(user_id,function(count){
@@ -283,6 +287,7 @@ exports.activities=function(req,res){
 exports.notifications=function(req,res){
 	var user_id=req.session.user_id;
 	var response={};
+	response.page='notifications';
 	response.user_info=req.session;
 	//move to user functions if needed
 	Notification.find({$and:[{read:0},{user_id:user_id}]}, null, {sort: {'_id': -1}}).exec(function(err,unread_notifications) {
@@ -353,6 +358,7 @@ exports.myWishes=function(req,res){
 exports.messages=function(req,res){
 	var response={};
 	var user_info=req.session;
+	response.page='messages';
 	response.user_info=user_info;
 	userFunctions.getMessages(user_info.user_id,function(messages){
 		response.messages=messages;
@@ -436,6 +442,7 @@ exports.settings=function(req,res){
 exports.products=function(req,res){
 	
 			var response={};
+			response.page='advertisements';
 			response.user_info=req.session;
 			var user_id=req.session.user_id;
 			var sort=req.query.sort;
@@ -692,7 +699,7 @@ exports.wish=function(req,res){
 		}
 		else{
 			response.wish=wish;
-			advertisementFunctions.getWishRecommendations(wish,sort,function(advertisements){
+			advertisementFunctions.getWishRecommendations(user_info.user_id,wish,sort,function(advertisements){
 
 				response.advertisements=advertisements;
 				response.sort_name=advertisementFunctions.getSortName(sort);
@@ -757,11 +764,11 @@ exports.search=function(req,res){
 		default:
 			userFunctions.searchUser(query,function(users){
 				response.users=users;
-				advertisementFunctions.searchBook(query,function(advertisements){
+				advertisementFunctions.searchBook(user_id,query,function(advertisements){
 					response.books=advertisements;
-					advertisementFunctions.searchElectronics(query,function(advertisements){
+					advertisementFunctions.searchElectronics(user_id,query,function(advertisements){
 						response.electronics=advertisements;
-						advertisementFunctions.searchOther(query,function(advertisements){
+						advertisementFunctions.searchOther(user_id,query,function(advertisements){
 							response.others=advertisements;
 							userFunctions.getNotificationCount(user_id,function(count){
 								response.notification_count=count;
@@ -788,7 +795,3 @@ exports.search=function(req,res){
 	}
 
 }
-
-
-
-

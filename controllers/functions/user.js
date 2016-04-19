@@ -1145,20 +1145,22 @@ exports.getRecommended=function(user_info,limit,sort,callback){
 				view_tags=recommendation.view_tags;
 				search_tags=recommendation.search_tags;
 			}
+			//also pass user id so that user does not see his own ads
+			// change it
 			//first in books
-			advertisementFunctions.getRecommendedBooks(view_tags,function(book_advertisements){
+			advertisementFunctions.getRecommendedBooks(user_id,view_tags,function(book_advertisements){
 				books=mergeArrays(books,book_advertisements);
-				advertisementFunctions.getRecommendedElectronics(view_tags,function(electronics_advertisements){
+				advertisementFunctions.getRecommendedElectronics(user_id,view_tags,function(electronics_advertisements){
 					electronics=mergeArrays(electronics,electronics_advertisements);
-					advertisementFunctions.getRecommendedOthers(view_tags,function(other_advertisements){
+					advertisementFunctions.getRecommendedOthers(user_id,view_tags,function(other_advertisements){
 						others=mergeArrays(others,other_advertisements);
-						advertisementFunctions.searchRecommendedBooks(search_tags,function(searched_books){
+						advertisementFunctions.searchRecommendedBooks(user_id,search_tags,function(searched_books){
 							books=mergeArrays(books,searched_books);
-							advertisementFunctions.searchRecommendedElectronics(search_tags,function(searched_electronics){
+							advertisementFunctions.searchRecommendedElectronics(user_id,search_tags,function(searched_electronics){
 								electronics=mergeArrays(electronics,searched_electronics);
-								advertisementFunctions.searchRecommendedOthers(search_tags,function(searched_others){
+								advertisementFunctions.searchRecommendedOthers(user_id,search_tags,function(searched_others){
 									others=mergeArrays(others,searched_others);
-									advertisementFunctions.getRecommended(user_type,function(advertisements){
+									advertisementFunctions.getRecommended(user_id,user_type,function(advertisements){
 										if(books.length===0&&electronics.length===0&&others.length===0){
 											books=mergeArrays(books,advertisements.books);
 											electronics=mergeArrays(electronics,advertisements.electronics);

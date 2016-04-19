@@ -60,9 +60,9 @@ function findIndexByKeyValue(obj, key, value){
     return -1;
 }
 
-function getAdvertisementFromIds(products,callback){
+function getAdvertisementFromIds(user_id,products,callback){
 	var result=convertIdsToArray(products);
-	Advertisement.find({product_id:{$in:result}},function(err,advertisements){
+	Advertisement.find({user_id:{$nin:[user_id]},product_id:{$in:result}},function(err,advertisements){
 		callback(advertisements);
 	});
 }
@@ -277,25 +277,25 @@ exports.deleteAdvertisement=function(user_info,ad_id,req,res,callback){
 	});
 }
 
-exports.searchBook=function(query,callback){
+exports.searchBook=function(user_id,query,callback){
 	Book.search(query,function(books){
-		getAdvertisementFromIds(books,function(advertisements){
+		getAdvertisementFromIds(user_id,books,function(advertisements){
 			callback(advertisements);
 		});		
 	});
 }
 
-exports.searchElectronics=function(query,callback){
+exports.searchElectronics=function(user_id,query,callback){
 	Electronics.search(query,function(electronics){
-		getAdvertisementFromIds(electronics,function(advertisements){
+		getAdvertisementFromIds(user_id,electronics,function(advertisements){
 			callback(advertisements);
 		});	
 	});
 
 }
-exports.searchOther=function(query,callback){
+exports.searchOther=function(user_id,query,callback){
 	Other.search(query,function(others){
-		getAdvertisementFromIds(others,function(advertisements){
+		getAdvertisementFromIds(user_id,others,function(advertisements){
 			callback(advertisements);
 		});	
 	});
@@ -623,13 +623,13 @@ exports.getRecentlyViewed=function(limit,sort,callback){
 	}
 }
 
-exports.getRecommended=function(user_type,callback){
+exports.getRecommended=function(user_id,user_type,callback){
 	var recommended={};
-	Advertisement.find({user_type:user_type,category:'Book'},null,{sort: {'_id': -1}},function(err,books){
+	Advertisement.find({user_id:{$nin:[user_id]},user_type:user_type,category:'Book'},null,{sort: {'_id': -1}},function(err,books){
 		recommended.books=books;
-		Advertisement.find({user_type:user_type,category:'Electronics'},null,{sort: {'_id': -1}},function(err,electronics){
+		Advertisement.find({user_id:{$nin:[user_id]},user_type:user_type,category:'Electronics'},null,{sort: {'_id': -1}},function(err,electronics){
 			recommended.electronics=electronics;
-			Advertisement.find({user_type:user_type,category:'Other'},null,{sort: {'_id': -1}},function(err,others){
+			Advertisement.find({user_id:{$nin:[user_id]},user_type:user_type,category:'Other'},null,{sort: {'_id': -1}},function(err,others){
 				recommended.others=others;
 				callback(recommended);
 			});
@@ -637,50 +637,50 @@ exports.getRecommended=function(user_type,callback){
 	});
 }
 
-exports.getRecommendedBooks=function(view_tags,callback){
+exports.getRecommendedBooks=function(user_id,view_tags,callback){
 	Book.getRecommendedBooks(view_tags,function(books){
-		getAdvertisementFromIds(books,function(advertisements){
+		getAdvertisementFromIds(user_id,books,function(advertisements){
 			callback(advertisements);
 		});
 	});
 }
 
 
-exports.searchRecommendedBooks=function(search_tags,callback){
+exports.searchRecommendedBooks=function(user_id,search_tags,callback){
 	Book.searchRecommendedBooks(search_tags,function(books){
-		getAdvertisementFromIds(books,function(advertisements){
+		getAdvertisementFromIds(user_id,books,function(advertisements){
 			callback(advertisements);
 		});
 	});
 }
 
-exports.getRecommendedElectronics=function(view_tags,callback){
+exports.getRecommendedElectronics=function(user_id,view_tags,callback){
 	Electronics.getRecommendedElectronics(view_tags,function(electronics){
-		getAdvertisementFromIds(electronics,function(advertisements){
+		getAdvertisementFromIds(user_id,electronics,function(advertisements){
 			callback(advertisements);
 		});
 	});
 }
 
-exports.searchRecommendedElectronics=function(search_tags,callback){
+exports.searchRecommendedElectronics=function(user_id,search_tags,callback){
 	Electronics.searchRecommendedElectronics(search_tags,function(electronics){
-		getAdvertisementFromIds(electronics,function(advertisements){
+		getAdvertisementFromIds(user_id,electronics,function(advertisements){
 			callback(advertisements);
 		});
 	});
 }
 
-exports.getRecommendedOthers=function(view_tags,callback){
+exports.getRecommendedOthers=function(user_id,view_tags,callback){
 	Other.getRecommendedOthers(view_tags,function(others){
-		getAdvertisementFromIds(others,function(advertisements){
+		getAdvertisementFromIds(user_id,others,function(advertisements){
 			callback(advertisements);
 		});
 	});
 }
 
-exports.searchRecommendedOthers=function(search_tags,callback){
+exports.searchRecommendedOthers=function(user_id,search_tags,callback){
 	Other.searchRecommendedOthers(search_tags,function(others){
-		getAdvertisementFromIds(others,function(advertisements){
+		getAdvertisementFromIds(user_id,others,function(advertisements){
 			callback(advertisements);
 		});
 	});
@@ -1065,13 +1065,13 @@ exports.getConfirmedAdvertisementsForUser=function(user_id,callback){
 	});
 }
 
-exports.getWishRecommendations=function(wish,sort,callback){
+exports.getWishRecommendations=function(user_id,wish,sort,callback){
 	var tags=helper.convertWishToTags(wish);
 	var category=wish.category;
 	switch(category){
 		case 'Book':
 			Book.searchRecommendedBooks(tags,function(books){
-				getAdvertisementFromIds(books,function(advertisements){
+				getAdvertisementFromIds(user_id,books,function(advertisements){
 					_this.sortAdvertisements(sort,advertisements,[],[],function(sorted_advertisements,a,b){	
 						callback(sorted_advertisements);
 					});
@@ -1080,7 +1080,7 @@ exports.getWishRecommendations=function(wish,sort,callback){
 			break;
 		case 'Electronics':
 			Electronics.searchRecommendedElectronics(tags,function(electronics){
-				getAdvertisementFromIds(electronics,function(advertisements){
+				getAdvertisementFromIds(user_id,electronics,function(advertisements){
 					_this.sortAdvertisements(sort,[],advertisements,[],function(a,sorted_advertisements,b){	
 						callback(sorted_advertisements);
 					});
@@ -1089,7 +1089,7 @@ exports.getWishRecommendations=function(wish,sort,callback){
 			break;
 		case 'Other':
 			Other.searchRecommendedOthers(tags,function(others){
-				getAdvertisementFromIds(others,function(advertisements){
+				getAdvertisementFromIds(user_id,others,function(advertisements){
 					_this.sortAdvertisements(sort,[],[],advertisements,function(a,b,sorted_advertisements){	
 						callback(sorted_advertisements);
 					});

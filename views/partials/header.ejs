@@ -13,10 +13,22 @@
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav">
-      <li ><a href="/">Home</a></li>
+      <%if(response.page==='home'){%>
+      <li class="active">
+      <%}%>
+      <%if(response.page!=='home'){%>
+      <li>
+      <%}%>
+      <a  href="/">Home</a>
+      </li>
 
-                    <li class="dropdown" >
-
+                    
+                    <%if(response.page==='advertisements'){%>
+                    <li  class="dropdown active" >
+                    <%}%>
+                    <%if(response.page!=='advertisements'){%>
+                    <li class="dropdown">
+                    <%}%>
                     <a href="/advertisements" id="advertisement_dropdown">Advertisements</a>
                     <ul class="dropdown-menu">
                       <li><a href="/books">Books</a></li>
@@ -27,13 +39,33 @@
                     </ul>
                     </li>
 
-                    <li><a href="/publish">Publish an Ad</a></li>
-                    <li><a href="/messages">Inbox
+                    <%if(response.page==='publish'){%>
+                    <li class="active">
+                    <%}%>
+                    <%if(response.page!=='publish'){%>
+                    <li>
+                    <%}%>
+                    <a href="/publish">Publish an Ad</a>
+                    </li>
+                    <%if(response.page==='messages'){%>
+                    <li class="active">
+                    <%}%>
+                    <%if(response.page!=='messages'){%>
+                    <li>
+                    <%}%>
+                    <a href="/messages">Inbox
                     <%if(response.message_count>0){%>
                       <span class="badge"><small><%=response.message_count%></small></span>
                     <%}%>
-                    </a></li>
-                    <li><a href="/notifications">
+                    </a>
+                    </li>
+                    <%if(response.page==='notifications'){%>
+                    <li class="active">
+                    <%}%>
+                    <%if(response.page!=='notifications'){%>
+                    <li>
+                    <%}%>
+                    <a href="/notifications">
                     Notifications
                     <%if(response.notification_count>0){%>
                       <span class="badge"><small><%=response.notification_count%></small></span>
@@ -81,8 +113,21 @@
           <%}else%>
           <% if(response.user_info===undefined){%>
           <!-- if no user logged in -->
-                <li ><a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> 
+                <%if(response.page==='register'){%>
+                <li class="active">
+                <%}%>
+                <%if(response.page!=='register'){%>
+                <li>
+                <%}%>
+                <a href="/register"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+                </li>
+                <%if(response.page==='login'){%>
+                <li class="active">
+                <%}%>
+                <%if(response.page!=='login'){%>
+                <li>
+                <%}%>
+                <a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li> 
 
         <%}%>
     </ul>

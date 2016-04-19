@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Vend</title>
+  <title><%=search+': '+response.query%></title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -210,8 +210,10 @@
           <%if(response.users.length===0&&response.books.length===0&&response.electronics.length===0&&response.others.length===0){%>
             <div align="center">
           <strong>
-            Sorry!! We couldn't find anything that matches your query.
+            Sorry!! We couldn't find anything that matches your query.            
             </strong>
+            <br>
+            <span class="text-muted">Note: You don't see yor ads here.</span>
           </div>
           
           <%}%>

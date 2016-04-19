@@ -60,6 +60,10 @@ app.use('/', routes);
 app.use('/api',apiRoutes);
 
 
+//constants
+app.locals=require('./views/titles.json');
+
+
 app.listen(port,function(req,res){
   console.log("Server Started!!"+port);
 });
