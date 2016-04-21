@@ -15,9 +15,9 @@ var CONF_FILE=require('./conf.json');
 //database 
 //local
 // add this to git ignore conf.json
-// var db=mongoose.connect('mongodb://127.0.0.1/VEND');
+var db=mongoose.connect('mongodb://127.0.0.1/VEND');
 // online
-var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGO_DB.ADDRESS);
+// var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGO_DB.ADDRESS);
 
 /////////////////////////////////////////////////////////
 var MongoStore=require('connect-mongo')(session);
@@ -33,7 +33,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));         // set the static files location   
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 
 app.use(cookieParser());

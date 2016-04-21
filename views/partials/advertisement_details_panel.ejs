@@ -146,14 +146,14 @@
                 </div>
               </div>            
             </div>
-            <div class="panel-footer">
+            <div class="panel-footer" align="justify">
                   <span class="text-muted"><small>
                     Note: 
                     <%if(!response.self&&response.ping_status==='unavailable') {%>
                       This option unavailable because you have already pinged the publisher.
                     <%} else%>
                     <%if(response.self) {%>
-                      Ping option unavailable for your own Ads. Please check 'Your Ads' section to see requests for your ads.
+                      Ping option unavailable for your own Ads. Please check <a href="/user/advertisements">Your Ads</a> section to see requests for your ads.
                     <%} else%>
                     <%if(!response.self&&response.ping_status!=='unavailable'){%>
                      A request to publisher will be sent. You will be notified if the publisher wants to sell or loan to you.

@@ -9,6 +9,7 @@ var TemporaryUser=require('../../models/users/TemporaryUser');
 var helper=require('../functions/helper');
 
 var ROUTES=require('../../routes/constants');
+var validator=require('validator');
 
 exports.register=function(req,res){
 
@@ -319,21 +320,37 @@ exports.ping=function(req,res){
 exports.message=function(req,res){
 	var input=req.body;
 	var user_info=req.session;
-	userFunctions.addMessage(user_info,input,function(){
-		var notification='Successfully messaged the user. Check <a href="'+
-		ROUTES.MESSAGES+'">Inbox</a>.';
+	if(input.message.trim().length===0){
+		var notification='Could not send an empty message.';
 		userFunctions.addActivityNotification(user_info.user_id,notification,function(){	
 			res.redirect(ROUTES.USER+'?id='+input.user_id);
 		});
-	});
+	}
+	else{
+		userFunctions.addMessage(user_info,input,function(){
+			var notification='Successfully messaged the user. Check <a href="'+
+			ROUTES.MESSAGES+'">Inbox</a>.';
+			userFunctions.addActivityNotification(user_info.user_id,notification,function(){	
+				res.redirect(ROUTES.USER+'?id='+input.user_id);
+			});
+		});
+	}
 }
 
 exports.reply=function(req,res){
 	var input=req.body;
 	var user_info=req.session;
-	userFunctions.addMessage(user_info,input,function(){	
-		res.redirect(ROUTES.MESSAGES);
-	});
+	if(input.message.trim().length===0){
+		var notification='Could not send an empty message.';
+		userFunctions.addActivityNotification(user_info.user_id,notification,function(){	
+			res.redirect(ROUTES.MESSAGES);
+		});
+	}
+	else{
+		userFunctions.addMessage(user_info,input,function(){	
+			res.redirect(ROUTES.MESSAGES);
+		});
+	}
 }
 
 exports.subscribe=function(req,res){

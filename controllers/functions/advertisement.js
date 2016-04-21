@@ -96,11 +96,11 @@ exports.validatePublishData=function(req){
 	switch(category){
 		case 'Book':
 			//for title
-			if(validator.isNull(input.title)){
+			if(validator.isNull(input.title)||input.title.trim().length===0){
 				error="Title of book is not valid.";
 				return error;
 			}
-			if (validator.isNull(input.author)||name_test.test(input.author)) {
+			if (validator.isNull(input.author)||name_test.test(input.author)||input.author.trim().length===0) {
 				error='Author of book is not valid.(Numbers not allowed)';
 				return error;
 			}
@@ -111,26 +111,26 @@ exports.validatePublishData=function(req){
 			break;
 		case 'Electronics':
 		case 'Other':
-			if(validator.isNull(input.brand)){
+			if(validator.isNull(input.brand)||input.brand.trim().length===0){
 				error="Brand of product is not valid.";
 				return error;
 			}
-			if (validator.isNull(input.sub_category)) {
+			if (validator.isNull(input.sub_category)||input.sub_category.trim().length===0) {
 				error='Sub category of product is not valid';
 				return error;
 			}
-			if (validator.isNull(input.name)) {
+			if (validator.isNull(input.name)||input.name.trim().length===0) {
 				error="Name of product is not valid.";
 				return error;
 			}
 			break;
 	}
 	//now check for common details
-	if(validator.isNull(input.kind)||!validator.isAlpha(input.kind)||(input.kind!=='BUY'&&input.kind!=='LOAN')){
+	if(validator.isNull(input.kind)||input.kind.trim().length===0||!validator.isAlpha(input.kind)||(input.kind!=='BUY'&&input.kind!=='LOAN')){
 		error="BUY or LOAN input not valid.";
 		return error;
 	}
-	if(validator.isNull(input.bid)||!validator.isAlpha(input.bid)||(input.bid!=='YES'&&input.bid!=='NO')){
+	if(validator.isNull(input.bid)||input.bid.trim().length===0||!validator.isAlpha(input.bid)||(input.bid!=='YES'&&input.bid!=='NO')){
 		error="BID input not valid.";
 		return error;
 	}
@@ -149,7 +149,7 @@ exports.validatePublishData=function(req){
 		error="Image of the product is required.";
 		return error;
 	}
-	if(validator.isNull(input.location)){
+	if(validator.isNull(input.location)||input.location.trim().length===0){
 		error="Location of product not specified";
 		return error;
 	}
@@ -157,7 +157,7 @@ exports.validatePublishData=function(req){
 		error="Price of product is not valid.";
 		return error;
 	}
-	if(validator.isNull(input.description)){
+	if(validator.isNull(input.description)||input.description.trim().length===0){
 		error="Please give description of product.";
 		return error;
 	}

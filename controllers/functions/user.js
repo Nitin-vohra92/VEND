@@ -179,22 +179,22 @@ exports.validateRegistrationData=function(req){
 		var input=req.body;
 		var imagefile=req.files.profile_pic;
 	//firstname
-	if (validator.isNull(input.firstname)||!validator.isAlpha(input.firstname)) {
+	if (validator.isNull(input.firstname)||input.firstname.trim().length===0||!validator.isAlpha(input.firstname)) {
 		error="Firstname is not valid!! It can contain only alphabets.";
 		return error;
 	}
 	//lastname
-	if(validator.isNull(input.lastname)||!validator.isAlpha(input.lastname)){
+	if(validator.isNull(input.lastname)||input.lastname.trim().length===0||!validator.isAlpha(input.lastname)){
 		error="Lastname is not valid!! It can contain only alphabets.";
 		return error;
 	}
 	//email
-	if(!validator.isEmail(input.email)){
+	if(!validator.isEmail(input.email)||input.email.trim().length===0){
 		error="Email is not valid.";
 		return error;
 	}
 	//phone number
-	if(!validator.isMobilePhone(input.contact,'en-IN')){
+	if(!validator.isMobilePhone(input.contact,'en-IN')||input.contact.trim().length===0){
 		error="Phone Number is not valid.";
 		return error;
 	}
@@ -207,11 +207,11 @@ exports.validateRegistrationData=function(req){
 			return error;
 		}
 	}
-	if(validator.isNull(input.username)){
+	if(validator.isNull(input.username)||input.username.trim().length===0){
 		error="Username can not be empty!!";
 		return error;
 	}
-	if(validator.isNull(input.username)||input.password.length<8){
+	if(validator.isNull(input.password)||input.password.trim().length===0||input.password.length<8){
 		console.log("Inside password test.");
 
 		error="Password is not valid!!";
@@ -219,15 +219,15 @@ exports.validateRegistrationData=function(req){
 	}
 	if(input.type==="Student"){
 		//test specific to student details
-		if(!validator.isAlphanumeric(input.rollno)){
+		if(!validator.isAlphanumeric(input.rollno)||input.rollno.trim().length===0){
 			error="Roll Number is not valid!!";
 			return error;
 		}
-		if(validator.isNull(input.department)){
+		if(validator.isNull(input.department)||input.department.trim().length===0){
 			error="Department needs to be selected!!";
 			return error;
 		}
-		if(validator.isNull(input.degree)){
+		if(validator.isNull(input.degree)||input.degree.trim().length===0){
 			error="Degree type needs to be selected!!";
 			return error;
 		}
@@ -371,11 +371,11 @@ exports.validateRegistrationData=function(req){
 	if(input.type==="Teacher"){
 		//test specific to teacher details 
 
-		if(validator.isNull(input.teacher_department)){
+		if(validator.isNull(input.teacher_department)||input.teacher_department.trim().length===0){
 			error="Department needs to be selected!!";
 			return error;
 		}
-		if(validator.isNull(input.designation)){
+		if(validator.isNull(input.designation)||input.designation.trim().length===0){
 			error="Designation needs to be selected!!";
 			return error;
 		}

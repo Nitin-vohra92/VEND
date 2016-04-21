@@ -17,7 +17,8 @@ var wishModel=new Schema({
 		type: String
 	},
 	description:{
-		type: String
+		type: String,
+		default:'No Description'
 	},
 	category:{
 		type: String

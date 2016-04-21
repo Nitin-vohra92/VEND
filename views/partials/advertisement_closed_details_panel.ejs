@@ -133,10 +133,19 @@
                 </div>
               </div>            
             </div>
-            <div class="panel-footer">
+            <div class="panel-footer" align="justify">
                   <span class="text-muted"><small>
-                    Note: This advertisement is closed. The seller confirmed the request made by <a href='/user?id=<%=response.advertisement.to_user_id%>'>
-                    <%=response.advertisement.to_user_name%></a> to <%=response.advertisement.kind%> this product for above price.                    
+                <%if(response.user_info.user_id===response.advertisement.to_user_id){%>
+                This ad has been confirmed to you by the seller. Check <a href="/confirmations">Confirmations</a> for more info.
+                <%}%>
+                <%if(response.user_info.user_id===response.advertisement.user_id){%>
+                Note: This advertisement was published by you and is closed now. You confirmed the request made by <a href='/user?id=<%=response.advertisement.to_user_id%>'>
+                <%=response.advertisement.to_user_name%></a> to <%=response.advertisement.kind%> this product for above price. Check <a href="/user/advertisements">Your Ads</a> for more info.
+                <%}%>
+                <%if(response.user_info.user_id!==response.advertisement.user_id&&response.user_info.user_id!==response.advertisement.touser_id){%>
+                Note: This advertisement is closed now. The seller confirmed the request made by <a href='/user?id=<%=response.advertisement.to_user_id%>'>
+                <%=response.advertisement.to_user_name%></a> to <%=response.advertisement.kind%> this product for above price.
+                <%}%>             
                   </small></span>
               </div>
         </div>

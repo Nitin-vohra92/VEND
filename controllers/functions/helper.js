@@ -41,7 +41,7 @@ exports.deleteImages=function(images){
 
 exports.validateWish=function(input){
 	var error;
-	if(validator.isNull(input.title)||validator.isNull(input.category)){
+	if(input.title.trim().length===0||validator.isNull(input.category)){
 		error='Invalid wish input.';
 		return error;
 	}
