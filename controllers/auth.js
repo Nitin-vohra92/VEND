@@ -39,6 +39,14 @@ exports.login=function(req,res){
 	 
 }
 
+exports.noLogin=function(req,res,next){
+	if (req.session.user_id===undefined) {
+        next();
+    } else {
+        userFunctions.sendToHome(res);
+    }
+}
+
 exports.loggedIn=function(req,res,next){
 	if (req.session.user_id===undefined) {
         userFunctions.sendToLogin(res);

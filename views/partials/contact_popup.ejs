@@ -1,6 +1,7 @@
 <script type="text/javascript">
         function changeContact() {
-          document.getElementById("contactForm").submit();          }
+          $("#contactForm").find('button[type="submit"]').trigger('click'); 
+        }
 </script>
 
 <div id="contactPopUp" class="modal fade" role="dialog" >
@@ -26,6 +27,7 @@
         </span>
          <form id="contactForm" action="/api/user/contact" method="POST" >
           <input type="tel" class="form-control" name="contact" required placeholder="Enter new phone number here" />
+          <button type="submit" class="hide"></button>
         </form>
       </div>
       <div class="modal-footer">     

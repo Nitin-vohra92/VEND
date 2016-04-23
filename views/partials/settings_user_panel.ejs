@@ -18,6 +18,10 @@
                 <div class="col-md-8"> 
                   <table class="table table-user-information">
                     <tbody>
+                      <tr>
+                        <td>Username:</td>
+                        <td><%=response.account.username%></td>
+                      </tr>
                       <%if(response.account.type==='Student'){%>
                       <tr>
                         <td>Department:</td>

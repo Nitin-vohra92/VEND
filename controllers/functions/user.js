@@ -469,7 +469,7 @@ exports.changeProfile=function(user_id,profile_pic,callback){
 		Account.findOne({_id:user_id},function(err,result){
 			result.profile_pic=savedPath;
 			result.save(function(){
-				callback();
+				callback(savedPath);
 			});
 		});
 	});
@@ -618,7 +618,9 @@ exports.sendToError=function(req,res,error){
 			res.render('error',{response:response});
 }
 
-
+exports.sendToHome=function(res){
+	res.redirect(ROUTES.HOME);
+}
 
 exports.searchUser=function(query,callback){
 	var query=helper.changeToRegexArray(query);

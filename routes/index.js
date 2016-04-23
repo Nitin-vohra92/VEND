@@ -10,17 +10,17 @@ var ROUTES=require('./constants');
 router.route(ROUTES.HOME).get(view.home);
 
 //login page	
-router.route(ROUTES.LOGIN).get(view.login);
+router.route(ROUTES.LOGIN).get(auth.noLogin,view.login);
 
 
 //registering a user
-router.route(ROUTES.REGISTER).get(view.register);
+router.route(ROUTES.REGISTER).get(auth.noLogin,view.register);
 
 //confirm
-router.route(ROUTES.CONFIRM).get(view.confirm);
+router.route(ROUTES.CONFIRM).get(auth.noLogin,view.confirm);
 
 //forgot password
-router.route(ROUTES.FORGOT).get(view.forgot);
+router.route(ROUTES.FORGOT).get(auth.noLogin,view.forgot);
 
 
 //for viewing any user

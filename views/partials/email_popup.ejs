@@ -1,6 +1,7 @@
 <script type="text/javascript">
         function changeEmail() {
-          document.getElementById("emailForm").submit();          }
+          $("#emailForm").find('button[type="submit"]').trigger('click'); 
+         }
 </script>
 
 <div id="emailPopUp" class="modal fade" role="dialog" >
@@ -26,6 +27,7 @@
         </span>
          <form id="emailForm" action="/api/user/email" method="POST" >
           <input type="email" class="form-control" name="email" required placeholder="Enter new email here" />
+          <button type="submit" class="hide"></button>
         </form>
       </div>
       <div class="modal-footer">     

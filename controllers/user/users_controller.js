@@ -183,7 +183,8 @@ exports.profile=function(req,res){
 		res.redirect(ROUTES.SETTINGS);
 	}
 	else{
-		userFunctions.changeProfile(user_info.user_id,profile_pic.path,function(){
+		userFunctions.changeProfile(user_info.user_id,profile_pic.path,function(savedPath){
+			req.session.profile_pic=savedPath;
 			var notification='Successfully updated your profile picture.';
 			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
 				res.redirect(ROUTES.SETTINGS);
