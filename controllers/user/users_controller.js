@@ -240,6 +240,45 @@ exports.settings=function(req,res){
 	
 }
 
+exports.password=function(req,res){
+	var user_info=req.session;
+	var input=req.body;
+	userFunctions.getUser(user_info.user_id,function(account,user){
+		var notification;
+		if(account.password!==input.old_password){
+			notification='Could not change Password! Old Password Incorrect.';
+			userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+				res.redirect(ROUTES.SETTINGS);
+			});
+		}
+		else{
+			if(input.new_password.toString().length<8){
+				notification='Could not change Password! Invalid new password.';
+				userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+					res.redirect(ROUTES.SETTINGS);
+				});
+			}
+			else{
+				userFunctions.changePassword(user_info.user_id,input.new_password,function(error){
+					if(error){
+						notification='Could not change Password! Invalid Request.';
+						userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+							res.redirect(ROUTES.SETTINGS);
+						});
+					}
+					else{
+						notification='Successfully updated you password.';
+						userFunctions.addActivityNotification(user_info.user_id,notification,function(){
+							res.redirect(ROUTES.SETTINGS);
+						});
+					}
+				});
+			}
+		}
+	});
+	
+}
+
 exports.wish=function(req,res){
 		var input=req.body;
 		var user_info=req.session;

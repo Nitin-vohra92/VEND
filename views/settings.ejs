@@ -13,8 +13,38 @@
 <script type="text/javascript">
 	  $(document).ready(function() {
   <% include partials/dropdown%>
-  
+      //for confirm password
+var old_password = document.getElementById("OldPassword");
+var password = document.getElementById("NewPassword");
+var confirm_password = document.getElementById("ConfirmPassword");
 
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+function validatePassLength(){
+  if(password.value.toString().length<8) {
+    password.setCustomValidity("Minimum 8 characters Required.");
+  } else {
+    password.setCustomValidity('');
+  }
+}
+
+function validateOldPassLength(){
+  if(old_password.value.toString().length<8) {
+    old_password.setCustomValidity("Minimum 8 characters Required.");
+  } else {
+    old_password.setCustomValidity('');
+  }
+}
+old_password.onkeyup=validateOldPassLength;
+password.onchange = validatePassword;
+password.onkeyup=validatePassLength;
+confirm_password.onkeyup = validatePassword;
 });
 </script>
 

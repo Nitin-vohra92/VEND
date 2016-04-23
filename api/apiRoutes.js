@@ -54,6 +54,9 @@ router.route('/user/contact').post(auth.loggedIn,user.contact);
 //changing mobile
 router.route('/user/settings').post(auth.loggedIn,user.settings);
 
+//changing password
+router.route('/user/password').post(auth.loggedIn,user.password);
+
 //publishing an advertisement
 router.route('/advertisement/publish').post(auth.loggedIn,advertisement.publish);
 

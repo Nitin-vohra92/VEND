@@ -547,7 +547,19 @@ exports.getSettings=function(user_id,callback){
 	});
 } 
 
-
+exports.changePassword=function(user_id,password,callback){
+	Account.findOne({_id:user_id},function(err,account){
+		if(err||account===null){
+			callback(1);
+		}
+		else{
+			account.password=password;
+			account.save(function(){
+				callback(0);
+			});
+		}
+	});
+}
 
 exports.setSession=function(req,account){
 	req.session.user_id=account._id;
