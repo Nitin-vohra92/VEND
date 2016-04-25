@@ -38,7 +38,7 @@ exports.publish=function(req,callback){
  		var oldPath=imagefiles.path;
 		var ext=path.extname(oldPath);
 	 	var savedPath = UPLOAD_DIR+book._id+ext;
-	 	var newPath=APP_DIR+'\\public\\'+savedPath;
+	 	var newPath=APP_DIR+'/public'+savedPath;
         book.images.push({path:savedPath}); 
 
 		helper.resizeAndMoveImage(oldPath,newPath);
@@ -66,7 +66,7 @@ exports.saveImages=function(req,product_id,callback){
 
  			var ext=path.extname(oldPath);
 			var savedPath = UPLOAD_DIR+product_id+i+ext;
-	 		var newPath=APP_DIR+'\\public'+savedPath;
+	 		var newPath=APP_DIR+'/public'+savedPath;
          	images.push({path:savedPath});        
 	
 			helper.resizeAndMoveImage(oldPath,newPath);     	
@@ -77,7 +77,7 @@ exports.saveImages=function(req,product_id,callback){
  		var oldPath=imagefiles.path;
 		var ext=path.extname(oldPath);
 	 	var savedPath = UPLOAD_DIR+product_id+ext;
-	 	var newPath=APP_DIR+'\\public\\'+savedPath;
+	 	var newPath=APP_DIR+'/public'+savedPath;
         images.push({path:savedPath}); 
 
 		helper.resizeAndMoveImage(oldPath,newPath);
