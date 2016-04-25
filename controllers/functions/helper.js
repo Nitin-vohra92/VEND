@@ -34,7 +34,9 @@ exports.changeToRegexArray=function(tags){
 exports.deleteImages=function(images){
 	var dirname=APP_DIR+'\\public';
 	for(var i=0;i<images.length;i++){
-		fs.unlink(dirname+images[i].path);
+		fs.unlink(dirname+images[i].path,function(err){
+			if(err);
+		});
 	}
 	return;
 }

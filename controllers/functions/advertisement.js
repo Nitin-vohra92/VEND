@@ -194,18 +194,20 @@ exports.editAdvertisement=function(req,callback){
 	Advertisement.findOne({_id:input.ad_id},function(err,advertisement){
 		advertisement.kind=input.kind;
 		advertisement.bid=input.bid;
-		advertisement.location=input.location;
-		advertisement.price=input.price;
-		advertisement.description=input.description;
+		if(input.location.toString().trim().length>0)
+			advertisement.location=input.location;
+		if(input.price.toString().trim().length>0&&input.price>=0&&validator.isNumeric(input.price))
+			advertisement.price=input.price;
+		if(input.description.trim().length>0)
+			advertisement.description=input.description;
 		advertisement.updatedAt=timestamp.getTime();
 		var imagefiles=req.files.images;
 		var product_id=advertisement.product_id;
+		//checking if user uploaded new images
 		if(imagefiles[0].size>0){
 
 			switch(input.category){
 				case 'Book':
-						console.log("Inside Image Edit");
-			
 					Book.saveImages(req,product_id,function(thumb_path){
 						advertisement.thumb=thumb_path;
 						advertisement.save();

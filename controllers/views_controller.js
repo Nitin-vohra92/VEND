@@ -120,10 +120,10 @@ exports.publish=function(req,res){
 
 exports.editAdvertisement=function(req,res){
 	var response={};
-	var input=req.body;
+	var ad_id=req.query.ad_id;
 	var user_info=req.session;
 	response.user_info=user_info;
-	advertisementFunctions.getAdvertisement(input.ad_id,function(advertisement){
+	advertisementFunctions.getAdvertisement(ad_id,function(advertisement){
 		if(advertisement.user_id!==user_info.user_id||advertisement===null){
 			var error='Invalid request recieved. The advertisement was not published from this account. Advertisement might have been deleted. Please check again.'
 			userFunctions.sendToError(req,res,error);

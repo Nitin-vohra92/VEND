@@ -60,7 +60,6 @@ exports.publish=function(req,res){
 
 
 exports.edit=function(req,res){
-	var response={};
 	var user_info=req.session;
 	advertisementFunctions.editAdvertisement(req,function(){
 		var notification="Successfully updated Advertisement details.";
