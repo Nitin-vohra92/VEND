@@ -216,6 +216,105 @@ $(document).ready(function() {
   </div>
 <!-- end row ^^ -->
 
+<!-- similar ads -->
+    <div class="row">
+      <div class="col-md-12" >                  
+          <div class="panel panel-info">
+                              <div class="panel-heading" align="center" >
+                                <h4>
+                                  <strong>
+                                  Similar Advertisements on Vend
+                                  </strong>
+                                </h4>
+                              </div>
+                              <div class="panel-body" style="padding: 8px;">
+                             
+                                  <!-- ads in this div -->
+                                  <div class="row" style="padding: 10px;">
+
+
+                                    <%for(var i=0;i<response.similar_advertisements.length;i++) {%>
+
+
+                                      <%response.advertisement=response.similar_advertisements[i];%>
+                                      <%include partials/advertisement%>
+
+                                    <%}%>
+                                    <%if(response.similar_advertisements.length===0){%>
+                                      <div align="center">
+                                      <strong>
+                                        Nothing here :(
+                                        </strong>
+                                      </div>
+                                    <%}%>
+                                  </div>
+                                
+
+                              </div>
+                              <div class="panel-footer" align="center" style="padding: 5px;">
+                                    <h4>
+                                  <%if(response.similar_advertisements.length!==0){%>
+
+                                      <strong>
+                                        That's all.
+                                      </strong>
+                                 <% }%>
+
+                                    </h4>
+                                </div>
+            </div>
+      
+  <!-- end ads box -->
+  <!-- ads by user -->
+    <div class="row">
+      <div class="col-md-12" >                  
+          <div class="panel panel-info">
+                              <div class="panel-heading" align="center" >
+                                <h4>
+                                  <strong>
+                                  More Advertisements by <%=response.advertisement.user_name%>
+                                  </strong>
+                                </h4>
+                              </div>
+                              <div class="panel-body" style="padding: 8px;">
+                             
+                                  <!-- ads in this div -->
+                                  <div class="row" style="padding: 10px;">
+
+
+                                    <%for(var i=0;i<response.user_advertisements.length;i++) {%>
+
+
+                                      <%response.advertisement=response.user_advertisements[i];%>
+                                      <%include partials/advertisement%>
+
+                                    <%}%>
+                                    <%if(response.user_advertisements.length===0){%>
+                                      <div align="center">
+                                      <strong>
+                                        Nothing here :(
+                                        </strong>
+                                      </div>
+                                    <%}%>
+                                  </div>
+                                
+
+                              </div>
+                              <div class="panel-footer" align="center" style="padding: 5px;">
+                                    <h4>
+                                  <%if(response.user_advertisements.length!==0){%>
+
+                                      <strong>
+                                        That's all.
+                                      </strong>
+                                 <% }%>
+
+                                    </h4>
+                                </div>
+            </div>
+      
+  <!-- end ads box -->
+
   </div>
 </div>
 <!-- end main content block -->

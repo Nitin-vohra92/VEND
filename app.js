@@ -4,9 +4,9 @@ var mongoose=require('mongoose');
 var CONF_FILE=require('./conf.json');
 //Database
 // local
-// var db=mongoose.connect('mongodb://127.0.0.1/VEND');
+var db=mongoose.connect('mongodb://127.0.0.1/VEND');
 // online
-var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGO_DB.ADDRESS);
+// var db=mongoose.connect('mongodb://'+CONF_FILE.MONGO_DB.USERNAME+':'+CONF_FILE.MONGO_DB.PASSWORD+'@'+CONF_FILE.MONGO_DB.ADDRESS);
 
 var session=require('express-session');
 var MongoStore=require('connect-mongo')(session);

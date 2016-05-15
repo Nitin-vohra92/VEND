@@ -85,8 +85,9 @@ exports.saveImages=function(req,product_id,callback){
  		helper.deleteImages(product.images);
  		product.images=images;
  		product.updatedAt=timestamp.getTime();
- 		product.save();
- 		callback(product.images[0].path);
+ 		product.save(function(){
+ 		callback(product.images[0].path); 			
+ 		});
  	});
 
 }
@@ -109,6 +110,14 @@ exports.search=function(query,callback){
 	query=helper.changeToRegexArray(query);
 	Others.find({$or:[{name: {$in:query}},{brand: {$in:query}},{sub_category: {$in:query}}]},{_id:1},{sort: {'_id': -1}},function(err,others){
 		callback(others);
+	});
+}
+
+exports.getSimilar=function(product_id,callback){
+	Others.findOne({_id:product_id},function(err,product){
+		Others.find({sub_category:product.sub_category,_id:{$nin:product_id}},function(err,products){
+			callback(products);
+		});
 	});
 }
 

@@ -210,10 +210,16 @@ exports.advertisement=function(req,res){
 														}
 														userFunctions.getUnreadMessageCount(user_info.user_id,function(message_count){
 															response.message_count=message_count;
-															//////////////////////////////////////////////////////////////////
-															//if time please add more items like from same seller,similar items
-															//////////////////////////////////////////////////////////////////
-															res.render('advertisement',{response:response});
+															/////////////////////////////////////////////////////////////////////////
+															////if time please add more items like from same seller,similar items////
+															/////////////////////////////////////////////////////////////////////////
+															advertisementFunctions.getMoreAdvertisementByUser(advertisement.user_id,advertisement._id,function(user_advertisements){
+																response.user_advertisements=user_advertisements;
+																advertisementFunctions.getSimilarAdvertisements(user_info,advertisement,function(similar_advertisements){
+																	response.similar_advertisements=similar_advertisements;
+																	res.render('advertisement',{response:response});
+																});
+															});
 
 														});				
 													});

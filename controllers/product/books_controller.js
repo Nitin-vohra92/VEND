@@ -87,8 +87,9 @@ exports.saveImages=function(req,product_id,callback){
  		helper.deleteImages(product.images);
  		product.images=images;
  		product.updatedAt=timestamp.getTime();
- 		product.save();
- 		callback(product.images[0].path);
+ 		product.save(function(){
+ 		callback(product.images[0].path); 			
+ 		});
  	});
 
 }
@@ -111,6 +112,15 @@ exports.search=function(query,callback){
 		callback(books);
 	});
 }
+
+exports.getSimilar=function(product_id,callback){
+	Book.findOne({_id:product_id},function(err,product){
+		Book.find({semester:product.semester,_id:{$nin:product_id}},function(err,products){
+			callback(products);
+		});
+	});
+}
+
 exports.getRecommendedBooks=function(view_tags,callback){
 	Book.find({semester:{$in:view_tags}},function(err,books){
 			callback(books);

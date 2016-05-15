@@ -780,6 +780,33 @@ exports.getAdvertisement=function(id,callback){
 			callback(advertisement);
 	});
 }
+
+exports.getSimilarAdvertisements=function(user_info,advertisement,callback){
+	switch(advertisement.category){
+		case 'Book':
+			Book.getSimilar(advertisement.product_id,function(products){
+				getAdvertisementFromIds(user_info.user_id,products,function(advertisements){
+					callback(advertisements);					
+				});
+			});
+			break;
+		case 'Electronics':
+			Electronics.getSimilar(advertisement.product_id,function(products){
+				getAdvertisementFromIds(user_info.user_id,products,function(advertisements){
+					callback(advertisements);					
+				});
+			});
+			break;
+		case 'Other':
+			Other.getSimilar(advertisement.product_id,function(products){
+				getAdvertisementFromIds(user_info.user_id,products,function(advertisements){
+					callback(advertisements);					
+				});
+			});
+			break;
+	}
+}
+
 exports.getClosedAdvertisement=function(id,callback){
 	ClosedAdvertisement.findOne({_id:id},function(err,advertisement){
 		if(err){
@@ -793,6 +820,12 @@ exports.getClosedAdvertisement=function(id,callback){
 
 exports.getAdvertisementByUser=function(user_id,callback){
 	Advertisement.find({user_id:user_id},null,{sort:{'_id':-1}},function(err,advertisements){
+		callback(advertisements);
+	});
+}
+
+exports.getMoreAdvertisementByUser=function(user_id,ad_id,callback){
+	Advertisement.find({user_id:user_id,_id:{$nin:ad_id}},null,{sort:{'_id':-1}},function(err,advertisements){
 		callback(advertisements);
 	});
 }
