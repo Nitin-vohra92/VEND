@@ -1,6 +1,6 @@
 {
 	"MONGO_DB":{
-		"ADDRESS":"db addresshere e.g<ds011.mlab.com:11409/vend>",
+		"ADDRESS":"db addresshere e.g<ds011.mlab.com:11/vend>",
 		"USERNAME":"username",
 		"PASSWORD":"password"
 	},
