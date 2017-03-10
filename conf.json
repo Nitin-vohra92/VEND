@@ -1,12 +1,12 @@
 {
 	"MONGO_DB":{
-		"ADDRESS":"ds011409.mlab.com:11409/vend",
-		"USERNAME":"vend",
-		"PASSWORD":"vend1234"
+		"ADDRESS":"db addresshere e.g<ds011.mlab.com:11409/vend>",
+		"USERNAME":"username",
+		"PASSWORD":"password"
 	},
 	"EMAIL":{
-		"USERNAME":"vendnotifier@gmail.com",
-		"PASSWORD":"vendnotifier123"
+		"USERNAME":"xxx@email.com",
+		"PASSWORD":"password"
 	}
 
 }
